@@ -1,0 +1,10 @@
+{
+  "use_test_data": false,
+  "refresh_rate": 20,
+  "airfield_get":"https://bobbysworld.io/cgi-bin/airfield_fetch.py",
+  "airfield_post":"",
+  "aircraft_get":"",
+  "aircraft_post":"",
+  "sam_get":"",
+  "sam_post":""
+}
