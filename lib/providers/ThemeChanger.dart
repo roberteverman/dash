@@ -5,6 +5,9 @@ class ThemeChanger extends ChangeNotifier {
   ThemeData themeData = dashDarkTheme;
   bool lightMode = false;
   bool isLoading = false;
+  int currentTab = 0;
+  int currentSubtab = 0;
+  String centralDateTime = "";
 
   getTheme() => themeData;
   setTheme(ThemeData theme) {
@@ -19,6 +22,5 @@ class ThemeChanger extends ChangeNotifier {
 
   setLoading(bool setIsLoading) async {
     isLoading = setIsLoading;
-    print(isLoading);
   }
 }

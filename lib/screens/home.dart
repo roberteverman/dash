@@ -1,4 +1,6 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dash/providers/ThemeChanger.dart';
+import 'package:dash/providers/air/AirfieldStatusCN.dart';
 import 'package:dash/tabs/AirTab.dart';
 import 'package:dash/tabs/GroundTab.dart';
 import 'package:dash/tabs/SeaTab.dart';
@@ -33,9 +35,60 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     final themeChanger = Provider.of<ThemeChanger>(context, listen: false);
     final theme = Theme.of(context);
     double winWidth = MediaQuery.of(context).size.width;
-    double winHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      drawer: MediaQuery.of(context).size.width >= 700
+          ? null
+          : Drawer(
+              child: ListView(
+                children: [
+                  DrawerHeader(
+                    child: Center(
+                        child: Text(
+                      "Dash.",
+                      style: TextStyle(
+                        fontSize: 40,
+                      ),
+                    )),
+                    decoration: BoxDecoration(color: Colors.transparent),
+                  ),
+                  ListTile(
+                    title: Text("air"),
+                    onTap: () {
+                      _tabController.animateTo(0);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    title: Text("ground"),
+                    onTap: () {
+                      _tabController.animateTo(1);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    title: Text("sea"),
+                    onTap: () {
+                      _tabController.animateTo(2);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    title: Text("space"),
+                    onTap: () {
+                      _tabController.animateTo(3);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            ),
+      appBar: MediaQuery.of(context).size.width >= 700
+          ? null
+          : AppBar(
+              centerTitle: true,
+              title: Text("Dash."),
+            ),
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(new FocusNode());
@@ -43,7 +96,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         child: Row(
           children: [
             Container(
-              width: 130, //the width of the left side tab
+              width: MediaQuery.of(context).size.width < 700 ? 0 : 130, //the width of the left side tab
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -73,6 +126,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                             child: Container(
                               width: 200, //the *height* of the vertical TabBar
                               child: TabBar(
+                                onTap: (i) {
+                                  Provider.of<ThemeChanger>(context, listen: false).currentTab = i;
+                                },
                                 controller: _tabController,
                                 indicatorColor: theme.colorScheme.onBackground,
                                 tabs: [
@@ -118,49 +174,135 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 children: [
                   Container(
                     // Top bar area
-                    height: 60,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(), //Left area of search bar
-                        ),
-                        Container(
-                          //Search bar area
-                          width: winWidth / 2,
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 20.0),
-                            child: TextFormField(
-                              cursorColor: theme.indicatorColor,
-                              decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.search_rounded),
-                                filled: true,
-                                contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(50),
-                                  borderSide: BorderSide.none,
-                                ),
-                                hintText: "Search...",
-                                suffixIcon: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text("All"),
-                                    Container(width: 10),
-                                    Icon(
-                                      Icons.keyboard_arrow_down,
-                                      color: Colors.white,
+                    height: MediaQuery.of(context).size.width < 700 ? 0 : 60,
+                    child: MediaQuery.of(context).size.width < 700
+                        ? null
+                        : Row(
+                            children: [
+                              Expanded(
+                                child: Container(), //Left area of search bar
+                              ),
+                              Container(
+                                //Search bar area
+                                width: winWidth / 2,
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 20.0),
+                                  child: TextFormField(
+                                    cursorColor: theme.indicatorColor,
+                                    decoration: InputDecoration(
+                                      prefixIcon: Icon(Icons.search_rounded),
+                                      filled: true,
+                                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(50),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      hintText: "Search...",
+                                      suffixIcon: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text("All"),
+                                          Container(width: 10),
+                                          Icon(
+                                            Icons.keyboard_arrow_down,
+                                            color: theme.colorScheme.onPrimary,
+                                          ),
+                                          Container(width: 10),
+                                        ],
+                                      ),
                                     ),
-                                    Container(width: 10),
-                                  ],
+                                  ),
                                 ),
                               ),
-                            ),
+                              Expanded(
+                                child: Container(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(right: 10),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            SizedBox(width: 5),
+                                            IconButton(
+                                              padding: EdgeInsets.zero,
+                                              icon: Icon(
+                                                Icons.refresh,
+                                                size: 25,
+                                              ),
+                                              onPressed: () async {
+                                                ThemeChanger themeChanger = Provider.of<ThemeChanger>(context, listen: false);
+                                                int currentTab = themeChanger.currentTab;
+                                                int currentSubtab = themeChanger.currentSubtab;
+                                                themeChanger.setLoading(true);
+                                                themeChanger.notifyListeners();
+                                                //todo: insert conditions for every subtab
+                                                if (currentTab == 0) {
+                                                  //air
+                                                  if (currentSubtab == 1) {
+                                                    //airfields
+                                                    await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
+                                                    themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
+                                                  }
+                                                }
+                                                themeChanger.setLoading(false);
+                                                themeChanger.notifyListeners();
+                                              },
+                                              tooltip: "Refresh Data",
+                                              color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
+                                              highlightColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              splashColor: Colors.transparent,
+                                            ),
+                                            IconButton(
+                                              padding: EdgeInsets.zero,
+                                              icon: Icon(
+                                                Icons.person,
+                                                size: 25,
+                                              ),
+                                              onPressed: () {
+                                                print("Admin Login");
+                                                print(MediaQuery.of(context).size.width);
+                                              },
+                                              tooltip: "Admin Login",
+                                              color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
+                                              highlightColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              splashColor: Colors.transparent,
+                                            ),
+                                          ],
+                                        ),
+                                        Expanded(
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              Expanded(
+                                                child: AutoSizeText(
+                                                  Provider.of<ThemeChanger>(context, listen: true).centralDateTime,
+                                                  maxLines: 2,
+                                                  minFontSize: 0,
+                                                  maxFontSize: 20,
+                                                  wrapWords: true,
+                                                  softWrap: true,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  stepGranularity: 0.1,
+                                                  textAlign: TextAlign.end,
+                                                ),
+                                              ),
+                                              SizedBox(width: 5),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ), //Right area of search bar
+                              ),
+                            ],
                           ),
-                        ),
-                        Expanded(
-                          child: Container(), //Right area of search bar
-                        ),
-                      ],
-                    ),
                   ),
                   Expanded(
                     child: TabBarView(

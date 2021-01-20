@@ -69,7 +69,6 @@ class AirFieldStatusCN extends ChangeNotifier {
         }
       }
     }
-    print("X");
     notifyListeners();
   }
 }

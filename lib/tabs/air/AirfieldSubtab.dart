@@ -1,7 +1,11 @@
+import 'dart:async';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dash/helpers/models.dart';
 import 'package:dash/providers/ThemeChanger.dart';
 import 'package:dash/providers/air/AirfieldStatusCN.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:loading_animations/loading_animations.dart';
@@ -12,52 +16,71 @@ class AirfieldSubtab extends StatefulWidget {
   _AirfieldSubtabState createState() => _AirfieldSubtabState();
 }
 
-class _AirfieldSubtabState extends State<AirfieldSubtab> with AutomaticKeepAliveClientMixin {
+class _AirfieldSubtabState extends State<AirfieldSubtab> {
   List<int> airDivisionList = [];
   List<Widget> airDivisionCards = [];
+  Future<bool> tabDataLoaded;
+  Timer timer;
 
-  @override
-  void initState() {
-    if (Provider.of<AirFieldStatusCN>(context, listen: false).airfieldStatus.length == 0) {
-      loadData();
-    }
-    super.initState();
-  }
-
-  void loadData() async {
+  Future<bool> loadTabData() async {
     Provider.of<ThemeChanger>(context, listen: false).setLoading(true);
     await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
+    Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
+    Provider.of<ThemeChanger>(context, listen: false).notifyListeners(); //must add this and the above to update the time
     airDivisionList = Provider.of<AirFieldStatusCN>(context, listen: false).airDivisionList;
     airDivisionCards = List.generate(
       airDivisionList.length,
       (index) => AirDivisionCard(airDivision: airDivisionList[index]),
     );
-    setState(() {
-      Provider.of<ThemeChanger>(context, listen: false).setLoading(false);
+    Provider.of<ThemeChanger>(context, listen: false).setLoading(false);
+    Provider.of<ThemeChanger>(context, listen: false).notifyListeners(); //don't forget to notify listeners
+    return true;
+  }
+
+  void startTimer() {
+    timer = new Timer.periodic(Duration(seconds: Provider.of<AirFieldStatusCN>(context, listen: false).refreshRate), (timer) {
+      loadTabData();
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    super.build(context);
-
-    return Provider.of<AirFieldStatusCN>(context, listen: true).loading == true
-        ? LoadingBouncingLine.circle(backgroundColor: Theme.of(context).indicatorColor)
-        : Padding(
-            padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
-            child: StaggeredGridView.countBuilder(
-              crossAxisCount: 2,
-              itemCount: airDivisionCards.length,
-              itemBuilder: (BuildContext context, int index) => airDivisionCards[index],
-              staggeredTileBuilder: (int index) => new StaggeredTile.fit(1),
-              mainAxisSpacing: 25,
-              crossAxisSpacing: 25,
-            ),
-          );
+  void initState() {
+    tabDataLoaded = loadTabData();
+    startTimer();
+    super.initState();
   }
 
   @override
-  bool get wantKeepAlive => true;
+  void dispose() {
+    super.dispose();
+    timer.cancel();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: tabDataLoaded,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        if (snapshot.data != true) {
+          return LoadingBouncingLine.circle(backgroundColor: Theme.of(context).indicatorColor);
+        } else {
+          return Provider.of<ThemeChanger>(context, listen: true).isLoading
+              ? LoadingBouncingLine.circle(backgroundColor: Theme.of(context).indicatorColor)
+              : Padding(
+                  padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
+                  child: StaggeredGridView.countBuilder(
+                    crossAxisCount: MediaQuery.of(context).size.width < 700 ? 1 : 2,
+                    itemCount: airDivisionCards.length,
+                    itemBuilder: (BuildContext context, int index) => airDivisionCards[index],
+                    staggeredTileBuilder: (int index) => new StaggeredTile.fit(1),
+                    mainAxisSpacing: 25,
+                    crossAxisSpacing: 25,
+                  ),
+                );
+        }
+      },
+    );
+  }
 }
 
 class AirDivisionCard extends StatelessWidget {
@@ -104,6 +127,7 @@ class AirDivisionCard extends StatelessWidget {
               style: TextStyle(fontSize: 15),
             ),
             StaggeredGridView.countBuilder(
+                physics: NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.only(top: 10),
                 shrinkWrap: true,
                 crossAxisCount: 2,
@@ -166,26 +190,39 @@ class AirfieldStatusCard extends StatelessWidget {
           ),
           child: ExpansionTile(
             initiallyExpanded: true,
-            title: Column(
-              children: [
-                Text(
+            title: SizedBox(
+              child: Center(
+                child: AutoSizeText(
                   airfieldStatus.name + " Airfield",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  maxLines: 2,
+                  minFontSize: 10,
+                  maxFontSize: 15,
+                  wrapWords: true,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
+                  stepGranularity: 0.1,
+                  textAlign: TextAlign.center,
+                  // style: TextStyle(
+                  //   fontWeight: FontWeight.w600,
+                  // ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Status:  ',
-                      style: TextStyle(fontSize: 13),
-                    ),
-                    Text(
-                      airfieldStatus.status,
-                      style: TextStyle(fontSize: 13, color: airfieldStatusColor, fontWeight: FontWeight.bold),
-                    ),
-                  ],
+              ),
+            ),
+            subtitle: SizedBox(
+              child: Center(
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(fontSize: 13, color: Theme.of(context).accentColor),
+                    children: <TextSpan>[
+                      TextSpan(text: "Status: "),
+                      TextSpan(
+                        text: airfieldStatus.status,
+                        style: TextStyle(fontWeight: FontWeight.bold, color: airfieldStatusColor),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             ),
             children: <Widget>[
               Row(
@@ -269,8 +306,10 @@ class StatusChip extends StatelessWidget {
         label: Container(
           width: 30,
           child: Center(
-            child: Text(
+            child: AutoSizeText(
               text,
+              minFontSize: 0,
+              stepGranularity: 0.1,
               style: TextStyle(
                 color: textColor,
               ),
