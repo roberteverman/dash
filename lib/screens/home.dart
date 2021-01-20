@@ -217,7 +217,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                               Expanded(
                                 child: Container(
                                   child: Padding(
-                                    padding: EdgeInsets.only(right: 10),
+                                    padding: EdgeInsets.only(left: 10, right: 10),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -261,11 +261,98 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                               padding: EdgeInsets.zero,
                                               icon: Icon(
                                                 Icons.person,
+                                                color: Provider.of<ThemeChanger>(context, listen: true).apiKey == "" ? null : Colors.green,
                                                 size: 25,
                                               ),
-                                              onPressed: () {
-                                                print("Admin Login");
-                                                print(MediaQuery.of(context).size.width);
+                                              onPressed: () async {
+                                                String user = "";
+                                                String pass = "";
+
+                                                return await showDialog(
+                                                    barrierDismissible: true,
+                                                    context: context,
+                                                    builder: (_) => AlertDialog(
+                                                          title: Center(
+                                                            child: Text("Admin Login"),
+                                                          ),
+                                                          actions: [
+                                                            TextButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(context);
+                                                              },
+                                                              child: Text(
+                                                                "Cancel",
+                                                                style: TextStyle(
+                                                                  color: Colors.red,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            TextButton(
+                                                              onPressed: () async {
+                                                                await themeChanger.loginUser(user, pass);
+                                                                print(themeChanger.apiKey);
+                                                                print(themeChanger.groundAdmin);
+                                                                Navigator.pop(context);
+                                                              },
+                                                              child: Text(
+                                                                "Submit",
+                                                                style: TextStyle(
+                                                                  color: Colors.green,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                          content: Column(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            children: [
+                                                              Container(
+                                                                width: 300,
+                                                                child: Padding(
+                                                                  padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
+                                                                  child: TextFormField(
+                                                                    onChanged: (value) {
+                                                                      user = value;
+                                                                    },
+                                                                    cursorColor: theme.indicatorColor,
+                                                                    decoration: InputDecoration(
+                                                                      prefixIcon: Icon(Icons.person),
+                                                                      filled: true,
+                                                                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                                                      border: OutlineInputBorder(
+                                                                        borderRadius: BorderRadius.circular(50),
+                                                                        borderSide: BorderSide.none,
+                                                                      ),
+                                                                      hintText: "User name",
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Container(
+                                                                width: 300,
+                                                                child: Padding(
+                                                                  padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
+                                                                  child: TextFormField(
+                                                                    onChanged: (value) {
+                                                                      pass = value;
+                                                                    },
+                                                                    obscureText: true,
+                                                                    cursorColor: theme.indicatorColor,
+                                                                    decoration: InputDecoration(
+                                                                      prefixIcon: Icon(Icons.lock),
+                                                                      filled: true,
+                                                                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                                                      border: OutlineInputBorder(
+                                                                        borderRadius: BorderRadius.circular(50),
+                                                                        borderSide: BorderSide.none,
+                                                                      ),
+                                                                      hintText: "Password",
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ));
                                               },
                                               tooltip: "Admin Login",
                                               color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),

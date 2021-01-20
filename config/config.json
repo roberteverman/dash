@@ -1,8 +1,9 @@
 {
   "use_test_data": false,
   "refresh_rate": 20,
+  "validate_user": "https://bobbysworld.io/cgi-bin/validate_user.py",
   "airfield_get":"https://bobbysworld.io/cgi-bin/airfield_fetch.py",
-  "airfield_post":"",
+  "airfield_post":"https://bobbysworld.io/cgi-bin/airfield_post.py",
   "aircraft_get":"",
   "aircraft_post":"",
   "sam_get":"",

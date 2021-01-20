@@ -5,8 +5,8 @@ import 'package:dash/helpers/models.dart';
 import 'package:dash/providers/ThemeChanger.dart';
 import 'package:dash/providers/air/AirfieldStatusCN.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:provider/provider.dart';
@@ -69,7 +69,7 @@ class _AirfieldSubtabState extends State<AirfieldSubtab> {
               : Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
                   child: StaggeredGridView.countBuilder(
-                    crossAxisCount: MediaQuery.of(context).size.width < 700 ? 1 : 2,
+                    crossAxisCount: MediaQuery.of(context).size.width < 800 ? 1 : 2,
                     itemCount: airDivisionCards.length,
                     itemBuilder: (BuildContext context, int index) => airDivisionCards[index],
                     staggeredTileBuilder: (int index) => new StaggeredTile.fit(1),
@@ -210,43 +210,144 @@ class AirfieldStatusCard extends StatelessWidget {
             ),
             subtitle: SizedBox(
               child: Center(
-                child: RichText(
-                  text: TextSpan(
-                    style: TextStyle(fontSize: 13, color: Theme.of(context).accentColor),
-                    children: <TextSpan>[
-                      TextSpan(text: "Status: "),
-                      TextSpan(
-                        text: airfieldStatus.status,
-                        style: TextStyle(fontWeight: FontWeight.bold, color: airfieldStatusColor),
-                      ),
-                    ],
+                child: TextButton(
+                  onPressed: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
+                      ? () {}
+                      : () async {
+                          //todo implement only if logged in
+                          return await showDialog(
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: Center(
+                                child: Text(
+                                  "Change overall status of \n" + airfieldStatus.name,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                              content: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: MaterialButton(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                      child: Text("OP"),
+                                      color: Colors.green,
+                                      onPressed: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
+                                          ? null
+                                          : () async {
+                                              await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
+                                                  airfieldStatus.name, "status", "OP", Provider.of<ThemeChanger>(context, listen: false).apiKey);
+                                              Navigator.pop(context);
+                                            },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: MaterialButton(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                      child: Text(
+                                        "LIMOP",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      color: Colors.yellow,
+                                      onPressed: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
+                                          ? null
+                                          : () async {
+                                              await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
+                                                  airfieldStatus.name, "status", "LIMOP", Provider.of<ThemeChanger>(context, listen: false).apiKey);
+                                              Navigator.pop(context);
+                                            },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: MaterialButton(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                      child: Text("NONOP"),
+                                      color: Colors.red,
+                                      onPressed: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
+                                          ? null
+                                          : () async {
+                                              await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
+                                                  airfieldStatus.name, "status", "NONOP", Provider.of<ThemeChanger>(context, listen: false).apiKey);
+                                              Navigator.pop(context);
+                                            },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: TextStyle(fontSize: 13, color: Theme.of(context).accentColor, fontWeight: FontWeight.w100),
+                      children: <TextSpan>[
+                        TextSpan(text: "Status: "),
+                        TextSpan(
+                          text: airfieldStatus.status,
+                          style: TextStyle(fontWeight: FontWeight.bold, color: airfieldStatusColor),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
             children: <Widget>[
-              Row(
+              Wrap(
+                runAlignment: WrapAlignment.spaceBetween,
                 children: [
-                  Spacer(),
-                  Expanded(child: StatusChip(text: "R/W", tooltip: "Runway\nStatus: " + airfieldStatus.rw, status: airfieldStatus.rw)),
-                  SizedBox(width: 10),
-                  Expanded(child: StatusChip(text: "T/W", tooltip: "Taxiway\nStatus: " + airfieldStatus.tw, status: airfieldStatus.tw)),
-                  SizedBox(width: 10),
-                  Expanded(
-                      child: StatusChip(text: "UGF", tooltip: "Underground Facility\nStatus: " + airfieldStatus.ugf, status: airfieldStatus.ugf)),
-                  Spacer(),
-                ],
-              ),
-              SizedBox(height: 5),
-              Row(
-                children: [
-                  Spacer(),
-                  Expanded(child: StatusChip(text: "POL", tooltip: "Petroleum and Oil\nStatus: " + airfieldStatus.pol, status: airfieldStatus.pol)),
-                  SizedBox(width: 10),
-                  Expanded(child: StatusChip(text: "MS", tooltip: "Munition Storage\nStatus: " + airfieldStatus.ms, status: airfieldStatus.ms)),
-                  SizedBox(width: 10),
-                  Expanded(child: StatusChip(text: "RF", tooltip: "Repair Facility\nStatus: " + airfieldStatus.rf, status: airfieldStatus.rf)),
-                  Spacer(),
+                  StatusChip(
+                    text: "R/W",
+                    tooltip: "Runway\nStatus: " + airfieldStatus.rw,
+                    status: airfieldStatus.rw,
+                    parentAirfield: airfieldStatus.name,
+                    field: "rw",
+                  ),
+                  StatusChip(
+                    text: "T/W",
+                    tooltip: "Taxiway\nStatus: " + airfieldStatus.tw,
+                    status: airfieldStatus.tw,
+                    parentAirfield: airfieldStatus.name,
+                    field: "tw",
+                  ),
+                  StatusChip(
+                    text: "UGF",
+                    tooltip: "Underground Facility\nStatus: " + airfieldStatus.ugf,
+                    status: airfieldStatus.ugf,
+                    parentAirfield: airfieldStatus.name,
+                    field: "ugf",
+                  ),
+                  StatusChip(
+                    text: "POL",
+                    tooltip: "Petroleum and Oil\nStatus: " + airfieldStatus.pol,
+                    status: airfieldStatus.pol,
+                    parentAirfield: airfieldStatus.name,
+                    field: "pol",
+                  ),
+                  StatusChip(
+                    text: "MS",
+                    tooltip: "Munition Storage\nStatus: " + airfieldStatus.ms,
+                    status: airfieldStatus.ms,
+                    parentAirfield: airfieldStatus.name,
+                    field: "ms",
+                  ),
+                  StatusChip(
+                    text: "RF",
+                    tooltip: "Repair Facility\nStatus: " + airfieldStatus.rf,
+                    status: airfieldStatus.rf,
+                    parentAirfield: airfieldStatus.name,
+                    field: "rf",
+                  ),
                 ],
               ),
             ],
@@ -258,10 +359,12 @@ class AirfieldStatusCard extends StatelessWidget {
 }
 
 class StatusChip extends StatelessWidget {
-  StatusChip({this.tooltip, this.text, this.status});
+  StatusChip({this.tooltip, this.text, this.status, this.parentAirfield, this.field});
   final String tooltip;
   final String text;
   final String status;
+  final String parentAirfield;
+  final String field;
 
   @override
   Widget build(BuildContext context) {
@@ -298,25 +401,105 @@ class StatusChip extends StatelessWidget {
         break;
     }
 
-    return Tooltip(
-      preferBelow: false,
-      message: tooltip,
-      waitDuration: Duration(milliseconds: 500),
-      child: Chip(
-        label: Container(
-          width: 30,
-          child: Center(
-            child: AutoSizeText(
-              text,
-              minFontSize: 0,
-              stepGranularity: 0.1,
-              style: TextStyle(
-                color: textColor,
+    return Padding(
+      padding: EdgeInsets.all(5.0),
+      child: Tooltip(
+        preferBelow: false,
+        message: tooltip,
+        waitDuration: Duration(milliseconds: 500),
+        child: GestureDetector(
+          onTap: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
+              ? null
+              : () async {
+                  //todo implement only if logged in
+                  return await showDialog(
+                    barrierDismissible: true,
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: Center(
+                        child: Text(
+                          "Change status of " + parentAirfield + " " + tooltip.split('\n')[0],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                      content: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(5),
+                            child: MaterialButton(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                              child: Text("OP"),
+                              color: Colors.green,
+                              onPressed: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
+                                  ? null
+                                  : () async {
+                                      await Provider.of<AirFieldStatusCN>(context, listen: false)
+                                          .pushAirfieldStatus(parentAirfield, field, "OP", Provider.of<ThemeChanger>(context, listen: false).apiKey);
+                                      Navigator.pop(context);
+                                    },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(5),
+                            child: MaterialButton(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                              child: Text(
+                                "LIMOP",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                              color: Colors.yellow,
+                              onPressed: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
+                                  ? null
+                                  : () async {
+                                      await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
+                                          parentAirfield, field, "LIMOP", Provider.of<ThemeChanger>(context, listen: false).apiKey);
+                                      Navigator.pop(context);
+                                    },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(5),
+                            child: MaterialButton(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                              child: Text("NONOP"),
+                              color: Colors.red,
+                              onPressed: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
+                                  ? null
+                                  : () async {
+                                      await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
+                                          parentAirfield, field, "NONOP", Provider.of<ThemeChanger>(context, listen: false).apiKey);
+                                      Navigator.pop(context);
+                                    },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+          child: Chip(
+            label: Container(
+              width: 30,
+              child: Center(
+                child: AutoSizeText(
+                  text,
+                  minFontSize: 0,
+                  stepGranularity: 0.1,
+                  style: TextStyle(
+                    color: textColor,
+                  ),
+                ),
               ),
             ),
+            backgroundColor: color,
           ),
         ),
-        backgroundColor: color,
       ),
     );
   }

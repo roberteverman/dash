@@ -4,6 +4,7 @@ import 'package:dash/helpers/models.dart';
 import 'package:dash/helpers/test_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 class AirFieldStatusCN extends ChangeNotifier {
@@ -70,5 +71,44 @@ class AirFieldStatusCN extends ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+  Future<void> pushAirfieldStatus(String item, String field, String status, String apiKey) async {
+    String configString = await rootBundle.loadString('config/config.json');
+    Map configJSON = json.decode(configString);
+    if (configJSON['use_test_data'] == false) {
+      String url = configJSON['airfield_post'];
+      print("A");
+      print(jsonEncode(<String, dynamic>{
+        'item': item,
+        'field': field,
+        'status': status,
+        'key': apiKey,
+      }));
+      var response = await http.post(url,
+          body: jsonEncode(<String, dynamic>{
+            'item': item,
+            'field': field,
+            'status': status,
+            'key': apiKey,
+          }));
+      print("B");
+      if (response.statusCode != 200) {
+        Fluttertoast.showToast(
+          msg: "Error!",
+          webBgColor: "#dc2a2a",
+          timeInSecForIosWeb: 3,
+          webPosition: "right",
+        );
+      } else {
+        Fluttertoast.showToast(
+          msg: "Success!",
+          webBgColor: "#28A228",
+          timeInSecForIosWeb: 3,
+          webPosition: "right",
+        );
+        updateAirfieldStatus();
+      }
+    }
   }
 }
