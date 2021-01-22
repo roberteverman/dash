@@ -1,4 +1,5 @@
 import 'package:dash/providers/ThemeChanger.dart';
+import 'package:dash/providers/air/AircraftStatusCN.dart';
 import 'package:dash/providers/air/AirfieldStatusCN.dart';
 import 'package:dash/screens/home.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<ThemeChanger>(create: (context) => ThemeChanger()),
         ChangeNotifierProvider<AirFieldStatusCN>(create: (context) => AirFieldStatusCN()),
+        ChangeNotifierProvider<AircraftStatusCN>(create: (context) => AircraftStatusCN()),
       ],
       child: new MaterialAppWithTheme(),
     );

@@ -7,32 +7,32 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
-class AirFieldStatusCN extends ChangeNotifier {
-  List<AirfieldStatus> airfieldStatus = [];
+class AircraftStatusCN extends ChangeNotifier {
+  List<AirfieldInventory> airfieldInventory = [];
   List<String> airfieldList = [];
   List<int> airDivisionList = [];
   bool loading = true;
   int refreshRate = 20; //default timer
   String datetime = "Loading...";
 
-  Future<void> updateAirfieldStatus() async {
+  Future<void> updateAirfieldInventory() async {
     String configString = await rootBundle.loadString('config/config.json');
     Map configJSON = json.decode(configString);
     refreshRate = configJSON['refresh_rate']; //Here instead of theme to leave option for tab customization
 
-    airfieldStatus = [];
+    airfieldInventory = [];
     airfieldList = [];
     airDivisionList = [];
 
     if (configJSON['use_test_data'] == true) {
       // USING TEST DATA
-      datetime = testAirfieldData['datetime'];
-      for (int i = 0; i < testAirfieldData['data'].length; i++) {
-        //populate airfieldStatus list with test data
-        AirfieldStatus newEntry = AirfieldStatus.fromJson(testAirfieldData['data'][i]);
-        airfieldStatus.add(newEntry);
+      datetime = testAirfieldInventory['datetime'];
+      for (int i = 0; i < testAirfieldInventory['data'].length; i++) {
+        //populate airfieldInventory list with test data
+        AirfieldInventory newEntry = AirfieldInventory.fromJson(testAirfieldInventory['data'][i]);
+        airfieldInventory.add(newEntry);
       }
-      for (AirfieldStatus airfield in airfieldStatus) {
+      for (AirfieldInventory airfield in airfieldInventory) {
         if (!airfieldList.contains(airfield.name)) {
           //create unique list of airfields
           airfieldList.add(airfield.name);
@@ -42,21 +42,21 @@ class AirFieldStatusCN extends ChangeNotifier {
           airDivisionList.add(airfield.airdiv);
         }
         airDivisionList.sort(); //alphabetize everything
-        airfieldStatus.sort((a, b) => a.name.compareTo(b.name));
+        airfieldInventory.sort((a, b) => a.name.compareTo(b.name));
       }
     } else {
       //USING SERVER DATA
-      String url = configJSON['airfield_get'];
+      String url = configJSON['aircraft_get'];
       var response = await http.get(url); //grab data from server
       if (response.statusCode == 200) {
         var retrievedData = json.decode(response.body)['data'].toList();
         datetime = json.decode(response.body)['datetime'];
         for (int i = 0; i < retrievedData.length; i++) {
-          //populate airfieldStatus list with response data
-          AirfieldStatus newEntry = AirfieldStatus.fromJson(retrievedData[i]);
-          airfieldStatus.add(newEntry);
+          //populate airfieldInventory list with response data
+          AirfieldInventory newEntry = AirfieldInventory.fromJson(retrievedData[i]);
+          airfieldInventory.add(newEntry);
         }
-        for (AirfieldStatus airfield in airfieldStatus) {
+        for (AirfieldInventory airfield in airfieldInventory) {
           if (!airfieldList.contains(airfield.name)) {
             //create unique list of airfields
             airfieldList.add(airfield.name);
@@ -66,23 +66,25 @@ class AirFieldStatusCN extends ChangeNotifier {
             airDivisionList.add(airfield.airdiv);
           }
           airDivisionList.sort(); //alphabetize everything
-          airfieldStatus.sort((a, b) => a.name.compareTo(b.name));
+          airfieldInventory.sort((a, b) => a.name.compareTo(b.name));
         }
       }
     }
     notifyListeners();
   }
 
-  Future<void> pushAirfieldStatus(String item, String field, String status, String apiKey) async {
+  Future<void> pushAirfieldInventory(int action, int number, String item, String origin, String destination, String apiKey) async {
     String configString = await rootBundle.loadString('config/config.json');
     Map configJSON = json.decode(configString);
     if (configJSON['use_test_data'] == false) {
-      String url = configJSON['airfield_post'];
+      String url = configJSON['aircraft_post'];
       var response = await http.post(url,
           body: jsonEncode(<String, dynamic>{
+            'action': action,
+            'number': number,
             'item': item,
-            'field': field,
-            'status': status,
+            'origin': origin,
+            'destination': destination,
             'key': apiKey,
           }));
       if (response.statusCode != 200) {
@@ -99,7 +101,7 @@ class AirFieldStatusCN extends ChangeNotifier {
           timeInSecForIosWeb: 3,
           webPosition: "right",
         );
-        updateAirfieldStatus();
+        updateAirfieldInventory();
       }
     }
   }

@@ -35,6 +35,7 @@ dependencies:
   loading_animations: ^2.1.0
   auto_size_text: ^2.1.0
   fluttertoast: ^7.1.6
+  percent_indicator: ^2.1.8
 
 dev_dependencies:
   flutter_test:

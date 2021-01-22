@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dash/providers/ThemeChanger.dart';
+import 'package:dash/providers/air/AircraftStatusCN.dart';
 import 'package:dash/providers/air/AirfieldStatusCN.dart';
 import 'package:dash/tabs/AirTab.dart';
 import 'package:dash/tabs/GroundTab.dart';
@@ -86,6 +87,148 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       appBar: MediaQuery.of(context).size.width >= 700
           ? null
           : AppBar(
+              actions: [
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(
+                    Icons.refresh,
+                    size: 25,
+                  ),
+                  onPressed: () async {
+                    // print(winWidth);
+                    ThemeChanger themeChanger = Provider.of<ThemeChanger>(context, listen: false);
+                    int currentTab = themeChanger.currentTab;
+                    int currentSubtab = themeChanger.currentSubtab;
+                    themeChanger.setLoading(true);
+                    themeChanger.notifyListeners();
+                    //todo: insert conditions for every subtab
+                    if (currentTab == 0) {
+                      //air
+                      if (currentSubtab == 1) {
+                        //airfields
+                        await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
+                        themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
+                      }
+                      if (currentSubtab == 2) {
+                        await Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory();
+                        themeChanger.centralDateTime = Provider.of<AircraftStatusCN>(context, listen: false).datetime;
+                      }
+                    }
+                    themeChanger.setLoading(false);
+                    themeChanger.notifyListeners();
+                  },
+                  tooltip: "Refresh Data",
+                  color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
+                  highlightColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                ),
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(
+                    Icons.person,
+                    color: Provider.of<ThemeChanger>(context, listen: true).apiKey == "" ? null : Colors.green,
+                    size: 25,
+                  ),
+                  onPressed: () async {
+                    String user = "";
+                    String pass = "";
+
+                    return await showDialog(
+                        barrierDismissible: true,
+                        context: context,
+                        builder: (_) => AlertDialog(
+                              title: Center(
+                                child: Text("Admin Login"),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    await themeChanger.loginUser(user, pass);
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    "Submit",
+                                    style: TextStyle(
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 300,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
+                                      child: TextFormField(
+                                        onChanged: (value) {
+                                          user = value;
+                                        },
+                                        cursorColor: theme.indicatorColor,
+                                        decoration: InputDecoration(
+                                          prefixIcon: Icon(Icons.person),
+                                          filled: true,
+                                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(50),
+                                            borderSide: BorderSide.none,
+                                          ),
+                                          hintText: "Username",
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 300,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
+                                      child: TextFormField(
+                                        onChanged: (value) {
+                                          pass = value;
+                                        },
+                                        obscureText: true,
+                                        cursorColor: theme.indicatorColor,
+                                        onFieldSubmitted: (value) async {
+                                          await themeChanger.loginUser(user, pass);
+                                          Navigator.pop(context);
+                                        },
+                                        decoration: InputDecoration(
+                                          prefixIcon: Icon(Icons.lock),
+                                          filled: true,
+                                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(50),
+                                            borderSide: BorderSide.none,
+                                          ),
+                                          hintText: "Password",
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ));
+                  },
+                  tooltip: "Admin Login",
+                  color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
+                  highlightColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                ),
+              ],
               centerTitle: true,
               title: Text("Dash."),
             ),
@@ -234,6 +377,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                                 size: 25,
                                               ),
                                               onPressed: () async {
+                                                // print(winWidth);
                                                 ThemeChanger themeChanger = Provider.of<ThemeChanger>(context, listen: false);
                                                 int currentTab = themeChanger.currentTab;
                                                 int currentSubtab = themeChanger.currentSubtab;
@@ -246,6 +390,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                                     //airfields
                                                     await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
                                                     themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
+                                                  }
+                                                  if (currentSubtab == 2) {
+                                                    await Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory();
+                                                    themeChanger.centralDateTime = Provider.of<AircraftStatusCN>(context, listen: false).datetime;
                                                   }
                                                 }
                                                 themeChanger.setLoading(false);
@@ -290,8 +438,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                                             TextButton(
                                                               onPressed: () async {
                                                                 await themeChanger.loginUser(user, pass);
-                                                                print(themeChanger.apiKey);
-                                                                print(themeChanger.groundAdmin);
                                                                 Navigator.pop(context);
                                                               },
                                                               child: Text(
@@ -322,7 +468,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                                                         borderRadius: BorderRadius.circular(50),
                                                                         borderSide: BorderSide.none,
                                                                       ),
-                                                                      hintText: "User name",
+                                                                      hintText: "Username",
                                                                     ),
                                                                   ),
                                                                 ),
@@ -337,6 +483,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                                                     },
                                                                     obscureText: true,
                                                                     cursorColor: theme.indicatorColor,
+                                                                    onFieldSubmitted: (value) async {
+                                                                      await themeChanger.loginUser(user, pass);
+                                                                      Navigator.pop(context);
+                                                                    },
                                                                     decoration: InputDecoration(
                                                                       prefixIcon: Icon(Icons.lock),
                                                                       filled: true,

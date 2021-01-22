@@ -26,3 +26,20 @@ class AirfieldStatus {
     );
   }
 }
+
+class AirfieldInventory {
+  AirfieldInventory({this.name, this.status, this.airdiv, this.aircraft});
+  String name;
+  String status;
+  int airdiv;
+  List<dynamic> aircraft;
+
+  factory AirfieldInventory.fromJson(Map<String, dynamic> json) {
+    return AirfieldInventory(
+      name: json['airfield'],
+      status: json['status'],
+      aircraft: json['aircraft'],
+      airdiv: json['division'],
+    );
+  }
+}

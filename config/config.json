@@ -4,8 +4,8 @@
   "validate_user": "https://bobbysworld.io/cgi-bin/validate_user.py",
   "airfield_get":"https://bobbysworld.io/cgi-bin/airfield_fetch.py",
   "airfield_post":"https://bobbysworld.io/cgi-bin/airfield_post.py",
-  "aircraft_get":"",
-  "aircraft_post":"",
+  "aircraft_get":"https://bobbysworld.io/cgi-bin/aircraft_fetch.py",
+  "aircraft_post":"https://bobbysworld.io/cgi-bin/aircraft_post.py",
   "sam_get":"",
   "sam_post":""
 }

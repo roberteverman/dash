@@ -4,6 +4,7 @@ import 'package:dash/providers/air/AirfieldStatusCN.dart';
 import 'package:dash/tabs/air/AirChartSubtab.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'air/AircraftSubtab.dart';
 import 'air/AirfieldSubtab.dart';
 
 class AirTab extends StatelessWidget {
@@ -19,7 +20,7 @@ class AirTab extends StatelessWidget {
       contentTabs: [
         AirChartSubtab(),
         AirfieldSubtab(),
-        Center(child: Text("Aircraft View")),
+        AircraftSubtab(),
         Center(child: Text("SAMs View")),
       ],
     );

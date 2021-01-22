@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'package:dash/components/air/AirfieldDivisionCard.dart';
+import 'package:dash/components/air/AircraftDivisionCard.dart';
 import 'package:dash/providers/ThemeChanger.dart';
-import 'package:dash/providers/air/AirfieldStatusCN.dart';
+import 'package:dash/providers/air/AircraftStatusCN.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -9,12 +9,12 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:provider/provider.dart';
 
-class AirfieldSubtab extends StatefulWidget {
+class AircraftSubtab extends StatefulWidget {
   @override
-  _AirfieldSubtabState createState() => _AirfieldSubtabState();
+  _AircraftSubtabState createState() => _AircraftSubtabState();
 }
 
-class _AirfieldSubtabState extends State<AirfieldSubtab> {
+class _AircraftSubtabState extends State<AircraftSubtab> {
   List<int> airDivisionList = [];
   List<Widget> airDivisionCards = [];
   Future<bool> tabDataLoaded;
@@ -22,13 +22,13 @@ class _AirfieldSubtabState extends State<AirfieldSubtab> {
 
   Future<bool> loadTabData() async {
     Provider.of<ThemeChanger>(context, listen: false).setLoading(true);
-    await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
-    Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
+    await Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory();
+    Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<AircraftStatusCN>(context, listen: false).datetime;
     Provider.of<ThemeChanger>(context, listen: false).notifyListeners(); //must add this and the above to update the time
-    airDivisionList = Provider.of<AirFieldStatusCN>(context, listen: false).airDivisionList;
+    airDivisionList = Provider.of<AircraftStatusCN>(context, listen: false).airDivisionList;
     airDivisionCards = List.generate(
       airDivisionList.length,
-      (index) => AirfieldDivisionCard(airDivision: airDivisionList[index]),
+      (index) => AircraftDivisionCard(airDivision: airDivisionList[index]),
     );
     Provider.of<ThemeChanger>(context, listen: false).setLoading(false);
     Provider.of<ThemeChanger>(context, listen: false).notifyListeners(); //don't forget to notify listeners
@@ -36,7 +36,7 @@ class _AirfieldSubtabState extends State<AirfieldSubtab> {
   }
 
   void startTimer() {
-    timer = new Timer.periodic(Duration(seconds: Provider.of<AirFieldStatusCN>(context, listen: false).refreshRate), (timer) {
+    timer = new Timer.periodic(Duration(seconds: Provider.of<AircraftStatusCN>(context, listen: false).refreshRate), (timer) {
       loadTabData();
     });
   }
@@ -56,6 +56,18 @@ class _AirfieldSubtabState extends State<AirfieldSubtab> {
 
   @override
   Widget build(BuildContext context) {
+    int crossAxisCount;
+
+    if (MediaQuery.of(context).size.width < 825) {
+      crossAxisCount = 1;
+    } else if (MediaQuery.of(context).size.width < 1050) {
+      crossAxisCount = 1;
+    } else if (MediaQuery.of(context).size.width < 1400) {
+      crossAxisCount = 2;
+    } else {
+      crossAxisCount = 2;
+    }
+
     return FutureBuilder<bool>(
       future: tabDataLoaded,
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -67,7 +79,8 @@ class _AirfieldSubtabState extends State<AirfieldSubtab> {
               : Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
                   child: StaggeredGridView.countBuilder(
-                    crossAxisCount: MediaQuery.of(context).size.width < 800 ? 1 : 2,
+                    // crossAxisCount: MediaQuery.of(context).size.width < 900 ? 1 : 2, //num of divs
+                    crossAxisCount: crossAxisCount,
                     itemCount: airDivisionCards.length,
                     itemBuilder: (BuildContext context, int index) => airDivisionCards[index],
                     staggeredTileBuilder: (int index) => new StaggeredTile.fit(1),
