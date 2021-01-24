@@ -31,6 +31,7 @@ class MaterialAppWithTheme extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: "Dash.",
       home: Home(),
       theme: Provider.of<ThemeChanger>(context, listen: true).themeData,
     );

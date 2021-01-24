@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:dash/components/air/AircraftDivisionCard.dart';
 import 'package:dash/providers/ThemeChanger.dart';
 import 'package:dash/providers/air/AircraftStatusCN.dart';
+import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -19,6 +20,7 @@ class _AircraftSubtabState extends State<AircraftSubtab> {
   List<Widget> airDivisionCards = [];
   Future<bool> tabDataLoaded;
   Timer timer;
+  ScrollController scrollController = new ScrollController();
 
   Future<bool> loadTabData() async {
     Provider.of<ThemeChanger>(context, listen: false).setLoading(true);
@@ -76,12 +78,16 @@ class _AircraftSubtabState extends State<AircraftSubtab> {
         } else {
           return Provider.of<ThemeChanger>(context, listen: true).isLoading
               ? LoadingBouncingLine.circle(backgroundColor: Theme.of(context).indicatorColor)
-              : Padding(
-                  padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
+              : DraggableScrollbar.semicircle(
+                  controller: scrollController,
+                  backgroundColor: Theme.of(context).primaryColorLight,
+                  heightScrollThumb: 30,
+                  alwaysVisibleScrollThumb: true,
                   child: StaggeredGridView.countBuilder(
-                    // crossAxisCount: MediaQuery.of(context).size.width < 900 ? 1 : 2, //num of divs
+                    padding: EdgeInsets.only(left: 25, right: 25, top: 25),
                     crossAxisCount: crossAxisCount,
                     itemCount: airDivisionCards.length,
+                    controller: scrollController,
                     itemBuilder: (BuildContext context, int index) => airDivisionCards[index],
                     staggeredTileBuilder: (int index) => new StaggeredTile.fit(1),
                     mainAxisSpacing: 25,

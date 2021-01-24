@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:dash/helpers/dash_icons.dart';
 import 'package:dash/providers/ThemeChanger.dart';
 import 'package:dash/providers/air/AircraftStatusCN.dart';
 import 'package:dash/providers/air/AirfieldStatusCN.dart';
@@ -41,47 +42,75 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       drawer: MediaQuery.of(context).size.width >= 700
           ? null
           : Drawer(
-              child: ListView(
-                children: [
-                  DrawerHeader(
-                    child: Center(
-                        child: Text(
-                      "Dash.",
-                      style: TextStyle(
-                        fontSize: 40,
+              child: SingleChildScrollView(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    DrawerHeader(
+                      child: Column(
+                        children: [
+                          Center(
+                            child: Text(
+                              "Dash.",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w100,
+                                letterSpacing: 10,
+                                fontSize: 40,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 100,
+                            child: Image.asset(
+                              "images/logo_dark.png",
+                            ),
+                          ),
+                        ],
                       ),
-                    )),
-                    decoration: BoxDecoration(color: Colors.transparent),
-                  ),
-                  ListTile(
-                    title: Text("air"),
-                    onTap: () {
-                      _tabController.animateTo(0);
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    title: Text("ground"),
-                    onTap: () {
-                      _tabController.animateTo(1);
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    title: Text("sea"),
-                    onTap: () {
-                      _tabController.animateTo(2);
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    title: Text("space"),
-                    onTap: () {
-                      _tabController.animateTo(3);
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
+                      decoration: BoxDecoration(color: Colors.transparent),
+                    ),
+                    ListTile(
+                      title: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Icon(DashIcons.fighter, size: 50),
+                      ),
+                      onTap: () {
+                        _tabController.animateTo(0);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Icon(DashIcons.tank, size: 50),
+                      ),
+                      onTap: () {
+                        _tabController.animateTo(1);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Icon(DashIcons.vessel, size: 50),
+                      ),
+                      onTap: () {
+                        _tabController.animateTo(2);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Icon(DashIcons.missile, size: 50),
+                      ),
+                      onTap: () {
+                        _tabController.animateTo(3);
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
       appBar: MediaQuery.of(context).size.width >= 700
@@ -230,7 +259,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 ),
               ],
               centerTitle: true,
-              title: Text("Dash."),
+              title: Text(
+                "Dash.",
+                style: TextStyle(fontWeight: FontWeight.w100, letterSpacing: 10, fontSize: 40),
+              ),
             ),
       body: GestureDetector(
         onTap: () {
@@ -245,12 +277,25 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 children: [
                   Container(
                     // Logo Area
-                    height: 100,
-                    child: Center(
-                        child: Text(
-                      "Dash.",
-                      style: TextStyle(fontSize: 30),
-                    )),
+                    height: 175,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 13, left: 5),
+                          child: Text(
+                            "Dash.",
+                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, letterSpacing: 4),
+                          ),
+                        ),
+                        Container(
+                          width: 110,
+                          child: Image.asset(
+                            "images/logo_dark.png",
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                   Expanded(
                     child: Container(
@@ -261,51 +306,62 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         ),
                         color: theme.primaryColor,
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          RotatedBox(
-                            quarterTurns: 1,
-                            child: Container(
-                              width: 200, //the *height* of the vertical TabBar
-                              child: TabBar(
-                                onTap: (i) {
-                                  Provider.of<ThemeChanger>(context, listen: false).currentTab = i;
-                                },
-                                controller: _tabController,
-                                indicatorColor: theme.colorScheme.onBackground,
-                                tabs: [
-                                  DashTabLabel(text: "air"),
-                                  DashTabLabel(text: "ground"),
-                                  DashTabLabel(text: "sea"),
-                                  DashTabLabel(text: "space"),
-                                ],
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            RotatedBox(
+                              quarterTurns: 1,
+                              child: Container(
+                                width: 400, //the *height* of the vertical TabBar
+                                child: TabBar(
+                                  onTap: (i) {
+                                    Provider.of<ThemeChanger>(context, listen: false).currentTab = i;
+                                  },
+                                  controller: _tabController,
+                                  indicatorColor: theme.colorScheme.onBackground,
+                                  tabs: [
+                                    AltDashTabLabel(iconData: DashIcons.fighter),
+                                    // DashTabLabel(text: "ground"),
+                                    AltDashTabLabel(iconData: DashIcons.tank),
+                                    // DashTabLabel(text: "sea"),
+                                    AltDashTabLabel(iconData: DashIcons.vessel),
+                                    AltDashTabLabel(iconData: DashIcons.missile),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                   Container(
                     padding: EdgeInsets.all(5),
-                    height: 40,
+                    height: 75,
                     color: theme.scaffoldBackgroundColor,
-                    child: Row(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text("Dark"),
-                        Switch(
-                          value: themeChanger.lightMode,
-                          onChanged: (val) {
-                            themeChanger.lightMode = val;
-                            if (val) {
-                              themeChanger.setTheme(dashLightTheme);
-                            } else {
-                              themeChanger.setTheme(dashDarkTheme);
-                            }
-                          },
+                        Row(
+                          children: [
+                            Text("Dark"),
+                            Switch(
+                              value: themeChanger.lightMode,
+                              onChanged: (val) {
+                                themeChanger.lightMode = val;
+                                if (val) {
+                                  themeChanger.setTheme(dashLightTheme);
+                                } else {
+                                  themeChanger.setTheme(dashDarkTheme);
+                                }
+                              },
+                            ),
+                            Text("Light"),
+                          ],
                         ),
-                        Text("Light"),
                       ],
                     ),
                   )
@@ -582,6 +638,36 @@ class DashTabLabel extends StatelessWidget {
               Text(text),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class AltDashTabLabel extends StatelessWidget {
+  const AltDashTabLabel({this.iconData});
+  final IconData iconData;
+
+  @override
+  Widget build(BuildContext context) {
+    return RotatedBox(
+      quarterTurns: 3,
+      child: Tab(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 10,
+            ),
+            Container(
+              width: 100,
+              child: Icon(
+                iconData,
+                size: 40,
+              ),
+            ),
+          ],
         ),
       ),
     );
