@@ -19,7 +19,7 @@ class AirfieldDivisionCard extends StatelessWidget {
 
     List<Widget> airfieldStatusCards = List.generate(
       airfieldStatusList.where((element) => element.airdiv == airDivision).toList().length,
-          (index) => AirfieldStatusCard(
+      (index) => AirfieldStatusCard(
         airfieldStatus: airfieldStatusList.where((element) => element.airdiv == airDivision).toList()[index],
       ),
     );

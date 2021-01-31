@@ -14,7 +14,7 @@ class ChartCard extends StatelessWidget {
       child: Container(
         height: height,
         width: width,
-        decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(30)),
+        decoration: BoxDecoration(color: Theme.of(context).primaryColorLight, borderRadius: BorderRadius.circular(30)),
         child: child,
       ),
     );

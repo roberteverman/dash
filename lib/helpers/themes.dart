@@ -16,6 +16,11 @@ ThemeData dashDarkTheme = ThemeData.dark().copyWith(
 );
 
 ThemeData dashLightTheme = ThemeData.light().copyWith(
+    scaffoldBackgroundColor: Color.fromRGBO(255, 255, 255, 1),
+    primaryColorDark: Color.fromRGBO(223, 226, 235, 1),
+    primaryColor: Color.fromRGBO(223, 226, 235, 1),
+    primaryColorLight: Color.fromRGBO(242, 245, 250, 1),
+    accentColor: Colors.black,
     tabBarTheme: TabBarTheme().copyWith(
-  labelColor: Colors.black,
-));
+      labelColor: Colors.black,
+    ));

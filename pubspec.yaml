@@ -38,7 +38,17 @@ dependencies:
   percent_indicator: ^2.1.8
   draggable_scrollbar: ^0.0.4
   reorderables: ^0.3.2
-  charts_flutter: ^0.9.0
+#  fl_chart: ^0.12.2
+  fl_chart:
+    git:
+      url: git://github.com/imaNNeoFighT/fl_chart.git
+      ref: dev
+  flutter_map: ^0.10.1+1
+  circular_menu: ^1.1.2
+  syncfusion_flutter_gauges: ^18.4.35
+  easy_web_view: ^1.3.1
+  font_awesome_flutter: ^8.11.0
+  syncfusion_flutter_charts: ^18.4.39
 
 dev_dependencies:
   flutter_test:

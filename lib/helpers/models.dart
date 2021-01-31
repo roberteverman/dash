@@ -1,5 +1,5 @@
 class AirfieldStatus {
-  AirfieldStatus({this.name, this.status, this.be, this.airdiv, this.rw, this.tw, this.ugf, this.pol, this.ms, this.rf});
+  AirfieldStatus({this.name, this.status, this.be, this.airdiv, this.rw, this.tw, this.ugf, this.pol, this.ms, this.rf, this.lat, this.lon});
   String name;
   String status;
   String be;
@@ -10,36 +10,43 @@ class AirfieldStatus {
   String pol;
   String ms;
   String rf;
+  double lat;
+  double lon;
 
   factory AirfieldStatus.fromJson(Map<String, dynamic> json) {
     return AirfieldStatus(
-      name: json['airfield'],
-      status: json['status'],
-      be: json['be'],
-      airdiv: json['airdiv'],
-      rw: json['rw'],
-      tw: json['tw'],
-      ugf: json['ugf'],
-      pol: json['pol'],
-      ms: json['ms'],
-      rf: json['rf'],
-    );
+        name: json['airfield'],
+        status: json['status'],
+        be: json['be'],
+        airdiv: json['airdiv'],
+        rw: json['rw'],
+        tw: json['tw'],
+        ugf: json['ugf'],
+        pol: json['pol'],
+        ms: json['ms'],
+        rf: json['rf'],
+        lat: json['lat'],
+        lon: json['lon']);
   }
 }
 
 class AirfieldInventory {
-  AirfieldInventory({this.name, this.status, this.airdiv, this.aircraft});
+  AirfieldInventory({this.name, this.status, this.airdiv, this.aircraft, this.lat, this.lon});
   String name;
   String status;
   int airdiv;
   List<dynamic> aircraft;
+  double lat;
+  double lon;
 
   factory AirfieldInventory.fromJson(Map<String, dynamic> json) {
     return AirfieldInventory(
       name: json['airfield'],
       status: json['status'],
       aircraft: json['aircraft'],
-      airdiv: json['division'],
+      airdiv: json['airdiv'],
+      lat: json['lat'],
+      lon: json['lon'],
     );
   }
 }

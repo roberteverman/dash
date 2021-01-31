@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dash/helpers/dash_icons.dart';
 import 'package:dash/providers/ThemeChanger.dart';
+import 'package:dash/providers/air/AirChartCN.dart';
 import 'package:dash/providers/air/AircraftStatusCN.dart';
 import 'package:dash/providers/air/AirfieldStatusCN.dart';
 import 'package:dash/tabs/AirTab.dart';
@@ -9,6 +10,7 @@ import 'package:dash/tabs/SeaTab.dart';
 import 'package:dash/tabs/SpaceTab.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:dash/helpers/themes.dart';
 
@@ -37,6 +39,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     final themeChanger = Provider.of<ThemeChanger>(context, listen: false);
     final theme = Theme.of(context);
     double winWidth = MediaQuery.of(context).size.width;
+    String dashAbout =
+        "Dash is a real time order of battle visualization tool. It was created to blah blah blah (insert inspiring stuff). \n\n For a tutorial please click the link below.\n\n (Insert link or video.)";
 
     return Scaffold(
       drawer: MediaQuery.of(context).size.width >= 700
@@ -120,6 +124,38 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 IconButton(
                   padding: EdgeInsets.zero,
                   icon: Icon(
+                    FontAwesomeIcons.solidHandSpock,
+                    size: 20,
+                  ),
+                  onPressed: () async {
+                    return await showDialog(
+                      barrierDismissible: true,
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: Center(
+                          child: Text("About Dash"),
+                        ),
+                        content: Container(width: 400, child: Text(dashAbout)),
+                        actions: [
+                          FlatButton(
+                            child: Text("Word."),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                  tooltip: "Live Long and Prosper",
+                  color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
+                  highlightColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                ),
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(
                     Icons.refresh,
                     size: 25,
                   ),
@@ -133,14 +169,20 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     //todo: insert conditions for every subtab
                     if (currentTab == 0) {
                       //air
+                      if (currentSubtab == 0) {
+                        //air charts
+                        await Provider.of<AirChartCN>(context, listen: false).updateCharts(themeChanger.lightMode);
+                        themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
+                      }
                       if (currentSubtab == 1) {
+                        //aircraft
+                        await Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory();
+                        themeChanger.centralDateTime = Provider.of<AircraftStatusCN>(context, listen: false).datetime;
+                      }
+                      if (currentSubtab == 2) {
                         //airfields
                         await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
                         themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
-                      }
-                      if (currentSubtab == 2) {
-                        await Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory();
-                        themeChanger.centralDateTime = Provider.of<AircraftStatusCN>(context, listen: false).datetime;
                       }
                     }
                     themeChanger.setLoading(false);
@@ -429,6 +471,38 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                             IconButton(
                                               padding: EdgeInsets.zero,
                                               icon: Icon(
+                                                FontAwesomeIcons.solidHandSpock,
+                                                size: 20,
+                                              ),
+                                              onPressed: () async {
+                                                return await showDialog(
+                                                  barrierDismissible: true,
+                                                  context: context,
+                                                  builder: (_) => AlertDialog(
+                                                    title: Center(
+                                                      child: Text("About Dash"),
+                                                    ),
+                                                    content: Container(width: 400, child: Text(dashAbout)),
+                                                    actions: [
+                                                      FlatButton(
+                                                        child: Text("Word."),
+                                                        onPressed: () {
+                                                          Navigator.pop(context);
+                                                        },
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                              tooltip: "Live Long and Prosper",
+                                              color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
+                                              highlightColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              splashColor: Colors.transparent,
+                                            ),
+                                            IconButton(
+                                              padding: EdgeInsets.zero,
+                                              icon: Icon(
                                                 Icons.refresh,
                                                 size: 25,
                                               ),
@@ -442,14 +516,20 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                                 //todo: insert conditions for every subtab
                                                 if (currentTab == 0) {
                                                   //air
+                                                  if (currentSubtab == 0) {
+                                                    //air charts
+                                                    await Provider.of<AirChartCN>(context, listen: false).updateCharts(themeChanger.lightMode);
+                                                    themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
+                                                  }
                                                   if (currentSubtab == 1) {
+                                                    //aircraft
+                                                    await Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory();
+                                                    themeChanger.centralDateTime = Provider.of<AircraftStatusCN>(context, listen: false).datetime;
+                                                  }
+                                                  if (currentSubtab == 2) {
                                                     //airfields
                                                     await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
                                                     themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
-                                                  }
-                                                  if (currentSubtab == 2) {
-                                                    await Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory();
-                                                    themeChanger.centralDateTime = Provider.of<AircraftStatusCN>(context, listen: false).datetime;
                                                   }
                                                 }
                                                 themeChanger.setLoading(false);

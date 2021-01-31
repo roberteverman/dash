@@ -7,13 +7,13 @@ class SpaceTab extends StatelessWidget {
     return DashTab(
       contentTabLabels: [
         Tab(child: Icon(Icons.bar_chart)),
-        Tab(child: Text("BMOAs")),
-        Tab(child: Text("Missiles")),
+        Tab(child: Text("TBMs")),
+        Tab(child: Text("SAMs")),
       ],
       contentTabs: [
         Center(child: Text("Space Charts View")),
-        Center(child: Text("BMOAs View")),
-        Center(child: Text("Missiles View")),
+        Center(child: Text("TBM View")),
+        Center(child: Text("SAM View")),
       ],
     );
   }

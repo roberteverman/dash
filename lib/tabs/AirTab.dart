@@ -13,15 +13,13 @@ class AirTab extends StatelessWidget {
     return DashTab(
       contentTabLabels: [
         Tab(child: Icon(Icons.bar_chart)),
-        Tab(child: Text("Airfields")),
         Tab(child: Text("Aircraft")),
-        Tab(child: Text("SAMs")),
+        Tab(child: Text("Airfields")),
       ],
       contentTabs: [
         AirChartSubtab(),
-        AirfieldSubtab(),
         AircraftSubtab(),
-        Center(child: Text("SAMs View")),
+        AirfieldSubtab(),
       ],
     );
   }
