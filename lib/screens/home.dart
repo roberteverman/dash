@@ -41,6 +41,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     double winWidth = MediaQuery.of(context).size.width;
     String dashAbout =
         "Dash is a real time order of battle visualization tool. It was created to blah blah blah (insert inspiring stuff). \n\n For a tutorial please click the link below.\n\n (Insert link or video.)";
+    String lang = Provider.of<ThemeChanger>(context, listen: true).lang;
 
     return Scaffold(
       drawer: MediaQuery.of(context).size.width >= 700
@@ -172,17 +173,17 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       if (currentSubtab == 0) {
                         //air charts
                         await Provider.of<AirChartCN>(context, listen: false).updateCharts(themeChanger.lightMode);
-                        themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
+                        themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: true).datetime;
                       }
                       if (currentSubtab == 1) {
                         //aircraft
                         await Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory();
-                        themeChanger.centralDateTime = Provider.of<AircraftStatusCN>(context, listen: false).datetime;
+                        themeChanger.centralDateTime = Provider.of<AircraftStatusCN>(context, listen: true).datetime;
                       }
                       if (currentSubtab == 2) {
                         //airfields
                         await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
-                        themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
+                        themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: true).datetime;
                       }
                     }
                     themeChanger.setLoading(false);
@@ -206,9 +207,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     String pass = "";
 
                     return await showDialog(
-                        barrierDismissible: true,
-                        context: context,
-                        builder: (_) => AlertDialog(
+                      barrierDismissible: true,
+                      context: context,
+                      builder: (_) => Provider.of<ThemeChanger>(context, listen: true).apiKey == ""
+                          ? AlertDialog(
                               title: Center(
                                 child: Text("Admin Login"),
                               ),
@@ -291,7 +293,26 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                   )
                                 ],
                               ),
-                            ));
+                            )
+                          : AlertDialog(
+                              title: Text("Log out?"),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Provider.of<ThemeChanger>(context, listen: false).apiKey = "";
+                                      Provider.of<ThemeChanger>(context, listen: false).notifyListeners();
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text("Logout")),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text("Cancel"),
+                                )
+                              ],
+                            ),
+                    );
                   },
                   tooltip: "Admin Login",
                   color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
@@ -468,38 +489,100 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                           mainAxisAlignment: MainAxisAlignment.end,
                                           children: [
                                             SizedBox(width: 5),
-                                            IconButton(
-                                              padding: EdgeInsets.zero,
-                                              icon: Icon(
-                                                FontAwesomeIcons.solidHandSpock,
-                                                size: 20,
+                                            Tooltip(
+                                              message: "언어바꾸기",
+                                              child: MaterialButton(
+                                                padding: EdgeInsets.zero,
+                                                minWidth: 0,
+                                                hoverColor: Colors.transparent,
+                                                splashColor: Colors.transparent,
+                                                highlightColor: Colors.transparent,
+                                                onPressed: () {
+                                                  if (Provider.of<ThemeChanger>(context, listen: false).lang == "en") {
+                                                    Provider.of<ThemeChanger>(context, listen: false).lang = "kor";
+                                                    Provider.of<AirChartCN>(context, listen: false).lang = "kor";
+                                                    Provider.of<AircraftStatusCN>(context, listen: false).lang = "kor";
+                                                    Provider.of<AirFieldStatusCN>(context, listen: false).lang = "kor";
+                                                    Provider.of<ThemeChanger>(context, listen: false).notifyListeners();
+                                                    Provider.of<AirChartCN>(context, listen: false).notifyListeners();
+                                                    Provider.of<AircraftStatusCN>(context, listen: false).notifyListeners();
+                                                    Provider.of<AirFieldStatusCN>(context, listen: false).notifyListeners();
+                                                  } else {
+                                                    Provider.of<ThemeChanger>(context, listen: false).lang = "en";
+                                                    Provider.of<AirChartCN>(context, listen: false).lang = "en";
+                                                    Provider.of<AircraftStatusCN>(context, listen: false).lang = "en";
+                                                    Provider.of<AirFieldStatusCN>(context, listen: false).lang = "en";
+                                                    Provider.of<ThemeChanger>(context, listen: false).notifyListeners();
+                                                    Provider.of<AirChartCN>(context, listen: false).notifyListeners();
+                                                    Provider.of<AircraftStatusCN>(context, listen: false).notifyListeners();
+                                                    Provider.of<AirFieldStatusCN>(context, listen: false).notifyListeners();
+                                                  }
+                                                },
+                                                child: CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  child: Provider.of<ThemeChanger>(context, listen: true).lang == "kor"
+                                                      ? Text(
+                                                          "En",
+                                                          style: TextStyle(
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        )
+                                                      : Text(
+                                                          "한",
+                                                          style: TextStyle(
+                                                            locale: Locale.fromSubtags(languageCode: "ko"),
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                  radius: 13,
+                                                ),
                                               ),
-                                              onPressed: () async {
-                                                return await showDialog(
-                                                  barrierDismissible: true,
-                                                  context: context,
-                                                  builder: (_) => AlertDialog(
-                                                    title: Center(
-                                                      child: Text("About Dash"),
-                                                    ),
-                                                    content: Container(width: 400, child: Text(dashAbout)),
-                                                    actions: [
-                                                      FlatButton(
-                                                        child: Text("Word."),
-                                                        onPressed: () {
-                                                          Navigator.pop(context);
-                                                        },
-                                                      )
-                                                    ],
-                                                  ),
-                                                );
-                                              },
-                                              tooltip: "Live Long and Prosper",
-                                              color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
-                                              highlightColor: Colors.transparent,
-                                              hoverColor: Colors.transparent,
-                                              splashColor: Colors.transparent,
                                             ),
+                                            // IconButton(
+                                            //   padding: EdgeInsets.zero,
+                                            //   icon: Icon(
+                                            //     DashIcons.kor,
+                                            //     size: 20,
+                                            //   ),
+                                            //   onPressed: () {},
+                                            //   tooltip: "Change Language",
+                                            //   color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
+                                            //   highlightColor: Colors.transparent,
+                                            //   hoverColor: Colors.transparent,
+                                            //   splashColor: Colors.transparent,
+                                            // ),
+                                            // IconButton(
+                                            //   padding: EdgeInsets.zero,
+                                            //   icon: Icon(
+                                            //     FontAwesomeIcons.solidHandSpock,
+                                            //     size: 20,
+                                            //   ),
+                                            //   onPressed: () async {
+                                            //     return await showDialog(
+                                            //       barrierDismissible: true,
+                                            //       context: context,
+                                            //       builder: (_) => AlertDialog(
+                                            //         title: Center(
+                                            //           child: Text("About Dash"),
+                                            //         ),
+                                            //         content: Container(width: 400, child: Text(dashAbout)),
+                                            //         actions: [
+                                            //           FlatButton(
+                                            //             child: Text("Word."),
+                                            //             onPressed: () {
+                                            //               Navigator.pop(context);
+                                            //             },
+                                            //           )
+                                            //         ],
+                                            //       ),
+                                            //     );
+                                            //   },
+                                            //   tooltip: "Live Long and Prosper",
+                                            //   color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
+                                            //   highlightColor: Colors.transparent,
+                                            //   hoverColor: Colors.transparent,
+                                            //   splashColor: Colors.transparent,
+                                            // ),
                                             IconButton(
                                               padding: EdgeInsets.zero,
                                               icon: Icon(
@@ -519,17 +602,17 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                                   if (currentSubtab == 0) {
                                                     //air charts
                                                     await Provider.of<AirChartCN>(context, listen: false).updateCharts(themeChanger.lightMode);
-                                                    themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
+                                                    themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: true).datetime;
                                                   }
                                                   if (currentSubtab == 1) {
                                                     //aircraft
                                                     await Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory();
-                                                    themeChanger.centralDateTime = Provider.of<AircraftStatusCN>(context, listen: false).datetime;
+                                                    themeChanger.centralDateTime = Provider.of<AircraftStatusCN>(context, listen: true).datetime;
                                                   }
                                                   if (currentSubtab == 2) {
                                                     //airfields
                                                     await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
-                                                    themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
+                                                    themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: true).datetime;
                                                   }
                                                 }
                                                 themeChanger.setLoading(false);
@@ -553,9 +636,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                                 String pass = "";
 
                                                 return await showDialog(
-                                                    barrierDismissible: true,
-                                                    context: context,
-                                                    builder: (_) => AlertDialog(
+                                                  barrierDismissible: true,
+                                                  context: context,
+                                                  builder: (_) => Provider.of<ThemeChanger>(context, listen: true).apiKey == ""
+                                                      ? AlertDialog(
                                                           title: Center(
                                                             child: Text("Admin Login"),
                                                           ),
@@ -638,7 +722,35 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                                               )
                                                             ],
                                                           ),
-                                                        ));
+                                                        )
+                                                      : AlertDialog(
+                                                          title: Text("Log out?"),
+                                                          actions: [
+                                                            TextButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(context);
+                                                              },
+                                                              child: Text(
+                                                                "Cancel",
+                                                                style: TextStyle(
+                                                                  color: Colors.red,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            TextButton(
+                                                              onPressed: () {
+                                                                Provider.of<ThemeChanger>(context, listen: false).apiKey = "";
+                                                                Provider.of<ThemeChanger>(context, listen: false).notifyListeners();
+                                                                Navigator.pop(context);
+                                                              },
+                                                              child: Text(
+                                                                "Logout",
+                                                                style: TextStyle(color: Colors.green),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                );
                                               },
                                               tooltip: "Admin Login",
                                               color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),

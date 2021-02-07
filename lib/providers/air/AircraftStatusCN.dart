@@ -14,6 +14,7 @@ class AircraftStatusCN extends ChangeNotifier {
   bool loading = true;
   int refreshRate = 20; //default timer
   String datetime = "Loading...";
+  String lang = "en";
 
   Future<void> updateAirfieldInventory() async {
     String configString = await rootBundle.loadString('config/config.json');
@@ -46,7 +47,7 @@ class AircraftStatusCN extends ChangeNotifier {
       }
     } else {
       //USING SERVER DATA
-      String url = configJSON['aircraft_get'];
+      String url = configJSON['aircraft_get'] + "?lang=" + lang;
       var response = await http.get(url); //grab data from server
       if (response.statusCode == 200) {
         var retrievedData = json.decode(response.body)['data'].toList();
@@ -57,6 +58,7 @@ class AircraftStatusCN extends ChangeNotifier {
           airfieldInventory.add(newEntry);
         }
         for (AirfieldInventory airfield in airfieldInventory) {
+          //todo add more than initial of zero aircraft
           if (!airfieldList.contains(airfield.name)) {
             //create unique list of airfields
             airfieldList.add(airfield.name);
@@ -73,18 +75,18 @@ class AircraftStatusCN extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> pushAirfieldInventory(int action, int number, String item, String origin, String destination, String apiKey) async {
+  Future<void> pushAirfieldInventory(int action, int number, String item, String origin, String destination, String apiKey, String be) async {
     String configString = await rootBundle.loadString('config/config.json');
     Map configJSON = json.decode(configString);
     if (configJSON['use_test_data'] == false) {
-      String url = configJSON['aircraft_post'];
+      String url = configJSON['aircraft_post'] + "?lang=" + lang;
       var response = await http.post(url,
           body: jsonEncode(<String, dynamic>{
             'action': action,
             'number': number,
             'item': item,
-            'origin': origin,
-            'destination': destination,
+            'origin': origin, //todo make be number instead of afld name
+            'destination': destination, //todo make be number instead of afld name
             'key': apiKey,
           }));
       if (response.statusCode != 200) {
@@ -104,5 +106,11 @@ class AircraftStatusCN extends ChangeNotifier {
         updateAirfieldInventory();
       }
     }
+  }
+
+  @override
+  void notifyListeners() {
+    // TODO: implement notifyListeners
+    super.notifyListeners();
   }
 }

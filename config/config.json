@@ -9,7 +9,6 @@
   "aircraft_post":"https://bobbysworld.io/cgi-bin/aircraft_post.py",
   "sam_get":"",
   "sam_post":"",
-  "wms_server":"https://maps.seeker.info/services/wms?",
-  "wms_layer_dark": "dark-matter",
-  "wms_layer_light": "positron"
+  "map_dark": "https://maps.seeker.info/styles/dark-matter/{z}/{x}/{y}.png",
+  "map_light": "https://maps.seeker.info/styles/positron/{z}/{x}/{y}.png"
 }

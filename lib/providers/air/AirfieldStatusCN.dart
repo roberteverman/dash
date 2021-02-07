@@ -14,6 +14,7 @@ class AirFieldStatusCN extends ChangeNotifier {
   bool loading = true;
   int refreshRate = 20; //default timer
   String datetime = "Loading...";
+  String lang = "en";
 
   Future<void> updateAirfieldStatus() async {
     String configString = await rootBundle.loadString('config/config.json');
@@ -46,7 +47,7 @@ class AirFieldStatusCN extends ChangeNotifier {
       }
     } else {
       //USING SERVER DATA
-      String url = configJSON['airfield_get'];
+      String url = configJSON['airfield_get'] + "?lang=" + lang;
       var response = await http.get(url); //grab data from server
       if (response.statusCode == 200) {
         var retrievedData = json.decode(response.body)['data'].toList();
@@ -73,14 +74,14 @@ class AirFieldStatusCN extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> pushAirfieldStatus(String item, String field, String status, String apiKey) async {
+  Future<void> pushAirfieldStatus(String item, String field, String status, String apiKey, String be) async {
     String configString = await rootBundle.loadString('config/config.json');
     Map configJSON = json.decode(configString);
     if (configJSON['use_test_data'] == false) {
-      String url = configJSON['airfield_post'];
+      String url = configJSON['airfield_post'] + "?lang=" + lang;
       var response = await http.post(url,
           body: jsonEncode(<String, dynamic>{
-            'item': item,
+            'item': item, //todo make be number instead of afld name
             'field': field,
             'status': status,
             'key': apiKey,
@@ -102,5 +103,11 @@ class AirFieldStatusCN extends ChangeNotifier {
         updateAirfieldStatus();
       }
     }
+  }
+
+  @override
+  void notifyListeners() {
+    // TODO: implement notifyListeners
+    super.notifyListeners();
   }
 }

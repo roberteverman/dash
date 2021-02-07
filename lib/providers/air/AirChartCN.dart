@@ -18,20 +18,19 @@ class AirChartCN extends ChangeNotifier {
   bool loading = true;
   int refreshRate = 20; //default timer
   String datetime = "Loading...";
-  String wmsServerURL;
-  String wmsLayer;
+  String mapServerURL;
   int numOpAfld = 0;
   int numLimopAfld = 0;
   int numNonopAfld = 0;
   int numOpAircraft = 0;
   int totalAircraft = 0;
+  String lang = "en";
 
   Future<void> updateCharts(bool lightMode) async {
     String configString = await rootBundle.loadString('config/config.json');
     Map configJSON = json.decode(configString);
     refreshRate = configJSON['refresh_rate'];
-    wmsServerURL = configJSON['wms_server'];
-    wmsLayer = lightMode ? configJSON['wms_layer_light'] : configJSON['wms_layer_dark'];
+    mapServerURL = lightMode ? configJSON['map_light'] : configJSON['map_dark'];
 
     airfieldStatus = [];
     airfieldInventory = [];
@@ -60,7 +59,7 @@ class AirChartCN extends ChangeNotifier {
       }
     } else {
       //USING SERVER DATA
-      String url = configJSON['air_chart_get'];
+      String url = configJSON['air_chart_get'] + "?lang=" + lang;
       var response = await http.get(url); //grab data from server
       if (response.statusCode == 200) {
         var retrievedData = json.decode(response.body)['airfield_data'].toList();
@@ -79,9 +78,9 @@ class AirChartCN extends ChangeNotifier {
             //create unique list of Air Divisions
             airDivisionList.add(airfield.airdiv);
           }
-          airDivisionList.sort(); //alphabetize everything
-          airfieldStatus.sort((a, b) => a.name.compareTo(b.name));
         }
+        airDivisionList.sort(); //alphabetize everything
+        airfieldStatus.sort((a, b) => a.name.compareTo(b.name));
         retrievedData = json.decode(response.body)['aircraft_data'].toList();
         for (int i = 0; i < retrievedData.length; i++) {
           //populate airfieldInventory list with response data
@@ -163,6 +162,12 @@ class AirChartCN extends ChangeNotifier {
         ),
       );
     }
+  }
+
+  @override
+  void notifyListeners() {
+    // TODO: implement notifyListeners
+    super.notifyListeners();
   }
 
   void clearMarkers() {

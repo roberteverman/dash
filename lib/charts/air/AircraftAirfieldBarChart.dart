@@ -134,7 +134,12 @@ Map<dynamic, dynamic> barGroups({List<AirfieldInventory> airfieldInventory, Colo
       //get each aircraft
       totalAircraft += firstADInventory[i].aircraft[j]['total'];
       totalOperational += firstADInventory[i].aircraft[j]['operational'];
-      toolTip += firstADInventory[i].aircraft[j]['type'] + ": " + totalOperational.toString() + " / " + totalAircraft.toString() + "\n";
+      toolTip += firstADInventory[i].aircraft[j]['type'] +
+          ": " +
+          firstADInventory[i].aircraft[j]['operational'].toString() +
+          " / " +
+          firstADInventory[i].aircraft[j]['total'].toString() +
+          "\n";
     }
     toolTips.add(toolTip);
     firstADBars.add(BarChartRodData(
@@ -160,7 +165,12 @@ Map<dynamic, dynamic> barGroups({List<AirfieldInventory> airfieldInventory, Colo
       //get each aircraft
       totalAircraft += secondADInventory[i].aircraft[j]['total'];
       totalOperational += secondADInventory[i].aircraft[j]['operational'];
-      toolTip += secondADInventory[i].aircraft[j]['type'] + ": " + totalOperational.toString() + " / " + totalAircraft.toString() + "\n";
+      toolTip += secondADInventory[i].aircraft[j]['type'] +
+          ": " +
+          secondADInventory[i].aircraft[j]['operational'].toString() +
+          " / " +
+          secondADInventory[i].aircraft[j]['total'].toString() +
+          "\n";
     }
     toolTips.add(toolTip);
     secondADBars.add(BarChartRodData(
@@ -187,7 +197,12 @@ Map<dynamic, dynamic> barGroups({List<AirfieldInventory> airfieldInventory, Colo
       //get each aircraft
       totalAircraft += thirdADInventory[i].aircraft[j]['total'];
       totalOperational += thirdADInventory[i].aircraft[j]['operational'];
-      toolTip += thirdADInventory[i].aircraft[j]['type'] + ": " + totalOperational.toString() + " / " + totalAircraft.toString() + "\n";
+      toolTip += thirdADInventory[i].aircraft[j]['type'] +
+          ": " +
+          thirdADInventory[i].aircraft[j]['operational'].toString() +
+          " / " +
+          thirdADInventory[i].aircraft[j]['total'].toString() +
+          "\n";
     }
     toolTips.add(toolTip);
     thirdADBars.add(BarChartRodData(
@@ -213,7 +228,12 @@ Map<dynamic, dynamic> barGroups({List<AirfieldInventory> airfieldInventory, Colo
       //get each aircraft
       totalAircraft += fourthADInventory[i].aircraft[j]['total'];
       totalOperational += fourthADInventory[i].aircraft[j]['operational'];
-      toolTip += fourthADInventory[i].aircraft[j]['type'] + ": " + totalOperational.toString() + " / " + totalAircraft.toString() + "\n";
+      toolTip += fourthADInventory[i].aircraft[j]['type'] +
+          ": " +
+          fourthADInventory[i].aircraft[j]['operational'].toString() +
+          " / " +
+          fourthADInventory[i].aircraft[j]['total'].toString() +
+          "\n";
     }
     toolTips.add(toolTip);
     fourthADBars.add(BarChartRodData(

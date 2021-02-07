@@ -25,4 +25,6 @@ class DashIcons {
   static const IconData vessel = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData fighter = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData missile = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData eng = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData kor = IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

@@ -4,6 +4,7 @@ import 'package:dash/charts/air/AirMap.dart';
 import 'package:dash/charts/air/AircraftAirDivisionRadialChart.dart';
 import 'package:dash/charts/air/AircraftAirfieldBarChart.dart';
 import 'package:dash/charts/air/AircraftTypeRadarChart.dart';
+import 'package:dash/charts/air/AirfieldStatusDoughnutChart.dart';
 import 'package:dash/charts/air/AirfieldStatusPieChart.dart';
 import 'package:dash/charts/air/AircraftStrengthGauge.dart';
 import 'package:dash/providers/ThemeChanger.dart';
@@ -128,7 +129,7 @@ class _AirChartSubtabState extends State<AirChartSubtab> with WidgetsBindingObse
                                             chartCardDims: chartCardDims,
                                             padding: padding,
                                           ),
-                                          AirfieldStatusPieChart(
+                                          AirfieldStatusDoughnutChart(
                                             chartCardDims: chartCardDims,
                                             padding: padding,
                                           ),

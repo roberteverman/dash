@@ -42,15 +42,15 @@ class _AirfieldStatusPieChartState extends State<AirfieldStatusPieChart> {
                     borderData: FlBorderData(show: false),
                     centerSpaceRadius: widget.chartCardDims / 5.5,
                     sections: showingSections(chartCardDims: widget.chartCardDims),
-                    // pieTouchData: PieTouchData(touchCallback: (pieTouchResponse) {
-                    //   setState(() {
-                    //     if (pieTouchResponse.touchInput is FlLongPressStart || pieTouchResponse.touchInput is FlPanEnd) {
-                    //       touchedIndex = -1;
-                    //     } else {
-                    //       touchedIndex = pieTouchResponse.touchedSectionIndex;
-                    //     }
-                    //   });
-                    // }),
+                    pieTouchData: PieTouchData(touchCallback: (pieTouchResponse) {
+                      setState(() {
+                        if (pieTouchResponse.touchInput is FlLongPressStart || pieTouchResponse.touchInput is FlPanEnd) {
+                          touchedIndex = -1;
+                        } else {
+                          touchedIndex = pieTouchResponse.touchedSectionIndex;
+                        }
+                      });
+                    }),
                   ),
                 ),
               ),

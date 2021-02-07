@@ -63,7 +63,8 @@ class AircraftStatusCard extends StatelessWidget {
             title: SizedBox(
               child: Center(
                 child: AutoSizeText(
-                  aircraftStatus.name + " Airfield",
+                  //todo add function to create new inventory
+                  aircraftStatus.name,
                   maxLines: 2,
                   minFontSize: 10,
                   maxFontSize: 15,
@@ -110,8 +111,8 @@ class AircraftStatusCard extends StatelessWidget {
                                           ? null
                                           : () async {
                                               //use the AirfieldStatusCN here since this is updating the Airfield table instead of Aircraft table
-                                              await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                                  aircraftStatus.name, "status", "OP", Provider.of<ThemeChanger>(context, listen: false).apiKey);
+                                              await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(aircraftStatus.name,
+                                                  "status", "OP", Provider.of<ThemeChanger>(context, listen: false).apiKey, aircraftStatus.be);
                                               Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory(); //no await on purpose
                                               Navigator.pop(context);
                                             },
@@ -133,7 +134,12 @@ class AircraftStatusCard extends StatelessWidget {
                                           : () async {
                                               //use the AirfieldStatusCN here since this is updating the Airfield table instead of Aircraft table
                                               await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                                  aircraftStatus.name, "status", "LIMOP", Provider.of<ThemeChanger>(context, listen: false).apiKey);
+                                                aircraftStatus.name,
+                                                "status",
+                                                "LIMOP",
+                                                Provider.of<ThemeChanger>(context, listen: false).apiKey,
+                                                aircraftStatus.be,
+                                              );
                                               Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory();
                                               Navigator.pop(context);
                                             },
@@ -150,7 +156,12 @@ class AircraftStatusCard extends StatelessWidget {
                                           : () async {
                                               //use the AirfieldStatusCN here since this is updating the Airfield table instead of Aircraft table
                                               await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                                  aircraftStatus.name, "status", "NONOP", Provider.of<ThemeChanger>(context, listen: false).apiKey);
+                                                aircraftStatus.name,
+                                                "status",
+                                                "NONOP",
+                                                Provider.of<ThemeChanger>(context, listen: false).apiKey,
+                                                aircraftStatus.be,
+                                              );
                                               Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory();
                                               Navigator.pop(context);
                                             },
@@ -237,6 +248,7 @@ class AircraftStatusCard extends StatelessWidget {
                     onSelectChanged: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
                         ? null
                         : (selected) async {
+                            //todo cant select move if no operational ac available; can't select more to destroy that aren't op; add should cap at num of nonop
                             int selectedNumber = 1;
                             List<String> selections = ['Move', 'Destroy', 'Revive'];
                             String dropdownValue = aircraftStatus.name; //the name of the airfield
@@ -267,7 +279,11 @@ class AircraftStatusCard extends StatelessWidget {
                                                   children: List<Widget>.generate(3, (int index) {
                                                     return ChoiceChip(
                                                       selectedColor: Colors.white,
-                                                      label: Text(selections[index]),
+                                                      label: Text(
+                                                        selections[index],
+                                                        style: TextStyle(
+                                                            color: formSelectionIndex == index ? Theme.of(context).backgroundColor : Colors.white),
+                                                      ),
                                                       selected: formSelectionIndex == index,
                                                       onSelected: (bool selected) {
                                                         setState(() {
@@ -325,21 +341,20 @@ class AircraftStatusCard extends StatelessWidget {
                                                         ? Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
                                                             Text("Destination:"),
                                                             DropdownButton<String>(
-                                                              value: dropdownValue,
-                                                              onChanged: (String newValue) {
-                                                                setState(() {
-                                                                  dropdownValue = newValue;
-                                                                });
-                                                              },
-                                                              items: Provider.of<AircraftStatusCN>(context, listen: false)
-                                                                  .airfieldList
-                                                                  .map<DropdownMenuItem<String>>((String value) {
-                                                                return DropdownMenuItem<String>(
-                                                                  value: value,
-                                                                  child: Text(value),
-                                                                );
-                                                              }).toList(),
-                                                            ),
+                                                                value: dropdownValue,
+                                                                onChanged: (String newValue) {
+                                                                  setState(() {
+                                                                    dropdownValue = newValue;
+                                                                  });
+                                                                },
+                                                                items: Provider.of<AircraftStatusCN>(context, listen: false)
+                                                                    .airfieldList
+                                                                    .map<DropdownMenuItem<String>>((String value) {
+                                                                  return DropdownMenuItem<String>(
+                                                                    value: value,
+                                                                    child: Container(width: 150, child: Text(value, overflow: TextOverflow.ellipsis)),
+                                                                  );
+                                                                }).toList()),
                                                           ])
                                                         : Container(),
                                                   ],
@@ -366,7 +381,8 @@ class AircraftStatusCard extends StatelessWidget {
                                             aircraft[index]['type'],
                                             airfield,
                                             dropdownValue,
-                                            Provider.of<ThemeChanger>(context, listen: false).apiKey);
+                                            Provider.of<ThemeChanger>(context, listen: false).apiKey,
+                                            aircraft[index]['be']);
                                         formProcessing = false;
                                         Navigator.pop(context);
                                       },

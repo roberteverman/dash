@@ -106,8 +106,8 @@ class AirfieldStatusCard extends StatelessWidget {
                                       onPressed: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
                                           ? null
                                           : () async {
-                                              await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                                  airfieldStatus.name, "status", "OP", Provider.of<ThemeChanger>(context, listen: false).apiKey);
+                                              await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(airfieldStatus.name,
+                                                  "status", "OP", Provider.of<ThemeChanger>(context, listen: false).apiKey, airfieldStatus.be);
                                               Navigator.pop(context);
                                             },
                                     ),
@@ -127,7 +127,12 @@ class AirfieldStatusCard extends StatelessWidget {
                                           ? null
                                           : () async {
                                               await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                                  airfieldStatus.name, "status", "LIMOP", Provider.of<ThemeChanger>(context, listen: false).apiKey);
+                                                airfieldStatus.name,
+                                                "status",
+                                                "LIMOP",
+                                                Provider.of<ThemeChanger>(context, listen: false).apiKey,
+                                                airfieldStatus.be,
+                                              );
                                               Navigator.pop(context);
                                             },
                                     ),
@@ -142,7 +147,12 @@ class AirfieldStatusCard extends StatelessWidget {
                                           ? null
                                           : () async {
                                               await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                                  airfieldStatus.name, "status", "NONOP", Provider.of<ThemeChanger>(context, listen: false).apiKey);
+                                                airfieldStatus.name,
+                                                "status",
+                                                "NONOP",
+                                                Provider.of<ThemeChanger>(context, listen: false).apiKey,
+                                                airfieldStatus.be,
+                                              );
                                               Navigator.pop(context);
                                             },
                                     ),
@@ -180,6 +190,7 @@ class AirfieldStatusCard extends StatelessWidget {
                       status: airfieldStatus.rw,
                       parentAirfield: airfieldStatus.name,
                       field: "rw",
+                      be: airfieldStatus.be,
                     ),
                     AirfieldStatusChip(
                       text: "T/W",
@@ -187,6 +198,7 @@ class AirfieldStatusCard extends StatelessWidget {
                       status: airfieldStatus.tw,
                       parentAirfield: airfieldStatus.name,
                       field: "tw",
+                      be: airfieldStatus.be,
                     ),
                     AirfieldStatusChip(
                       text: "UGF",
@@ -194,6 +206,7 @@ class AirfieldStatusCard extends StatelessWidget {
                       status: airfieldStatus.ugf,
                       parentAirfield: airfieldStatus.name,
                       field: "ugf",
+                      be: airfieldStatus.be,
                     ),
                     AirfieldStatusChip(
                       text: "POL",
@@ -201,6 +214,7 @@ class AirfieldStatusCard extends StatelessWidget {
                       status: airfieldStatus.pol,
                       parentAirfield: airfieldStatus.name,
                       field: "pol",
+                      be: airfieldStatus.be,
                     ),
                     AirfieldStatusChip(
                       text: "MS",
@@ -208,6 +222,7 @@ class AirfieldStatusCard extends StatelessWidget {
                       status: airfieldStatus.ms,
                       parentAirfield: airfieldStatus.name,
                       field: "ms",
+                      be: airfieldStatus.be,
                     ),
                     AirfieldStatusChip(
                       text: "RF",
@@ -215,6 +230,7 @@ class AirfieldStatusCard extends StatelessWidget {
                       status: airfieldStatus.rf,
                       parentAirfield: airfieldStatus.name,
                       field: "rf",
+                      be: airfieldStatus.be,
                     ),
                   ],
                 ),

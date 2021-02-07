@@ -17,6 +17,7 @@ class ThemeChanger extends ChangeNotifier {
   bool groundAdmin = false;
   bool seaAdmin = false;
   bool spaceAdmin = false;
+  String lang = "en";
 
   getTheme() => themeData;
 
@@ -42,6 +43,7 @@ class ThemeChanger extends ChangeNotifier {
       url = url + "?username=" + username + "&pwd=" + pwd;
       var response = await http.get(url);
       if (response.statusCode != 200) {
+        //todo check if there is an API key, if empty do not log in
         Fluttertoast.showToast(
           msg: "Error!",
           webBgColor: "#dc2a2a",

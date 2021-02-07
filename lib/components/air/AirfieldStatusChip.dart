@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AirfieldStatusChip extends StatelessWidget {
-  AirfieldStatusChip({this.tooltip, this.text, this.status, this.parentAirfield, this.field});
+  AirfieldStatusChip({this.tooltip, this.text, this.status, this.parentAirfield, this.field, this.be});
   final String tooltip;
   final String text;
   final String status;
   final String parentAirfield;
   final String field;
+  final String be;
 
   @override
   Widget build(BuildContext context) {
@@ -83,8 +84,13 @@ class AirfieldStatusChip extends StatelessWidget {
                               onPressed: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
                                   ? null
                                   : () async {
-                                      await Provider.of<AirFieldStatusCN>(context, listen: false)
-                                          .pushAirfieldStatus(parentAirfield, field, "OP", Provider.of<ThemeChanger>(context, listen: false).apiKey);
+                                      await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
+                                        parentAirfield,
+                                        field,
+                                        "OP",
+                                        Provider.of<ThemeChanger>(context, listen: false).apiKey,
+                                        be,
+                                      );
                                       Navigator.pop(context);
                                     },
                             ),
@@ -104,7 +110,12 @@ class AirfieldStatusChip extends StatelessWidget {
                                   ? null
                                   : () async {
                                       await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                          parentAirfield, field, "LIMOP", Provider.of<ThemeChanger>(context, listen: false).apiKey);
+                                        parentAirfield,
+                                        field,
+                                        "LIMOP",
+                                        Provider.of<ThemeChanger>(context, listen: false).apiKey,
+                                        be,
+                                      );
                                       Navigator.pop(context);
                                     },
                             ),
@@ -119,7 +130,12 @@ class AirfieldStatusChip extends StatelessWidget {
                                   ? null
                                   : () async {
                                       await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                          parentAirfield, field, "NONOP", Provider.of<ThemeChanger>(context, listen: false).apiKey);
+                                        parentAirfield,
+                                        field,
+                                        "NONOP",
+                                        Provider.of<ThemeChanger>(context, listen: false).apiKey,
+                                        be,
+                                      );
                                       Navigator.pop(context);
                                     },
                             ),
