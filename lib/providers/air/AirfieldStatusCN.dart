@@ -74,7 +74,7 @@ class AirFieldStatusCN extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> pushAirfieldStatus(String item, String field, String status, String apiKey, String be) async {
+  Future<void> pushAirfieldStatus(String item, String field, String status, String apiKey, String user) async {
     String configString = await rootBundle.loadString('config/config.json');
     Map configJSON = json.decode(configString);
     if (configJSON['use_test_data'] == false) {
@@ -85,6 +85,7 @@ class AirFieldStatusCN extends ChangeNotifier {
             'field': field,
             'status': status,
             'key': apiKey,
+            'user': user,
           }));
       if (response.statusCode != 200) {
         Fluttertoast.showToast(

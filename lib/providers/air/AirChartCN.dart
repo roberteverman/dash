@@ -14,6 +14,7 @@ class AirChartCN extends ChangeNotifier {
   List<AirfieldInventory> airfieldInventory = [];
   List<String> airfieldList = [];
   List<int> airDivisionList = [];
+  List<String> aircraftList = [];
   List<Marker> markers = [];
   bool loading = true;
   int refreshRate = 20; //default timer
@@ -36,6 +37,7 @@ class AirChartCN extends ChangeNotifier {
     airfieldInventory = [];
     airfieldList = [];
     airDivisionList = [];
+    aircraftList = [];
 
     if (configJSON['use_test_data'] == true) {
       // USING TEST DATA
@@ -86,6 +88,13 @@ class AirChartCN extends ChangeNotifier {
           //populate airfieldInventory list with response data
           AirfieldInventory newEntry = AirfieldInventory.fromJson(retrievedData[i]);
           airfieldInventory.add(newEntry);
+          for (int j = 0; j < newEntry.aircraft.length; j++) {
+            if (!aircraftList.contains(newEntry.aircraft[j]['type'])) {
+              //Create unique list of aircraft types
+              aircraftList.add(newEntry.aircraft[j]['type']);
+            }
+          }
+          aircraftList.sort((a, b) => b.compareTo(a));
         }
       }
     }

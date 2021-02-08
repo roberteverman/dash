@@ -143,6 +143,7 @@ Map<dynamic, dynamic> barGroups({List<AirfieldInventory> airfieldInventory, Colo
     }
     toolTips.add(toolTip);
     firstADBars.add(BarChartRodData(
+      backDrawRodData: BackgroundBarChartRodData(show: false),
       width: width,
       y: totalAircraft,
       rodStackItems: <BarChartRodStackItem>[

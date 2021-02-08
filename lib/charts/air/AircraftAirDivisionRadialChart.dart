@@ -30,7 +30,12 @@ class _AircraftAirDivisionRadialChartState extends State<AircraftAirDivisionRadi
           totalAircraft += aircraft['total'];
         }
       }
-      return new ChartData(x: (4 - index).toString() + "AD", y: (totalOperational / totalAircraft) * 100, total: totalAircraft, op: totalOperational);
+      return new ChartData(
+        x: (4 - index).toString() + "AD",
+        y: (totalOperational / totalAircraft) * 100,
+        total: totalAircraft,
+        op: totalOperational,
+      );
     });
 
     return ChartCard(
@@ -69,15 +74,18 @@ class _AircraftAirDivisionRadialChartState extends State<AircraftAirDivisionRadi
                     },
                     yValueMapper: (data, _) => data.y,
                     dataLabelMapper: (data, _) => data.x,
-                    enableSmartLabels: true,
-                    trackOpacity: 0,
-                    enableTooltip: true,
+                    enableSmartLabels: false,
+                    trackOpacity: 0.1,
+                    enableTooltip: false,
                     dataLabelSettings: DataLabelSettings(
-                        isVisible: true,
-                        textStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: widget.chartCardDims / 15,
-                        )),
+                      borderWidth: 0,
+                      isVisible: true,
+                      color: Colors.white,
+                      textStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: widget.chartCardDims / 17,
+                      ),
+                    ),
                   )
                 ],
               ),

@@ -25,8 +25,8 @@ class _AirfieldSubtabState extends State<AirfieldSubtab> {
   Future<bool> loadTabData() async {
     Provider.of<ThemeChanger>(context, listen: false).setLoading(true);
     await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
-    Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
     Provider.of<ThemeChanger>(context, listen: false).notifyListeners(); //must add this and the above to update the time
+    Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
     airDivisionList = Provider.of<AirFieldStatusCN>(context, listen: false).airDivisionList;
     airDivisionCards = List.generate(
       airDivisionList.length,
@@ -37,9 +37,21 @@ class _AirfieldSubtabState extends State<AirfieldSubtab> {
     return true;
   }
 
+  Future<bool> refreshTabData() async {
+    await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
+    Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
+    airDivisionList = Provider.of<AirFieldStatusCN>(context, listen: false).airDivisionList;
+    airDivisionCards = List.generate(
+      airDivisionList.length,
+      (index) => AirfieldDivisionCard(airDivision: airDivisionList[index]),
+    );
+    Provider.of<ThemeChanger>(context, listen: false).notifyListeners(); //don't forget to notify listeners
+    return true;
+  }
+
   void startTimer() {
     timer = new Timer.periodic(Duration(seconds: Provider.of<AirFieldStatusCN>(context, listen: false).refreshRate), (timer) {
-      loadTabData();
+      refreshTabData();
     });
   }
 

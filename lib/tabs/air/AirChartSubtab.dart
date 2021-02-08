@@ -1,12 +1,15 @@
 import 'dart:async';
 
+import 'package:dash/charts/air/AirDualChart.dart';
 import 'package:dash/charts/air/AirMap.dart';
 import 'package:dash/charts/air/AircraftAirDivisionRadialChart.dart';
 import 'package:dash/charts/air/AircraftAirfieldBarChart.dart';
+import 'package:dash/charts/air/AircraftTypeBarChart.dart';
 import 'package:dash/charts/air/AircraftTypeRadarChart.dart';
 import 'package:dash/charts/air/AirfieldStatusDoughnutChart.dart';
 import 'package:dash/charts/air/AirfieldStatusPieChart.dart';
 import 'package:dash/charts/air/AircraftStrengthGauge.dart';
+import 'package:dash/components/ChartCard.dart';
 import 'package:dash/providers/ThemeChanger.dart';
 import 'package:dash/providers/air/AirChartCN.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
@@ -42,16 +45,23 @@ class _AirChartSubtabState extends State<AirChartSubtab> with WidgetsBindingObse
   Future<bool> loadTabData() async {
     Provider.of<ThemeChanger>(context, listen: false).setLoading(true);
     await Provider.of<AirChartCN>(context, listen: false).updateCharts(Provider.of<ThemeChanger>(context, listen: false).lightMode);
-    Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<AirChartCN>(context, listen: false).datetime;
     Provider.of<ThemeChanger>(context, listen: false).notifyListeners(); //must add this and the above to update the time
+    Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<AirChartCN>(context, listen: false).datetime;
     Provider.of<ThemeChanger>(context, listen: false).setLoading(false);
+    Provider.of<ThemeChanger>(context, listen: false).notifyListeners(); //don't forget to notify listeners
+    return true;
+  }
+
+  Future<bool> refreshTabData() async {
+    await Provider.of<AirChartCN>(context, listen: false).updateCharts(Provider.of<ThemeChanger>(context, listen: false).lightMode);
+    Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<AirChartCN>(context, listen: false).datetime;
     Provider.of<ThemeChanger>(context, listen: false).notifyListeners(); //don't forget to notify listeners
     return true;
   }
 
   void startTimer() {
     timer = new Timer.periodic(Duration(seconds: Provider.of<AirChartCN>(context, listen: false).refreshRate), (timer) {
-      loadTabData();
+      refreshTabData();
     });
   }
 
@@ -137,13 +147,19 @@ class _AirChartSubtabState extends State<AirChartSubtab> with WidgetsBindingObse
                                             chartCardDims: chartCardDims,
                                             padding: padding,
                                           ),
-                                          AircraftAirDivisionRadialChart(
+                                          AircraftTypeBarChart(
                                             chartCardDims: chartCardDims,
                                             padding: padding,
                                           ),
-                                          AircraftTypeRadarChart(
-                                            chartCardDims: chartCardDims,
-                                            padding: padding,
+                                          AirDualChart(
+                                            chartOne: AircraftTypeRadarChart(
+                                              chartCardDims: chartCardDims,
+                                              padding: padding,
+                                            ),
+                                            chartTwo: AircraftAirDivisionRadialChart(
+                                              chartCardDims: chartCardDims,
+                                              padding: padding,
+                                            ),
                                           ),
                                         ],
                                       ),

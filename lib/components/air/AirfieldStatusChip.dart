@@ -89,7 +89,7 @@ class AirfieldStatusChip extends StatelessWidget {
                                         field,
                                         "OP",
                                         Provider.of<ThemeChanger>(context, listen: false).apiKey,
-                                        be,
+                                        Provider.of<ThemeChanger>(context, listen: false).currentUser,
                                       );
                                       Navigator.pop(context);
                                     },
@@ -114,7 +114,7 @@ class AirfieldStatusChip extends StatelessWidget {
                                         field,
                                         "LIMOP",
                                         Provider.of<ThemeChanger>(context, listen: false).apiKey,
-                                        be,
+                                        Provider.of<ThemeChanger>(context, listen: false).currentUser,
                                       );
                                       Navigator.pop(context);
                                     },
@@ -134,7 +134,7 @@ class AirfieldStatusChip extends StatelessWidget {
                                         field,
                                         "NONOP",
                                         Provider.of<ThemeChanger>(context, listen: false).apiKey,
-                                        be,
+                                        Provider.of<ThemeChanger>(context, listen: false).currentUser,
                                       );
                                       Navigator.pop(context);
                                     },

@@ -11,6 +11,7 @@ class AircraftStatusCN extends ChangeNotifier {
   List<AirfieldInventory> airfieldInventory = [];
   List<String> airfieldList = [];
   List<int> airDivisionList = [];
+  List<String> aircraftList = [];
   bool loading = true;
   int refreshRate = 20; //default timer
   String datetime = "Loading...";
@@ -24,6 +25,7 @@ class AircraftStatusCN extends ChangeNotifier {
     airfieldInventory = [];
     airfieldList = [];
     airDivisionList = [];
+    aircraftList = [];
 
     if (configJSON['use_test_data'] == true) {
       // USING TEST DATA
@@ -56,6 +58,13 @@ class AircraftStatusCN extends ChangeNotifier {
           //populate airfieldInventory list with response data
           AirfieldInventory newEntry = AirfieldInventory.fromJson(retrievedData[i]);
           airfieldInventory.add(newEntry);
+          for (int j = 0; j < newEntry.aircraft.length; j++) {
+            if (!aircraftList.contains(newEntry.aircraft[j]['type'])) {
+              //Create unique list of aircraft types
+              aircraftList.add(newEntry.aircraft[j]['type']);
+            }
+          }
+          aircraftList.sort((a, b) => a.compareTo(b));
         }
         for (AirfieldInventory airfield in airfieldInventory) {
           //todo add more than initial of zero aircraft
@@ -75,7 +84,7 @@ class AircraftStatusCN extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> pushAirfieldInventory(int action, int number, String item, String origin, String destination, String apiKey, String be) async {
+  Future<void> pushAirfieldInventory(int action, int number, String item, String origin, String destination, String apiKey, String user) async {
     String configString = await rootBundle.loadString('config/config.json');
     Map configJSON = json.decode(configString);
     if (configJSON['use_test_data'] == false) {
@@ -88,6 +97,7 @@ class AircraftStatusCN extends ChangeNotifier {
             'origin': origin, //todo make be number instead of afld name
             'destination': destination, //todo make be number instead of afld name
             'key': apiKey,
+            'user': user,
           }));
       if (response.statusCode != 200) {
         Fluttertoast.showToast(

@@ -80,7 +80,6 @@ class AirfieldStatusCard extends StatelessWidget {
                   onPressed: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
                       ? () {}
                       : () async {
-                          //todo implement only if logged in
                           return await showDialog(
                             barrierDismissible: true,
                             context: context,
@@ -106,8 +105,13 @@ class AirfieldStatusCard extends StatelessWidget {
                                       onPressed: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
                                           ? null
                                           : () async {
-                                              await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(airfieldStatus.name,
-                                                  "status", "OP", Provider.of<ThemeChanger>(context, listen: false).apiKey, airfieldStatus.be);
+                                              await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
+                                                airfieldStatus.name,
+                                                "status",
+                                                "OP",
+                                                Provider.of<ThemeChanger>(context, listen: false).apiKey,
+                                                Provider.of<ThemeChanger>(context, listen: false).currentUser,
+                                              );
                                               Navigator.pop(context);
                                             },
                                     ),
@@ -131,7 +135,7 @@ class AirfieldStatusCard extends StatelessWidget {
                                                 "status",
                                                 "LIMOP",
                                                 Provider.of<ThemeChanger>(context, listen: false).apiKey,
-                                                airfieldStatus.be,
+                                                Provider.of<ThemeChanger>(context, listen: false).currentUser,
                                               );
                                               Navigator.pop(context);
                                             },
@@ -151,7 +155,7 @@ class AirfieldStatusCard extends StatelessWidget {
                                                 "status",
                                                 "NONOP",
                                                 Provider.of<ThemeChanger>(context, listen: false).apiKey,
-                                                airfieldStatus.be,
+                                                Provider.of<ThemeChanger>(context, listen: false).currentUser,
                                               );
                                               Navigator.pop(context);
                                             },

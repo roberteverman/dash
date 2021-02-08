@@ -122,38 +122,38 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           ? null
           : AppBar(
               actions: [
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: Icon(
-                    FontAwesomeIcons.solidHandSpock,
-                    size: 20,
-                  ),
-                  onPressed: () async {
-                    return await showDialog(
-                      barrierDismissible: true,
-                      context: context,
-                      builder: (_) => AlertDialog(
-                        title: Center(
-                          child: Text("About Dash"),
-                        ),
-                        content: Container(width: 400, child: Text(dashAbout)),
-                        actions: [
-                          FlatButton(
-                            child: Text("Word."),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          )
-                        ],
-                      ),
-                    );
-                  },
-                  tooltip: "Live Long and Prosper",
-                  color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
-                  highlightColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                ),
+                // IconButton(
+                //   padding: EdgeInsets.zero,
+                //   icon: Icon(
+                //     FontAwesomeIcons.solidHandSpock,
+                //     size: 20,
+                //   ),
+                //   onPressed: () async {
+                //     return await showDialog(
+                //       barrierDismissible: true,
+                //       context: context,
+                //       builder: (_) => AlertDialog(
+                //         title: Center(
+                //           child: Text("About Dash"),
+                //         ),
+                //         content: Container(width: 400, child: Text(dashAbout)),
+                //         actions: [
+                //           FlatButton(
+                //             child: Text("Word."),
+                //             onPressed: () {
+                //               Navigator.pop(context);
+                //             },
+                //           )
+                //         ],
+                //       ),
+                //     );
+                //   },
+                //   tooltip: "Live Long and Prosper",
+                //   color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
+                //   highlightColor: Colors.transparent,
+                //   hoverColor: Colors.transparent,
+                //   splashColor: Colors.transparent,
+                // ),
                 IconButton(
                   padding: EdgeInsets.zero,
                   icon: Icon(
@@ -602,17 +602,17 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                                   if (currentSubtab == 0) {
                                                     //air charts
                                                     await Provider.of<AirChartCN>(context, listen: false).updateCharts(themeChanger.lightMode);
-                                                    themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: true).datetime;
+                                                    themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
                                                   }
                                                   if (currentSubtab == 1) {
                                                     //aircraft
                                                     await Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory();
-                                                    themeChanger.centralDateTime = Provider.of<AircraftStatusCN>(context, listen: true).datetime;
+                                                    themeChanger.centralDateTime = Provider.of<AircraftStatusCN>(context, listen: false).datetime;
                                                   }
                                                   if (currentSubtab == 2) {
                                                     //airfields
                                                     await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
-                                                    themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: true).datetime;
+                                                    themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
                                                   }
                                                 }
                                                 themeChanger.setLoading(false);

@@ -12,6 +12,7 @@ class ThemeChanger extends ChangeNotifier {
   int currentTab = 0;
   int currentSubtab = 0;
   String centralDateTime = "";
+  String currentUser = "";
   String apiKey = "";
   bool airAdmin = false;
   bool groundAdmin = false;
@@ -58,6 +59,7 @@ class ThemeChanger extends ChangeNotifier {
           webPosition: "right",
         );
         var body = json.decode(response.body);
+        currentUser = username;
         apiKey = body['key'];
         airAdmin = body['air'];
         groundAdmin = body['ground'];

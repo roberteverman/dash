@@ -23,7 +23,6 @@ class _AirMapState extends State<AirMap> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     mapController = new MapController();
   }
