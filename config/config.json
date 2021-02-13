@@ -7,6 +7,7 @@
   "airfield_post":"https://bobbysworld.io/cgi-bin/airfield_post.py",
   "aircraft_get":"https://bobbysworld.io/cgi-bin/aircraft_fetch.py",
   "aircraft_post":"https://bobbysworld.io/cgi-bin/aircraft_post.py",
+  "ground_chart_get":"https://bobbysworld.io/cgi-bin/gob_fetch.py",
   "sam_get":"",
   "sam_post":"",
   "map_dark": "https://maps.seeker.info/styles/dark-matter/{z}/{x}/{y}.png",

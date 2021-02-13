@@ -52,3 +52,24 @@ class AirfieldInventory {
     );
   }
 }
+
+class GroundUnitStatus {
+  GroundUnitStatus({this.name, this.strength, this.lat, this.lon, this.parent, this.symbol});
+  String name;
+  int strength;
+  double lat;
+  double lon;
+  String parent;
+  String symbol;
+
+  factory GroundUnitStatus.fromJson(Map<String, dynamic> json) {
+    return GroundUnitStatus(
+      name: json['unit_title'],
+      strength: json['unit_strength'],
+      lat: json['lat'],
+      lon: json['lon'],
+      parent: json['parent_title'],
+      symbol: json['symbol_url'],
+    );
+  }
+}

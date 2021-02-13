@@ -612,3 +612,28 @@ Map<String, dynamic> testAirfieldInventory = {
     }
   ]
 };
+
+Map<String, dynamic> testVesselData = {
+  "datetime": "01-18-2021 | 08:51:28 (Z)",
+  "data": [
+    {
+      "West Coast": [
+        {
+          "Submarines": [
+            {
+              "class": "Sang-O",
+              "total": 50,
+              "operational": 30,
+            },
+            {
+              "class": "Yono",
+              "total": 30,
+              "operational": 10,
+            }
+          ],
+          "Patrol Vessels": ["Hainan"]
+        }
+      ]
+    }
+  ]
+};
