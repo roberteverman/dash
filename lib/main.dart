@@ -4,7 +4,9 @@ import 'package:dash/providers/ThemeChanger.dart';
 import 'package:dash/providers/air/AirChartCN.dart';
 import 'package:dash/providers/air/AircraftStatusCN.dart';
 import 'package:dash/providers/air/AirfieldStatusCN.dart';
+import 'package:dash/providers/air/SAMStatusCN.dart';
 import 'package:dash/providers/ground/GroundChartCN.dart';
+import 'package:dash/providers/navy/NavyVesselCN.dart';
 import 'package:dash/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +37,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<AircraftStatusCN>(create: (context) => AircraftStatusCN()),
         ChangeNotifierProvider<AirChartCN>(create: (context) => AirChartCN()),
         ChangeNotifierProvider<GroundChartCN>(create: (context) => GroundChartCN()),
+        ChangeNotifierProvider<NavyVesselCN>(create: (context) => NavyVesselCN()),
+        ChangeNotifierProvider<SAMStatusCN>(create: (context) => SAMStatusCN()),
       ],
       child: new MaterialAppWithTheme(),
     );

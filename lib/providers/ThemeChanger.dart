@@ -16,7 +16,7 @@ class ThemeChanger extends ChangeNotifier {
   String apiKey = "";
   bool airAdmin = false;
   bool groundAdmin = false;
-  bool seaAdmin = false;
+  bool navyAdmin = false;
   bool spaceAdmin = false;
   String lang = "en";
 
@@ -63,7 +63,7 @@ class ThemeChanger extends ChangeNotifier {
         apiKey = body['key'];
         airAdmin = body['air'];
         groundAdmin = body['ground'];
-        seaAdmin = body['sea'];
+        navyAdmin = body['sea'];
         spaceAdmin = body['space'];
       }
       notifyListeners();

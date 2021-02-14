@@ -30,7 +30,7 @@ class _AirChartSubtabState extends State<AirChartSubtab> with WidgetsBindingObse
   double leftSideTabWidth;
   double parentWidth;
   int numCardsPerRow = 2; //number of charts in one row
-  double mapFactor = .55; //percentage of the window the map should take up
+  double mapFactor = .65; //percentage of the window the map should take up
   double padding = 10; //if update, also update in AirChartCN
   bool vertical = false;
   double mapHeight;

@@ -6,14 +6,10 @@ class SpaceTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return DashTab(
       contentTabLabels: [
-        Tab(child: Icon(Icons.bar_chart)),
         Tab(child: Text("TBMs")),
-        Tab(child: Text("SAMs")),
       ],
       contentTabs: [
-        Center(child: Text("Space Charts View")),
         Center(child: Text("TBM View")),
-        Center(child: Text("SAM View")),
       ],
     );
   }

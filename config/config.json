@@ -8,8 +8,10 @@
   "aircraft_get":"https://bobbysworld.io/cgi-bin/aircraft_fetch.py",
   "aircraft_post":"https://bobbysworld.io/cgi-bin/aircraft_post.py",
   "ground_chart_get":"https://bobbysworld.io/cgi-bin/gob_fetch.py",
-  "sam_get":"",
-  "sam_post":"",
+  "navy_get": "https://bobbysworld.io/cgi-bin/navy_fetch.py",
+  "navy_post": "https://bobbysworld.io/cgi-bin/navy_post.py",
+  "sam_get": "https://bobbysworld.io/cgi-bin/sam_fetch.py",
+  "sam_post": "https://bobbysworld.io/cgi-bin/sam_post.py",
   "map_dark": "https://maps.seeker.info/styles/dark-matter/{z}/{x}/{y}.png",
   "map_light": "https://maps.seeker.info/styles/positron/{z}/{x}/{y}.png"
 }

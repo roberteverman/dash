@@ -1,19 +1,19 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:dash/components/air/SAMStatusChip.dart';
 import 'package:dash/helpers/models.dart';
 import 'package:dash/providers/ThemeChanger.dart';
-import 'package:dash/providers/air/AirfieldStatusCN.dart';
+import 'package:dash/providers/air/SAMStatusCN.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:dash/components/air/AirfieldStatusChip.dart';
 
-class AirfieldStatusCard extends StatelessWidget {
-  const AirfieldStatusCard({this.airfieldStatus});
-  final AirfieldStatus airfieldStatus;
+class SAMStatusCard extends StatelessWidget {
+  const SAMStatusCard({this.samStatus});
+  final SAMStatus samStatus;
 
   @override
   Widget build(BuildContext context) {
     Color airfieldStatusColor;
-    switch (airfieldStatus.status) {
+    switch (samStatus.status) {
       case "OP":
         {
           airfieldStatusColor = Colors.green;
@@ -54,11 +54,11 @@ class AirfieldStatusCard extends StatelessWidget {
           child: ExpansionTile(
             initiallyExpanded: true,
             maintainState: true,
-            key: PageStorageKey<String>(airfieldStatus.name),
+            key: PageStorageKey<String>(samStatus.name),
             title: SizedBox(
               child: Center(
                 child: AutoSizeText(
-                  airfieldStatus.name,
+                  samStatus.name,
                   maxLines: 2,
                   minFontSize: 10,
                   maxFontSize: 15,
@@ -85,7 +85,7 @@ class AirfieldStatusCard extends StatelessWidget {
                             builder: (_) => AlertDialog(
                               title: Center(
                                 child: Text(
-                                  "Change overall status of \n" + airfieldStatus.name,
+                                  "Change overall status of \n" + samStatus.name,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 15,
@@ -104,8 +104,8 @@ class AirfieldStatusCard extends StatelessWidget {
                                       onPressed: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
                                           ? null
                                           : () async {
-                                              await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                                airfieldStatus.name,
+                                              await Provider.of<SAMStatusCN>(context, listen: false).pushSAMStatus(
+                                                samStatus.name,
                                                 "status",
                                                 "OP",
                                                 Provider.of<ThemeChanger>(context, listen: false).apiKey,
@@ -129,8 +129,8 @@ class AirfieldStatusCard extends StatelessWidget {
                                       onPressed: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
                                           ? null
                                           : () async {
-                                              await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                                airfieldStatus.name,
+                                              await Provider.of<SAMStatusCN>(context, listen: false).pushSAMStatus(
+                                                samStatus.name,
                                                 "status",
                                                 "LIMOP",
                                                 Provider.of<ThemeChanger>(context, listen: false).apiKey,
@@ -149,8 +149,8 @@ class AirfieldStatusCard extends StatelessWidget {
                                       onPressed: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
                                           ? null
                                           : () async {
-                                              await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                                airfieldStatus.name,
+                                              await Provider.of<SAMStatusCN>(context, listen: false).pushSAMStatus(
+                                                samStatus.name,
                                                 "status",
                                                 "NONOP",
                                                 Provider.of<ThemeChanger>(context, listen: false).apiKey,
@@ -172,7 +172,7 @@ class AirfieldStatusCard extends StatelessWidget {
                       children: <TextSpan>[
                         TextSpan(text: "Status: "),
                         TextSpan(
-                          text: airfieldStatus.status,
+                          text: samStatus.status,
                           style: TextStyle(fontWeight: FontWeight.bold, color: airfieldStatusColor),
                         ),
                       ],
@@ -187,53 +187,29 @@ class AirfieldStatusCard extends StatelessWidget {
                 child: Wrap(
                   runAlignment: WrapAlignment.spaceBetween,
                   children: [
-                    AirfieldStatusChip(
-                      text: "R/W",
-                      tooltip: "Runway\nStatus: " + airfieldStatus.rw,
-                      status: airfieldStatus.rw,
-                      parentAirfield: airfieldStatus.name,
-                      field: "rw",
-                      be: airfieldStatus.be,
+                    SAMStatusChip(
+                      text: "RCB",
+                      tooltip: "Radar Control Bunker\nStatus: " + samStatus.rcb,
+                      status: samStatus.rcb,
+                      parentAirfield: samStatus.name,
+                      field: "rcb",
+                      be: samStatus.be,
                     ),
-                    AirfieldStatusChip(
-                      text: "T/W",
-                      tooltip: "Taxiway\nStatus: " + airfieldStatus.tw,
-                      status: airfieldStatus.tw,
-                      parentAirfield: airfieldStatus.name,
-                      field: "tw",
-                      be: airfieldStatus.be,
+                    SAMStatusChip(
+                      text: "LCB",
+                      tooltip: "Launch Control Bunker\nStatus: " + samStatus.lcb,
+                      status: samStatus.lcb,
+                      parentAirfield: samStatus.name,
+                      field: "lcb",
+                      be: samStatus.be,
                     ),
-                    AirfieldStatusChip(
-                      text: "UGF",
-                      tooltip: "Underground Facility\nStatus: " + airfieldStatus.ugf,
-                      status: airfieldStatus.ugf,
-                      parentAirfield: airfieldStatus.name,
-                      field: "ugf",
-                      be: airfieldStatus.be,
-                    ),
-                    AirfieldStatusChip(
-                      text: "POL",
-                      tooltip: "Petroleum and Oil\nStatus: " + airfieldStatus.pol,
-                      status: airfieldStatus.pol,
-                      parentAirfield: airfieldStatus.name,
-                      field: "pol",
-                      be: airfieldStatus.be,
-                    ),
-                    AirfieldStatusChip(
-                      text: "MS",
-                      tooltip: "Munition Storage\nStatus: " + airfieldStatus.ms,
-                      status: airfieldStatus.ms,
-                      parentAirfield: airfieldStatus.name,
-                      field: "ms",
-                      be: airfieldStatus.be,
-                    ),
-                    AirfieldStatusChip(
-                      text: "RF",
-                      tooltip: "Repair Facility\nStatus: " + airfieldStatus.rf,
-                      status: airfieldStatus.rf,
-                      parentAirfield: airfieldStatus.name,
-                      field: "rf",
-                      be: airfieldStatus.be,
+                    SAMStatusChip(
+                      text: "C2B",
+                      tooltip: "Command Control Bunker\nStatus: " + samStatus.c2b,
+                      status: samStatus.c2b,
+                      parentAirfield: samStatus.name,
+                      field: "c2b",
+                      be: samStatus.be,
                     ),
                   ],
                 ),

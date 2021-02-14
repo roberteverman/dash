@@ -48,6 +48,7 @@ class _AirMapState extends State<AirMap> {
             layers: [
               TileLayerOptions(
                 urlTemplate: Provider.of<AirChartCN>(context, listen: true).mapServerURL,
+                // tms: false,
                 // wmsOptions: WMSTileLayerOptions(
                 //   // baseUrl: 'https://maps.gvs.nga.mil:443/arcgis/services/CanvasMaps/Midnight/MapServer/WmsServer?',
                 //   // layers: ['0'],

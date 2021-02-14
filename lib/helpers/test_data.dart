@@ -617,21 +617,138 @@ Map<String, dynamic> testVesselData = {
   "datetime": "01-18-2021 | 08:51:28 (Z)",
   "data": [
     {
-      "West Coast": [
+      'West Coast': [
         {
-          "Submarines": [
-            {
-              "class": "Sang-O",
-              "total": 50,
-              "operational": 30,
-            },
-            {
-              "class": "Yono",
-              "total": 30,
-              "operational": 10,
-            }
-          ],
-          "Patrol Vessels": ["Hainan"]
+          'submarines': [
+            {'class': 'Sinpo', 'operational': 34, 'total': 38},
+            {'class': 'Gorae', 'operational': 14, 'total': 37},
+            {'class': 'Golf', 'operational': 3, 'total': 48},
+            {'class': 'Sang-O', 'operational': 2, 'total': 37},
+            {'class': 'Yono', 'operational': 30, 'total': 30},
+            {'class': 'Romeo', 'operational': 29, 'total': 36},
+            {'class': 'Sinpo', 'operational': 5, 'total': 40},
+            {'class': 'Gorae', 'operational': 42, 'total': 46},
+            {'class': 'Golf', 'operational': 22, 'total': 22},
+            {'class': 'Sang-O', 'operational': 22, 'total': 37},
+            {'class': 'Yono', 'operational': 22, 'total': 37},
+            {'class': 'Romeo', 'operational': 12, 'total': 19}
+          ]
+        },
+        {
+          'frigates': [
+            {'class': 'Amnok', 'operational': 2, 'total': 48},
+            {'class': 'Najin', 'operational': 3, 'total': 16},
+            {'class': 'Soho', 'operational': 3, 'total': 13},
+            {'class': 'Nampo', 'operational': 5, 'total': 23},
+            {'class': 'Sariwon', 'operational': 13, 'total': 15},
+            {'class': 'Fugas', 'operational': 8, 'total': 14}
+          ]
+        },
+        {
+          'Torpedo Boats': [
+            {'class': 'Nongo', 'operational': 6, 'total': 28},
+            {'class': 'Soju', 'operational': 20, 'total': 40},
+            {'class': 'Huangfeng', 'operational': 16, 'total': 46},
+            {'class': 'Komar', 'operational': 6, 'total': 18},
+            {'class': 'Shershen', 'operational': 15, 'total': 41},
+            {'class': 'Sinam', 'operational': 28, 'total': 30},
+            {'class': 'Sinhung', 'operational': 3, 'total': 11},
+            {'class': 'Kusong', 'operational': 11, 'total': 21}
+          ]
+        },
+        {
+          'Patrol Boats': [
+            {'class': 'T-class', 'operational': 21, 'total': 38},
+            {'class': 'Mayang', 'operational': 16, 'total': 19},
+            {'class': 'Taechong', 'operational': 8, 'total': 38},
+            {'class': 'Hainan', 'operational': 1, 'total': 10},
+            {'class': 'Chodo', 'operational': 10, 'total': 36},
+            {'class': 'Chong-ju', 'operational': 9, 'total': 29},
+            {'class': 'SO-1', 'operational': 14, 'total': 14},
+            {'class': 'Shanghai II', 'operational': 21, 'total': 30},
+            {'class': 'Sinpo', 'operational': 11, 'total': 12},
+            {'class': 'K-48', 'operational': 36, 'total': 38},
+            {'class': 'Chongjin', 'operational': 3, 'total': 40},
+            {'class': 'Chaho', 'operational': 25, 'total': 41}
+          ]
+        },
+        {
+          'Utility Boats': [
+            {'class': 'Hantae', 'operational': 38, 'total': 41},
+            {'class': 'Hungnam', 'operational': 27, 'total': 27},
+            {'class': 'Hanchon', 'operational': 11, 'total': 16},
+            {'class': 'Kongbang', 'operational': 1, 'total': 42},
+            {'class': 'Nampo', 'operational': 17, 'total': 19},
+            {'class': 'Chongjin', 'operational': 28, 'total': 28},
+            {'class': 'Yukto', 'operational': 4, 'total': 16},
+            {'class': 'Yongdo', 'operational': 9, 'total': 17},
+            {'class': 'Kowan', 'operational': 13, 'total': 49}
+          ]
+        }
+      ]
+    },
+    {
+      'East Coast': [
+        {
+          'submarines': [
+            {'class': 'Sinpo', 'operational': 27, 'total': 27},
+            {'class': 'Gorae', 'operational': 34, 'total': 42},
+            {'class': 'Golf', 'operational': 15, 'total': 37},
+            {'class': 'Sang-O', 'operational': 15, 'total': 29},
+            {'class': 'Yono', 'operational': 16, 'total': 41},
+            {'class': 'Romeo', 'operational': 44, 'total': 45}
+          ]
+        },
+        {
+          'Frigates': [
+            {'class': 'Amnok', 'operational': 43, 'total': 43},
+            {'class': 'Najin', 'operational': 2, 'total': 20},
+            {'class': 'Soho', 'operational': 16, 'total': 26},
+            {'class': 'Nampo', 'operational': 40, 'total': 49},
+            {'class': 'Sariwon', 'operational': 4, 'total': 11},
+            {'class': 'Fugas', 'operational': 25, 'total': 31}
+          ]
+        },
+        {
+          'Torpedo Boats': [
+            {'class': 'Nongo', 'operational': 4, 'total': 39},
+            {'class': 'Soju', 'operational': 12, 'total': 17},
+            {'class': 'Huangfeng', 'operational': 13, 'total': 47},
+            {'class': 'Komar', 'operational': 37, 'total': 48},
+            {'class': 'Shershen', 'operational': 16, 'total': 28},
+            {'class': 'Sinam', 'operational': 11, 'total': 17},
+            {'class': 'Sinhung', 'operational': 10, 'total': 42},
+            {'class': 'Kusong', 'operational': 25, 'total': 27}
+          ]
+        },
+        {
+          'Patrol Boats': [
+            {'class': 'T-class', 'operational': 16, 'total': 49},
+            {'class': 'Mayang', 'operational': 32, 'total': 32},
+            {'class': 'Taechong', 'operational': 4, 'total': 41},
+            {'class': 'Hainan', 'operational': 1, 'total': 20},
+            {'class': 'Chodo', 'operational': 2, 'total': 15},
+            {'class': 'Chong-ju', 'operational': 14, 'total': 14},
+            {'class': 'SO-1', 'operational': 1, 'total': 23},
+            {'class': 'Shanghai II', 'operational': 22, 'total': 40},
+            {'class': 'Sinpo', 'operational': 12, 'total': 24},
+            {'class': 'K-48', 'operational': 16, 'total': 41},
+            {'class': 'Chongjin', 'operational': 18, 'total': 47},
+            {'class': 'Chaho', 'operational': 29, 'total': 35}
+          ]
+        },
+        {
+          'Utility Boats': [
+            {'class': 'Hantae', 'operational': 13, 'total': 29},
+            {'class': 'Hungnam', 'operational': 11, 'total': 29},
+            {'class': 'Hanchon', 'operational': 24, 'total': 25},
+            {'class': 'Kongbang', 'operational': 20, 'total': 33},
+            {'class': 'Nampo', 'operational': 11, 'total': 25},
+            {'class': 'Chongjin', 'operational': 13, 'total': 34},
+            {'class': 'Yukto', 'operational': 19, 'total': 40},
+            {'class': 'Yongdo', 'operational': 34, 'total': 43},
+            {'class': 'Kowan', 'operational': 30, 'total': 46}
+          ]
         }
       ]
     }

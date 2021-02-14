@@ -10,8 +10,8 @@ class GroundTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return DashTab(
       contentTabLabels: [
-        Tab(child: Icon(Icons.bar_chart)),
-        // Tab(child: Text("LRA")),
+        // Tab(child: Icon(Icons.bar_chart)),
+        Tab(child: Text("Ground")),
         // Tab(child: Text("Armor")),
         // Tab(child: Text("Infantry")),
       ],

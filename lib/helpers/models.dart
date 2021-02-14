@@ -53,6 +53,32 @@ class AirfieldInventory {
   }
 }
 
+class SAMStatus {
+  SAMStatus({this.type, this.name, this.lat, this.lon, this.status, this.be, this.rcb, this.lcb, this.c2b});
+  String type;
+  String name;
+  double lat;
+  double lon;
+  String status;
+  String be;
+  String rcb;
+  String lcb;
+  String c2b;
+
+  factory SAMStatus.fromJson(Map<String, dynamic> json) {
+    return SAMStatus(
+        type: json['type'],
+        name: json['name'],
+        lat: json['lat'],
+        lon: json['lon'],
+        status: json['status'],
+        be: json['be'],
+        rcb: json['rcb'],
+        lcb: json['lcb'],
+        c2b: json['c2b']);
+  }
+}
+
 class GroundUnitStatus {
   GroundUnitStatus({this.name, this.strength, this.lat, this.lon, this.parent, this.symbol});
   String name;
@@ -70,6 +96,31 @@ class GroundUnitStatus {
       lon: json['lon'],
       parent: json['parent_title'],
       symbol: json['symbol_url'],
+    );
+  }
+}
+
+class NavyFleetInventory {
+  String fleet;
+  List<NavyVesselCategory> navyVesselCategoryList;
+}
+
+class NavyVesselCategory {
+  String category;
+  List<NavyVesselClassStatus> vesselClassStatusList;
+}
+
+class NavyVesselClassStatus {
+  NavyVesselClassStatus({this.vesselClass, this.total, this.operational});
+  String vesselClass;
+  int total;
+  int operational;
+
+  factory NavyVesselClassStatus.fromJSON(Map<String, dynamic> json) {
+    return NavyVesselClassStatus(
+      vesselClass: json['class'],
+      total: json['total'],
+      operational: json['operational'],
     );
   }
 }

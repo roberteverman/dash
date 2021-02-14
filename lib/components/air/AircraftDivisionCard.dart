@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
-import 'AircraftStatusCard.dart';
+import 'package:dash/components/air/AircraftStatusCard.dart';
 
 class AircraftDivisionCard extends StatelessWidget {
   const AircraftDivisionCard({this.airDivision});
