@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong/latlong.dart';
+import 'package:syncfusion_flutter_maps/maps.dart';
 
 class AirChartCN extends ChangeNotifier {
   List<AirfieldStatus> airfieldStatus = [];
@@ -29,6 +30,8 @@ class AirChartCN extends ChangeNotifier {
   String wmsLayer = "";
   String mapShapeSource = "";
   String shapeDataField = "";
+  MapShapeLayerController mapShapeLayerController = MapShapeLayerController();
+  MapShapeLayer mapShapeLayer;
 
   Future<void> updateCharts(bool lightMode) async {
     String configString = await rootBundle.loadString('config/config.json');
@@ -45,12 +48,14 @@ class AirChartCN extends ChangeNotifier {
     airDivisionList = [];
     aircraftList = [];
 
-    if (configJSON['use_test_data'] == true) {
-      // USING TEST DATA
-      datetime = testAirfieldData['datetime'];
-      for (int i = 0; i < testAirfieldData['airfield_data'].length; i++) {
-        //populate airfieldStatus list with test data
-        AirfieldStatus newEntry = AirfieldStatus.fromJson(testAirfieldData['data'][i]);
+    String url = configJSON['air_chart_get'] + "?lang=" + lang;
+    var response = await http.get(url); //grab data from server
+    if (response.statusCode == 200) {
+      var retrievedData = json.decode(response.body)['airfield_data'].toList();
+      datetime = json.decode(response.body)['datetime'];
+      for (int i = 0; i < retrievedData.length; i++) {
+        //populate airfieldStatus list with response data
+        AirfieldStatus newEntry = AirfieldStatus.fromJson(retrievedData[i]);
         airfieldStatus.add(newEntry);
       }
       for (AirfieldStatus airfield in airfieldStatus) {
@@ -62,48 +67,24 @@ class AirChartCN extends ChangeNotifier {
           //create unique list of Air Divisions
           airDivisionList.add(airfield.airdiv);
         }
-        airDivisionList.sort(); //alphabetize everything
-        airfieldStatus.sort((a, b) => a.name.compareTo(b.name));
       }
-    } else {
-      //USING SERVER DATA
-      String url = configJSON['air_chart_get'] + "?lang=" + lang;
-      var response = await http.get(url); //grab data from server
-      if (response.statusCode == 200) {
-        var retrievedData = json.decode(response.body)['airfield_data'].toList();
-        datetime = json.decode(response.body)['datetime'];
-        for (int i = 0; i < retrievedData.length; i++) {
-          //populate airfieldStatus list with response data
-          AirfieldStatus newEntry = AirfieldStatus.fromJson(retrievedData[i]);
-          airfieldStatus.add(newEntry);
-        }
-        for (AirfieldStatus airfield in airfieldStatus) {
-          if (!airfieldList.contains(airfield.name)) {
-            //create unique list of airfields
-            airfieldList.add(airfield.name);
-          }
-          if (!airDivisionList.contains(airfield.airdiv)) {
-            //create unique list of Air Divisions
-            airDivisionList.add(airfield.airdiv);
+      airDivisionList.sort(); //alphabetize everything
+      airfieldStatus.sort((a, b) => a.name.compareTo(b.name));
+      retrievedData = json.decode(response.body)['aircraft_data'].toList();
+      for (int i = 0; i < retrievedData.length; i++) {
+        //populate airfieldInventory list with response data
+        AirfieldInventory newEntry = AirfieldInventory.fromJson(retrievedData[i]);
+        airfieldInventory.add(newEntry);
+        for (int j = 0; j < newEntry.aircraft.length; j++) {
+          if (!aircraftList.contains(newEntry.aircraft[j]['type'])) {
+            //Create unique list of aircraft types
+            aircraftList.add(newEntry.aircraft[j]['type']);
           }
         }
-        airDivisionList.sort(); //alphabetize everything
-        airfieldStatus.sort((a, b) => a.name.compareTo(b.name));
-        retrievedData = json.decode(response.body)['aircraft_data'].toList();
-        for (int i = 0; i < retrievedData.length; i++) {
-          //populate airfieldInventory list with response data
-          AirfieldInventory newEntry = AirfieldInventory.fromJson(retrievedData[i]);
-          airfieldInventory.add(newEntry);
-          for (int j = 0; j < newEntry.aircraft.length; j++) {
-            if (!aircraftList.contains(newEntry.aircraft[j]['type'])) {
-              //Create unique list of aircraft types
-              aircraftList.add(newEntry.aircraft[j]['type']);
-            }
-          }
-          aircraftList.sort((a, b) => b.compareTo(a));
-        }
+        aircraftList.sort((a, b) => b.compareTo(a));
       }
     }
+
     numOpAfld = airfieldStatus.where((afld) => afld.status == "OP").length;
     numLimopAfld = airfieldStatus.where((afld) => afld.status == "LIMOP").length;
     numNonopAfld = airfieldStatus.where((afld) => afld.status == "NONOP").length;
@@ -116,7 +97,23 @@ class AirChartCN extends ChangeNotifier {
         numOpAircraft += airfieldInventory[i].aircraft[j]['operational'];
       }
     }
+  }
+
+  void updateMap() {
+    print("A");
+    mapShapeLayerController.updateMarkers(List.generate(airfieldInventory.length, (i) => i));
+    print("B");
+    mapShapeLayerController.notifyListeners();
+    notifyListeners(); //must do notify listeners twice because markers depends on new airfieldInventory list
+    mapShapeLayerController.clearMarkers();
+    print("C");
+    for (int i = 0; i < airfieldInventory.length; i++) {
+      mapShapeLayerController.insertMarker(i);
+    }
+    print("D");
+    mapShapeLayerController.updateMarkers(List.generate(airfieldInventory.length, (i) => i));
     notifyListeners();
+    print("E");
   }
 
   void getExtendedAirfieldMarkers() {

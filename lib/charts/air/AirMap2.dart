@@ -16,7 +16,6 @@ class AirMap2 extends StatefulWidget {
 }
 
 class _AirMap2State extends State<AirMap2> {
-  MapController mapController;
   List<Marker> markers;
   int selectedIndex;
   bool keySelected = false;
@@ -27,12 +26,12 @@ class _AirMap2State extends State<AirMap2> {
   @override
   void initState() {
     super.initState();
-    mapController = new MapController();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<AirfieldInventory> airfieldInventoryList = Provider.of<AirChartCN>(context, listen: false).airfieldInventory;
+    List<AirfieldInventory> airfieldInventory = Provider.of<AirChartCN>(context, listen: true).airfieldInventory;
+    print("F");
 
     return Container(
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: Theme.of(context).primaryColorDark),
@@ -43,22 +42,21 @@ class _AirMap2State extends State<AirMap2> {
           //   urlTemplate: Provider.of<AirChartCN>(context, listen: true).mapServerURL,
           // )
           MapShapeLayer(
+            controller: Provider.of<AirChartCN>(context, listen: true).mapShapeLayerController,
             zoomPanBehavior: MapZoomPanBehavior(
               toolbarSettings: MapToolbarSettings(
                 position: MapToolbarPosition.bottomRight,
                 direction: Axis.vertical,
               ),
             ),
-            // showDataLabels: true,
             source: MapShapeSource.network(
-              Provider.of<AirChartCN>(context, listen: false).mapShapeSource,
-              shapeDataField: Provider.of<AirChartCN>(context, listen: false).shapeDataField,
-              // shapeDataField: "ADM1_EN",
+              Provider.of<AirChartCN>(context, listen: true).mapShapeSource,
+              shapeDataField: Provider.of<AirChartCN>(context, listen: true).shapeDataField,
             ),
-            initialMarkersCount: airfieldInventoryList.length,
+            initialMarkersCount: airfieldInventory.length,
             markerTooltipBuilder: (BuildContext context, int i) {
               return Text(
-                airfieldInventoryList[i].name + "\nStatus: " + airfieldInventoryList[i].status,
+                airfieldInventory[i].name + "\nStatus: " + airfieldInventory[i].status,
                 style: TextStyle(
                   color: Colors.black,
                 ),
@@ -66,25 +64,21 @@ class _AirMap2State extends State<AirMap2> {
             },
             markerBuilder: (BuildContext context, int i) {
               Color markerColor;
-              if (airfieldInventoryList[i].status == "OP") {
+              if (airfieldInventory[i].status == "OP") {
                 markerColor = Colors.green;
-              } else if (airfieldInventoryList[i].status == "NONOP") {
+              } else if (airfieldInventory[i].status == "NONOP") {
                 markerColor = Colors.red;
-              } else if (airfieldInventoryList[i].status == "LIMOP") {
+              } else if (airfieldInventory[i].status == "LIMOP") {
                 markerColor = Colors.amber;
               }
 
               return MapMarker(
-                latitude: airfieldInventoryList[i].lat,
-                longitude: airfieldInventoryList[i].lon,
+                latitude: airfieldInventory[i].lat,
+                longitude: airfieldInventory[i].lon,
                 iconColor: markerColor,
-                // child: Icon(
-                //   Icons.airplanemode_on,
-                //   color: markerColor,
-                // ),
               );
             },
-          ),
+          )
         ],
       ),
     );

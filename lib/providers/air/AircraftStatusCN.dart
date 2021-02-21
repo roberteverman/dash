@@ -10,6 +10,8 @@ import 'package:http/http.dart' as http;
 class AircraftStatusCN extends ChangeNotifier {
   List<AirfieldInventory> airfieldInventory = [];
   List<String> airfieldList = [];
+  List<String> airfieldBEList = [];
+  Map<String, String> airfieldBEMap = {};
   List<int> airDivisionList = [];
   List<String> aircraftList = [];
   bool loading = true;
@@ -71,6 +73,8 @@ class AircraftStatusCN extends ChangeNotifier {
           if (!airfieldList.contains(airfield.name)) {
             //create unique list of airfields
             airfieldList.add(airfield.name);
+            airfieldBEList.add(airfield.be);
+            airfieldBEMap[airfield.name] = airfield.be;
           }
           if (!airDivisionList.contains(airfield.airdiv)) {
             //create unique list of Air Divisions

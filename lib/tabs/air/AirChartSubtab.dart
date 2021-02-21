@@ -54,6 +54,7 @@ class _AirChartSubtabState extends State<AirChartSubtab> with WidgetsBindingObse
 
   Future<bool> refreshTabData() async {
     await Provider.of<AirChartCN>(context, listen: false).updateCharts(Provider.of<ThemeChanger>(context, listen: false).lightMode);
+    Provider.of<AirChartCN>(context, listen: false).updateMap();
     Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<AirChartCN>(context, listen: false).datetime;
     Provider.of<ThemeChanger>(context, listen: false).notifyListeners(); //don't forget to notify listeners
     return true;

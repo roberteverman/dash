@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dash/helpers/dash_icons.dart';
 import 'package:dash/providers/ThemeChanger.dart';
@@ -14,9 +16,9 @@ import 'package:dash/tabs/NavyTab.dart';
 import 'package:dash/tabs/TBMTab.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:dash/helpers/themes.dart';
+import 'package:dash/helpers/CookieManager.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -30,6 +32,17 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: 4);
+
+    try {
+      Provider.of<ThemeChanger>(context, listen: false).currentUser = CookieManager.getCookie("username");
+      Provider.of<ThemeChanger>(context, listen: false).apiKey = CookieManager.getCookie("api_key");
+      Provider.of<ThemeChanger>(context, listen: false).airAdmin = CookieManager.getCookie("air_admin") == "true";
+      Provider.of<ThemeChanger>(context, listen: false).groundAdmin = CookieManager.getCookie("ground_admin") == "true";
+      Provider.of<ThemeChanger>(context, listen: false).navyAdmin = CookieManager.getCookie("sea_admin") == "true";
+      Provider.of<ThemeChanger>(context, listen: false).spaceAdmin = CookieManager.getCookie("space_admin") == "true";
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -43,9 +56,295 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     final themeChanger = Provider.of<ThemeChanger>(context, listen: false);
     final theme = Theme.of(context);
     double winWidth = MediaQuery.of(context).size.width;
-    String dashAbout =
-        "Dash is a real time order of battle visualization tool. It was created to blah blah blah (insert inspiring stuff). \n\n For a tutorial please click the link below.\n\n (Insert link or video.)";
-    String lang = Provider.of<ThemeChanger>(context, listen: true).lang;
+
+    Function refreshData = () async {
+      ThemeChanger themeChanger = Provider.of<ThemeChanger>(context, listen: false);
+      int currentTab = themeChanger.currentTab;
+      int currentSubtab = themeChanger.currentSubtab;
+      themeChanger.setLoading(true);
+      themeChanger.notifyListeners();
+      if (currentTab == 0) {
+        //air
+        if (currentSubtab == 0) {
+          //air charts
+          await Provider.of<AirChartCN>(context, listen: false).updateCharts(themeChanger.lightMode);
+          themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
+        }
+        if (currentSubtab == 1) {
+          //aircraft
+          await Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory();
+          themeChanger.centralDateTime = Provider.of<AircraftStatusCN>(context, listen: false).datetime;
+        }
+        if (currentSubtab == 2) {
+          //airfields
+          await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
+          themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
+        }
+        if (currentSubtab == 3) {
+          //SAMs
+          await Provider.of<SAMStatusCN>(context, listen: false).updateSAMStatus();
+          themeChanger.centralDateTime = Provider.of<SAMStatusCN>(context, listen: false).datetime;
+        }
+      }
+      if (currentTab == 1) {
+        //ground
+        if (currentSubtab == 0) {
+          //ground charts
+          await Provider.of<GroundChartCN>(context, listen: false).updateCharts(themeChanger.lightMode);
+          themeChanger.centralDateTime = Provider.of<GroundChartCN>(context, listen: false).datetime;
+        }
+      }
+      if (currentTab == 2) {
+        //navy
+        if (currentSubtab == 0) {
+          //vessels
+          await Provider.of<NavyVesselCN>(context, listen: false).updateNavyInventory();
+          themeChanger.centralDateTime = Provider.of<NavyVesselCN>(context, listen: false).datetime;
+        }
+      }
+      if (currentTab == 3) {
+        //tbm
+        if (currentSubtab == 0) {
+          //tbm
+          await Provider.of<TBMStatusCN>(context, listen: false).updateTBMInventory();
+          themeChanger.centralDateTime = Provider.of<TBMStatusCN>(context, listen: false).datetime;
+        }
+      }
+      themeChanger.setLoading(false);
+      themeChanger.notifyListeners();
+    };
+
+    List<Widget> iconBar = [
+      SizedBox(width: 5),
+      Tooltip(
+        message: Provider.of<ThemeChanger>(context, listen: true).lang == "kor" ? "언어를 바꾸기" : "Change Language",
+        child: MaterialButton(
+          padding: EdgeInsets.zero,
+          minWidth: 0,
+          hoverColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          onPressed: () {
+            if (Provider.of<ThemeChanger>(context, listen: false).lang == "en") {
+              Provider.of<ThemeChanger>(context, listen: false).lang = "kor";
+              Provider.of<AirChartCN>(context, listen: false).lang = "kor";
+              Provider.of<AircraftStatusCN>(context, listen: false).lang = "kor";
+              Provider.of<AirFieldStatusCN>(context, listen: false).lang = "kor";
+              Provider.of<SAMStatusCN>(context, listen: false).lang = "kor";
+              Provider.of<TBMStatusCN>(context, listen: false).lang = "kor";
+              Provider.of<GroundChartCN>(context, listen: false).lang = "kor";
+              Provider.of<NavyVesselCN>(context, listen: false).lang = "kor";
+              Provider.of<ThemeChanger>(context, listen: false).notifyListeners();
+              Provider.of<AirChartCN>(context, listen: false).notifyListeners();
+              Provider.of<AircraftStatusCN>(context, listen: false).notifyListeners();
+              Provider.of<AirFieldStatusCN>(context, listen: false).notifyListeners();
+              Provider.of<SAMStatusCN>(context, listen: false).notifyListeners();
+              Provider.of<TBMStatusCN>(context, listen: false).notifyListeners();
+              Provider.of<GroundChartCN>(context, listen: false).notifyListeners();
+              Provider.of<NavyVesselCN>(context, listen: false).notifyListeners();
+              refreshData();
+            } else {
+              Provider.of<ThemeChanger>(context, listen: false).lang = "en";
+              Provider.of<AirChartCN>(context, listen: false).lang = "en";
+              Provider.of<AircraftStatusCN>(context, listen: false).lang = "en";
+              Provider.of<AirFieldStatusCN>(context, listen: false).lang = "en";
+              Provider.of<SAMStatusCN>(context, listen: false).lang = "en";
+              Provider.of<TBMStatusCN>(context, listen: false).lang = "en";
+              Provider.of<GroundChartCN>(context, listen: false).lang = "en";
+              Provider.of<NavyVesselCN>(context, listen: false).lang = "en";
+              Provider.of<ThemeChanger>(context, listen: false).notifyListeners();
+              Provider.of<AirChartCN>(context, listen: false).notifyListeners();
+              Provider.of<AircraftStatusCN>(context, listen: false).notifyListeners();
+              Provider.of<AirFieldStatusCN>(context, listen: false).notifyListeners();
+              Provider.of<SAMStatusCN>(context, listen: false).notifyListeners();
+              Provider.of<TBMStatusCN>(context, listen: false).notifyListeners();
+              Provider.of<GroundChartCN>(context, listen: false).notifyListeners();
+              Provider.of<NavyVesselCN>(context, listen: false).notifyListeners();
+              refreshData();
+            }
+          },
+          child: Provider.of<ThemeChanger>(context, listen: true).lang == "kor"
+              ? Image.asset("images/american_flag.png", height: 25)
+              : Image.asset("images/korean_flag.png", height: 25),
+          // child: CircleAvatar(
+          //   backgroundColor: Colors.white,
+          //   child: Provider.of<ThemeChanger>(context, listen: true).lang == "kor"
+          //       ? Text(
+          //           "En",
+          //           style: TextStyle(
+          //             fontWeight: FontWeight.bold,
+          //           ),
+          //         )
+          //       : Text(
+          //           "한",
+          //           style: TextStyle(
+          //             locale: Locale.fromSubtags(languageCode: "ko"),
+          //             fontWeight: FontWeight.bold,
+          //           ),
+          //         ),
+          //   radius: 13,
+          // ),
+        ),
+      ),
+      IconButton(
+        padding: EdgeInsets.zero,
+        icon: Icon(
+          Icons.refresh,
+          size: 25,
+        ),
+        onPressed: refreshData,
+        tooltip: "Refresh Data",
+        color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
+      ),
+      IconButton(
+        padding: EdgeInsets.zero,
+        icon: Icon(
+          Icons.person,
+          color: Provider.of<ThemeChanger>(context, listen: true).apiKey == "" ? null : Colors.green,
+          size: 25,
+        ),
+        onPressed: () async {
+          String user = "";
+          String pass = "";
+
+          return await showDialog(
+            barrierDismissible: true,
+            context: context,
+            builder: (_) => Provider.of<ThemeChanger>(context, listen: true).apiKey == ""
+                ? AlertDialog(
+                    title: Center(
+                      child: Text("Admin Login"),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          await themeChanger.loginUser(user, pass);
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          "Submit",
+                          style: TextStyle(
+                            color: Colors.green,
+                          ),
+                        ),
+                      ),
+                    ],
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 300,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
+                            child: TextFormField(
+                              onChanged: (value) {
+                                user = value;
+                              },
+                              cursorColor: theme.indicatorColor,
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.person),
+                                filled: true,
+                                contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                  borderSide: BorderSide.none,
+                                ),
+                                hintText: "Username",
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: 300,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
+                            child: TextFormField(
+                              onChanged: (value) {
+                                pass = value;
+                              },
+                              obscureText: true,
+                              cursorColor: theme.indicatorColor,
+                              onFieldSubmitted: (value) async {
+                                await themeChanger.loginUser(user, pass);
+                                Navigator.pop(context);
+                              },
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.lock),
+                                filled: true,
+                                contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                  borderSide: BorderSide.none,
+                                ),
+                                hintText: "Password",
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                : AlertDialog(
+                    title: Text("Log out?"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Provider.of<ThemeChanger>(context, listen: false).apiKey = "";
+                          Provider.of<ThemeChanger>(context, listen: false).currentUser = "";
+                          Provider.of<ThemeChanger>(context, listen: false).airAdmin = false;
+                          Provider.of<ThemeChanger>(context, listen: false).navyAdmin = false;
+                          Provider.of<ThemeChanger>(context, listen: false).groundAdmin = false;
+                          Provider.of<ThemeChanger>(context, listen: false).spaceAdmin = false;
+                          CookieManager.addToCookie("username", "");
+                          CookieManager.addToCookie("api_key", "");
+                          CookieManager.addToCookie("air_admin", "");
+                          CookieManager.addToCookie("ground_admin", "");
+                          CookieManager.addToCookie("sea_admin", "");
+                          CookieManager.addToCookie("space_admin", "");
+                          Provider.of<ThemeChanger>(context, listen: false).notifyListeners();
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          "Logout",
+                          style: TextStyle(color: Colors.green),
+                        ),
+                      ),
+                    ],
+                  ),
+          );
+        },
+        tooltip: "Admin Login",
+        color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
+      ),
+    ];
 
     return Scaffold(
       drawer: MediaQuery.of(context).size.width >= 700
@@ -125,235 +424,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       appBar: MediaQuery.of(context).size.width >= 700
           ? null
           : AppBar(
-              actions: [
-                // IconButton(
-                //   padding: EdgeInsets.zero,
-                //   icon: Icon(
-                //     FontAwesomeIcons.solidHandSpock,
-                //     size: 20,
-                //   ),
-                //   onPressed: () async {
-                //     return await showDialog(
-                //       barrierDismissible: true,
-                //       context: context,
-                //       builder: (_) => AlertDialog(
-                //         title: Center(
-                //           child: Text("About Dash"),
-                //         ),
-                //         content: Container(width: 400, child: Text(dashAbout)),
-                //         actions: [
-                //           FlatButton(
-                //             child: Text("Word."),
-                //             onPressed: () {
-                //               Navigator.pop(context);
-                //             },
-                //           )
-                //         ],
-                //       ),
-                //     );
-                //   },
-                //   tooltip: "Live Long and Prosper",
-                //   color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
-                //   highlightColor: Colors.transparent,
-                //   hoverColor: Colors.transparent,
-                //   splashColor: Colors.transparent,
-                // ),
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: Icon(
-                    Icons.refresh,
-                    size: 25,
-                  ),
-                  onPressed: () async {
-                    // print(winWidth);
-                    ThemeChanger themeChanger = Provider.of<ThemeChanger>(context, listen: false);
-                    int currentTab = themeChanger.currentTab;
-                    int currentSubtab = themeChanger.currentSubtab;
-                    themeChanger.setLoading(true);
-                    themeChanger.notifyListeners();
-                    //todo: insert conditions for every subtab
-                    if (currentTab == 0) {
-                      //air
-                      if (currentSubtab == 0) {
-                        //air charts
-                        await Provider.of<AirChartCN>(context, listen: false).updateCharts(themeChanger.lightMode);
-                        themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: true).datetime;
-                      }
-                      if (currentSubtab == 1) {
-                        //aircraft
-                        await Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory();
-                        themeChanger.centralDateTime = Provider.of<AircraftStatusCN>(context, listen: true).datetime;
-                      }
-                      if (currentSubtab == 2) {
-                        //airfields
-                        await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
-                        themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: true).datetime;
-                      }
-                      if (currentSubtab == 3) {
-                        //SAMs
-                        await Provider.of<SAMStatusCN>(context, listen: false).updateSAMStatus();
-                        themeChanger.centralDateTime = Provider.of<SAMStatusCN>(context, listen: true).datetime;
-                      }
-                    }
-                    if (currentTab == 1) {
-                      //ground
-                      if (currentSubtab == 0) {
-                        //ground charts
-                        await Provider.of<GroundChartCN>(context, listen: false).updateCharts(themeChanger.lightMode);
-                        themeChanger.centralDateTime = Provider.of<GroundChartCN>(context, listen: false).datetime;
-                      }
-                    }
-                    if (currentTab == 2) {
-                      //navy
-                      if (currentSubtab == 0) {
-                        //vessels
-                        await Provider.of<NavyVesselCN>(context, listen: false).updateNavyInventory();
-                        themeChanger.centralDateTime = Provider.of<NavyVesselCN>(context, listen: false).datetime;
-                      }
-                    }
-                    if (currentTab == 3) {
-                      //tbm
-                      if (currentSubtab == 0) {
-                        //tbm
-                        await Provider.of<TBMStatusCN>(context, listen: false).updateTBMInventory();
-                        themeChanger.centralDateTime = Provider.of<TBMStatusCN>(context, listen: false).datetime;
-                      }
-                    }
-                    themeChanger.setLoading(false);
-                    themeChanger.notifyListeners();
-                  },
-                  tooltip: "Refresh Data",
-                  color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
-                  highlightColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                ),
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: Icon(
-                    Icons.person,
-                    color: Provider.of<ThemeChanger>(context, listen: true).apiKey == "" ? null : Colors.green,
-                    size: 25,
-                  ),
-                  onPressed: () async {
-                    String user = "";
-                    String pass = "";
-
-                    return await showDialog(
-                      barrierDismissible: true,
-                      context: context,
-                      builder: (_) => Provider.of<ThemeChanger>(context, listen: true).apiKey == ""
-                          ? AlertDialog(
-                              title: Center(
-                                child: Text("Admin Login"),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text(
-                                    "Cancel",
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    await themeChanger.loginUser(user, pass);
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text(
-                                    "Submit",
-                                    style: TextStyle(
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    width: 300,
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
-                                      child: TextFormField(
-                                        onChanged: (value) {
-                                          user = value;
-                                        },
-                                        cursorColor: theme.indicatorColor,
-                                        decoration: InputDecoration(
-                                          prefixIcon: Icon(Icons.person),
-                                          filled: true,
-                                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(50),
-                                            borderSide: BorderSide.none,
-                                          ),
-                                          hintText: "Username",
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 300,
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
-                                      child: TextFormField(
-                                        onChanged: (value) {
-                                          pass = value;
-                                        },
-                                        obscureText: true,
-                                        cursorColor: theme.indicatorColor,
-                                        onFieldSubmitted: (value) async {
-                                          await themeChanger.loginUser(user, pass);
-                                          Navigator.pop(context);
-                                        },
-                                        decoration: InputDecoration(
-                                          prefixIcon: Icon(Icons.lock),
-                                          filled: true,
-                                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(50),
-                                            borderSide: BorderSide.none,
-                                          ),
-                                          hintText: "Password",
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                          : AlertDialog(
-                              title: Text("Log out?"),
-                              actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      Provider.of<ThemeChanger>(context, listen: false).apiKey = "";
-                                      Provider.of<ThemeChanger>(context, listen: false).notifyListeners();
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text("Logout")),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("Cancel"),
-                                )
-                              ],
-                            ),
-                    );
-                  },
-                  tooltip: "Admin Login",
-                  color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
-                  highlightColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                ),
-              ],
+              actions: iconBar,
               centerTitle: true,
               title: Text(
                 "Dash.",
@@ -415,6 +486,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                 child: TabBar(
                                   onTap: (i) {
                                     Provider.of<ThemeChanger>(context, listen: false).currentTab = i;
+                                    Provider.of<ThemeChanger>(context, listen: false).currentSubtab = 0;
                                   },
                                   controller: _tabController,
                                   indicatorColor: theme.colorScheme.onBackground,
@@ -520,307 +592,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                       children: [
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.end,
-                                          children: [
-                                            SizedBox(width: 5),
-                                            Tooltip(
-                                              message: "언어바꾸기",
-                                              child: MaterialButton(
-                                                padding: EdgeInsets.zero,
-                                                minWidth: 0,
-                                                hoverColor: Colors.transparent,
-                                                splashColor: Colors.transparent,
-                                                highlightColor: Colors.transparent,
-                                                onPressed: () {
-                                                  if (Provider.of<ThemeChanger>(context, listen: false).lang == "en") {
-                                                    Provider.of<ThemeChanger>(context, listen: false).lang = "kor";
-                                                    Provider.of<AirChartCN>(context, listen: false).lang = "kor";
-                                                    Provider.of<AircraftStatusCN>(context, listen: false).lang = "kor";
-                                                    Provider.of<AirFieldStatusCN>(context, listen: false).lang = "kor";
-                                                    Provider.of<ThemeChanger>(context, listen: false).notifyListeners();
-                                                    Provider.of<AirChartCN>(context, listen: false).notifyListeners();
-                                                    Provider.of<AircraftStatusCN>(context, listen: false).notifyListeners();
-                                                    Provider.of<AirFieldStatusCN>(context, listen: false).notifyListeners();
-                                                  } else {
-                                                    Provider.of<ThemeChanger>(context, listen: false).lang = "en";
-                                                    Provider.of<AirChartCN>(context, listen: false).lang = "en";
-                                                    Provider.of<AircraftStatusCN>(context, listen: false).lang = "en";
-                                                    Provider.of<AirFieldStatusCN>(context, listen: false).lang = "en";
-                                                    Provider.of<ThemeChanger>(context, listen: false).notifyListeners();
-                                                    Provider.of<AirChartCN>(context, listen: false).notifyListeners();
-                                                    Provider.of<AircraftStatusCN>(context, listen: false).notifyListeners();
-                                                    Provider.of<AirFieldStatusCN>(context, listen: false).notifyListeners();
-                                                  }
-                                                },
-                                                child: CircleAvatar(
-                                                  backgroundColor: Colors.white,
-                                                  child: Provider.of<ThemeChanger>(context, listen: true).lang == "kor"
-                                                      ? Text(
-                                                          "En",
-                                                          style: TextStyle(
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
-                                                        )
-                                                      : Text(
-                                                          "한",
-                                                          style: TextStyle(
-                                                            locale: Locale.fromSubtags(languageCode: "ko"),
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                  radius: 13,
-                                                ),
-                                              ),
-                                            ),
-                                            // IconButton(
-                                            //   padding: EdgeInsets.zero,
-                                            //   icon: Icon(
-                                            //     DashIcons.kor,
-                                            //     size: 20,
-                                            //   ),
-                                            //   onPressed: () {},
-                                            //   tooltip: "Change Language",
-                                            //   color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
-                                            //   highlightColor: Colors.transparent,
-                                            //   hoverColor: Colors.transparent,
-                                            //   splashColor: Colors.transparent,
-                                            // ),
-                                            // IconButton(
-                                            //   padding: EdgeInsets.zero,
-                                            //   icon: Icon(
-                                            //     FontAwesomeIcons.solidHandSpock,
-                                            //     size: 20,
-                                            //   ),
-                                            //   onPressed: () async {
-                                            //     return await showDialog(
-                                            //       barrierDismissible: true,
-                                            //       context: context,
-                                            //       builder: (_) => AlertDialog(
-                                            //         title: Center(
-                                            //           child: Text("About Dash"),
-                                            //         ),
-                                            //         content: Container(width: 400, child: Text(dashAbout)),
-                                            //         actions: [
-                                            //           FlatButton(
-                                            //             child: Text("Word."),
-                                            //             onPressed: () {
-                                            //               Navigator.pop(context);
-                                            //             },
-                                            //           )
-                                            //         ],
-                                            //       ),
-                                            //     );
-                                            //   },
-                                            //   tooltip: "Live Long and Prosper",
-                                            //   color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
-                                            //   highlightColor: Colors.transparent,
-                                            //   hoverColor: Colors.transparent,
-                                            //   splashColor: Colors.transparent,
-                                            // ),
-                                            IconButton(
-                                              padding: EdgeInsets.zero,
-                                              icon: Icon(
-                                                Icons.refresh,
-                                                size: 25,
-                                              ),
-                                              onPressed: () async {
-                                                // print(winWidth);
-                                                ThemeChanger themeChanger = Provider.of<ThemeChanger>(context, listen: false);
-                                                int currentTab = themeChanger.currentTab;
-                                                int currentSubtab = themeChanger.currentSubtab;
-                                                themeChanger.setLoading(true);
-                                                themeChanger.notifyListeners();
-                                                //todo: insert conditions for every subtab
-                                                if (currentTab == 0) {
-                                                  //air
-                                                  if (currentSubtab == 0) {
-                                                    //air charts
-                                                    await Provider.of<AirChartCN>(context, listen: false).updateCharts(themeChanger.lightMode);
-                                                    themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
-                                                  }
-                                                  if (currentSubtab == 1) {
-                                                    //aircraft
-                                                    await Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory();
-                                                    themeChanger.centralDateTime = Provider.of<AircraftStatusCN>(context, listen: false).datetime;
-                                                  }
-                                                  if (currentSubtab == 2) {
-                                                    //airfields
-                                                    await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
-                                                    themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
-                                                  }
-                                                  if (currentSubtab == 3) {
-                                                    //SAMs
-                                                    await Provider.of<SAMStatusCN>(context, listen: false).updateSAMStatus();
-                                                    themeChanger.centralDateTime = Provider.of<SAMStatusCN>(context, listen: true).datetime;
-                                                  }
-                                                }
-                                                if (currentTab == 1) {
-                                                  //ground
-                                                  if (currentSubtab == 0) {
-                                                    //ground charts
-                                                    await Provider.of<GroundChartCN>(context, listen: false).updateCharts(themeChanger.lightMode);
-                                                    themeChanger.centralDateTime = Provider.of<GroundChartCN>(context, listen: false).datetime;
-                                                  }
-                                                }
-                                                if (currentTab == 2) {
-                                                  //navy
-                                                  if (currentSubtab == 0) {
-                                                    //vessels
-                                                    await Provider.of<NavyVesselCN>(context, listen: false).updateNavyInventory();
-                                                    themeChanger.centralDateTime = Provider.of<NavyVesselCN>(context, listen: false).datetime;
-                                                  }
-                                                }
-                                                if (currentTab == 3) {
-                                                  //tbm
-                                                  if (currentSubtab == 0) {
-                                                    //tbm
-                                                    await Provider.of<TBMStatusCN>(context, listen: false).updateTBMInventory();
-                                                    themeChanger.centralDateTime = Provider.of<TBMStatusCN>(context, listen: false).datetime;
-                                                  }
-                                                }
-                                                themeChanger.setLoading(false);
-                                                themeChanger.notifyListeners();
-                                              },
-                                              tooltip: "Refresh Data",
-                                              color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
-                                              highlightColor: Colors.transparent,
-                                              hoverColor: Colors.transparent,
-                                              splashColor: Colors.transparent,
-                                            ),
-                                            IconButton(
-                                              padding: EdgeInsets.zero,
-                                              icon: Icon(
-                                                Icons.person,
-                                                color: Provider.of<ThemeChanger>(context, listen: true).apiKey == "" ? null : Colors.green,
-                                                size: 25,
-                                              ),
-                                              onPressed: () async {
-                                                String user = "";
-                                                String pass = "";
-
-                                                return await showDialog(
-                                                  barrierDismissible: true,
-                                                  context: context,
-                                                  builder: (_) => Provider.of<ThemeChanger>(context, listen: true).apiKey == ""
-                                                      ? AlertDialog(
-                                                          title: Center(
-                                                            child: Text("Admin Login"),
-                                                          ),
-                                                          actions: [
-                                                            TextButton(
-                                                              onPressed: () {
-                                                                Navigator.pop(context);
-                                                              },
-                                                              child: Text(
-                                                                "Cancel",
-                                                                style: TextStyle(
-                                                                  color: Colors.red,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            TextButton(
-                                                              onPressed: () async {
-                                                                await themeChanger.loginUser(user, pass);
-                                                                Navigator.pop(context);
-                                                              },
-                                                              child: Text(
-                                                                "Submit",
-                                                                style: TextStyle(
-                                                                  color: Colors.green,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                          content: Column(
-                                                            mainAxisSize: MainAxisSize.min,
-                                                            children: [
-                                                              Container(
-                                                                width: 300,
-                                                                child: Padding(
-                                                                  padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
-                                                                  child: TextFormField(
-                                                                    onChanged: (value) {
-                                                                      user = value;
-                                                                    },
-                                                                    cursorColor: theme.indicatorColor,
-                                                                    decoration: InputDecoration(
-                                                                      prefixIcon: Icon(Icons.person),
-                                                                      filled: true,
-                                                                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                                                                      border: OutlineInputBorder(
-                                                                        borderRadius: BorderRadius.circular(50),
-                                                                        borderSide: BorderSide.none,
-                                                                      ),
-                                                                      hintText: "Username",
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Container(
-                                                                width: 300,
-                                                                child: Padding(
-                                                                  padding: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
-                                                                  child: TextFormField(
-                                                                    onChanged: (value) {
-                                                                      pass = value;
-                                                                    },
-                                                                    obscureText: true,
-                                                                    cursorColor: theme.indicatorColor,
-                                                                    onFieldSubmitted: (value) async {
-                                                                      await themeChanger.loginUser(user, pass);
-                                                                      Navigator.pop(context);
-                                                                    },
-                                                                    decoration: InputDecoration(
-                                                                      prefixIcon: Icon(Icons.lock),
-                                                                      filled: true,
-                                                                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                                                                      border: OutlineInputBorder(
-                                                                        borderRadius: BorderRadius.circular(50),
-                                                                        borderSide: BorderSide.none,
-                                                                      ),
-                                                                      hintText: "Password",
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                        )
-                                                      : AlertDialog(
-                                                          title: Text("Log out?"),
-                                                          actions: [
-                                                            TextButton(
-                                                              onPressed: () {
-                                                                Navigator.pop(context);
-                                                              },
-                                                              child: Text(
-                                                                "Cancel",
-                                                                style: TextStyle(
-                                                                  color: Colors.red,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            TextButton(
-                                                              onPressed: () {
-                                                                Provider.of<ThemeChanger>(context, listen: false).apiKey = "";
-                                                                Provider.of<ThemeChanger>(context, listen: false).notifyListeners();
-                                                                Navigator.pop(context);
-                                                              },
-                                                              child: Text(
-                                                                "Logout",
-                                                                style: TextStyle(color: Colors.green),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                );
-                                              },
-                                              tooltip: "Admin Login",
-                                              color: Theme.of(context).tabBarTheme.labelColor.withOpacity(0.75),
-                                              highlightColor: Colors.transparent,
-                                              hoverColor: Colors.transparent,
-                                              splashColor: Colors.transparent,
-                                            ),
-                                          ],
+                                          children: iconBar,
                                         ),
                                         Expanded(
                                           child: Row(

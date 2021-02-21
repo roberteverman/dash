@@ -112,7 +112,7 @@ class AircraftStatusCard extends StatelessWidget {
                                           : () async {
                                               //use the AirfieldStatusCN here since this is updating the Airfield table instead of Aircraft table
                                               await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                                aircraftStatus.name,
+                                                aircraftStatus.be,
                                                 "status",
                                                 "OP",
                                                 Provider.of<ThemeChanger>(context, listen: false).apiKey,
@@ -253,14 +253,27 @@ class AircraftStatusCard extends StatelessWidget {
                     onSelectChanged: !Provider.of<ThemeChanger>(context, listen: true).airAdmin
                         ? null
                         : (selected) async {
-                            //todo cant select move if no operational ac available; can't select more to destroy that aren't op; add should cap at num of nonop
-                            int selectedNumber = 0;
+                            int selectedNumber = 1;
                             List<String> selections = ['Move', 'Destroy', 'Revive', 'Add'];
                             String dropdownValue = aircraftStatus.name; //the name of the airfield
                             String aircraftDropdownValue = Provider.of<AircraftStatusCN>(context, listen: false).aircraftList[0];
                             formProcessing = false;
                             String airfield = aircraftStatus.name;
                             List<dynamic> aircraft = aircraftStatus.aircraft;
+                            List<bool> chipVisibility = [true, true, true, true];
+                            int totalNumber = int.parse(aircraft[index]['total'].toString());
+                            int opNumber = int.parse(aircraft[index]['operational'].toString());
+                            int maxNumber = totalNumber - opNumber;
+                            formSelectionIndex = 0;
+
+                            if (opNumber == 0) {
+                              chipVisibility[0] = false;
+                              chipVisibility[1] = false;
+                              formSelectionIndex = 2;
+                            }
+                            if (maxNumber == 0) {
+                              chipVisibility[2] = false;
+                            }
 
                             return await showDialog(
                               barrierDismissible: true,
@@ -286,21 +299,24 @@ class AircraftStatusCard extends StatelessWidget {
                                               children: [
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                  children: List<Widget>.generate(4, (int index) {
+                                                  children: List<Widget>.generate(4, (int chipIndex) {
                                                     return ChoiceChip(
                                                       selectedColor: Colors.white,
                                                       label: Text(
-                                                        selections[index],
+                                                        selections[chipIndex],
                                                         style: TextStyle(
-                                                            color: formSelectionIndex == index ? Theme.of(context).backgroundColor : Colors.white),
+                                                            color:
+                                                                formSelectionIndex == chipIndex ? Theme.of(context).backgroundColor : Colors.white),
                                                       ),
-                                                      selected: formSelectionIndex == index,
-                                                      onSelected: (bool selected) {
-                                                        setState(() {
-                                                          formSelectionIndex = selected ? index : null;
-                                                          selectedNumber = 0;
-                                                        });
-                                                      },
+                                                      selected: formSelectionIndex == chipIndex,
+                                                      onSelected: !chipVisibility[chipIndex]
+                                                          ? null
+                                                          : (bool selected) {
+                                                              setState(() {
+                                                                formSelectionIndex = chipIndex;
+                                                                selectedNumber = 1;
+                                                              });
+                                                            },
                                                     );
                                                   }),
                                                 ),
@@ -342,10 +358,8 @@ class AircraftStatusCard extends StatelessWidget {
                                                             print(formSelectionIndex);
                                                             int maxNumber = 0;
                                                             if (formSelectionIndex == 0) {
-                                                              print("B");
                                                               maxNumber = int.parse(aircraft[index]['operational'].toString());
                                                             } else if (formSelectionIndex == 1) {
-                                                              print("A");
                                                               maxNumber = int.parse(aircraft[index]['operational'].toString());
                                                             } else if (formSelectionIndex == 2) {
                                                               int total = int.parse(aircraft[index]['total'].toString());
@@ -425,8 +439,8 @@ class AircraftStatusCard extends StatelessWidget {
                                           formSelectionIndex,
                                           selectedNumber,
                                           formSelectionIndex == 3 ? aircraftDropdownValue : aircraft[index]['type'],
-                                          airfield,
-                                          dropdownValue,
+                                          Provider.of<AircraftStatusCN>(context, listen: false).airfieldBEMap[airfield],
+                                          Provider.of<AircraftStatusCN>(context, listen: false).airfieldBEMap[dropdownValue],
                                           Provider.of<ThemeChanger>(context, listen: false).apiKey,
                                           Provider.of<ThemeChanger>(context, listen: false).currentUser,
                                         );

@@ -192,7 +192,7 @@ class SAMStatusCard extends StatelessWidget {
                       tooltip: "Radar\nStatus: " + samStatus.rdr,
                       status: samStatus.rdr,
                       parentAirfield: samStatus.name,
-                      field: "rcb",
+                      field: "rdr",
                       be: samStatus.be,
                     ),
                     SAMStatusChip(

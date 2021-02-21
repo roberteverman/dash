@@ -129,6 +129,19 @@ class NavyVesselStatusCard extends StatelessWidget {
                             List<String> selections = ['Destroy', 'Revive'];
                             formProcessing = false;
 
+                            List<bool> chipVisibility = [true, true];
+                            formSelectionIndex = 0;
+                            int totalVessels = navyVesselCategory.vesselClassStatusList[index].total;
+                            int opVessels = navyVesselCategory.vesselClassStatusList[index].operational;
+
+                            if (opVessels == 0) {
+                              chipVisibility[0] = false;
+                              formSelectionIndex = 1;
+                            }
+                            if (totalVessels - opVessels == 0) {
+                              chipVisibility[1] = false;
+                            }
+
                             return await showDialog(
                               barrierDismissible: true,
                               context: context,
@@ -158,22 +171,24 @@ class NavyVesselStatusCard extends StatelessWidget {
                                               children: [
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                  children: List<Widget>.generate(2, (int index) {
+                                                  children: List<Widget>.generate(2, (int chipIndex) {
                                                     return ChoiceChip(
                                                       selectedColor: Colors.white,
                                                       label: Text(
-                                                        selections[index],
+                                                        selections[chipIndex],
                                                         style: TextStyle(
-                                                          color: formSelectionIndex == index ? Theme.of(context).backgroundColor : Colors.white,
+                                                          color: formSelectionIndex == chipIndex ? Theme.of(context).backgroundColor : Colors.white,
                                                         ),
                                                       ),
-                                                      selected: formSelectionIndex == index,
-                                                      onSelected: (bool selected) {
-                                                        setState(() {
-                                                          formSelectionIndex = selected ? index : null;
-                                                          selectedNumber = 1;
-                                                        });
-                                                      },
+                                                      selected: formSelectionIndex == chipIndex,
+                                                      onSelected: !chipVisibility[chipIndex]
+                                                          ? null
+                                                          : (bool selected) {
+                                                              setState(() {
+                                                                formSelectionIndex = chipIndex;
+                                                                selectedNumber = 1;
+                                                              });
+                                                            },
                                                     );
                                                   }),
                                                 ),

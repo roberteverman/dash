@@ -127,6 +127,25 @@ class TBMStatusCard extends StatelessWidget {
                             int selectedNumber = 1;
                             List<String> selections = ['Destroy', 'Revive'];
                             formProcessing = false;
+                            List<bool> chipVisibility = [true, true];
+                            formSelectionIndex = 0;
+                            int itemInit;
+                            int itemTotal;
+                            if (index == 0) {
+                              itemInit = tbmClassStatus.mslInit;
+                              itemTotal = tbmClassStatus.mslTotal;
+                            } else {
+                              itemInit = tbmClassStatus.telInit;
+                              itemTotal = tbmClassStatus.telTotal;
+                            }
+
+                            if (itemTotal == 0) {
+                              chipVisibility[0] = false;
+                              formSelectionIndex = 1;
+                            }
+                            if (itemInit - itemTotal == 0) {
+                              chipVisibility[1] = false;
+                            }
 
                             return await showDialog(
                               barrierDismissible: true,
@@ -153,22 +172,24 @@ class TBMStatusCard extends StatelessWidget {
                                               children: [
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                  children: List<Widget>.generate(2, (int index) {
+                                                  children: List<Widget>.generate(2, (int chipIndex) {
                                                     return ChoiceChip(
                                                       selectedColor: Colors.white,
                                                       label: Text(
-                                                        selections[index],
+                                                        selections[chipIndex],
                                                         style: TextStyle(
-                                                          color: formSelectionIndex == index ? Theme.of(context).backgroundColor : Colors.white,
+                                                          color: formSelectionIndex == chipIndex ? Theme.of(context).backgroundColor : Colors.white,
                                                         ),
                                                       ),
-                                                      selected: formSelectionIndex == index,
-                                                      onSelected: (bool selected) {
-                                                        setState(() {
-                                                          formSelectionIndex = selected ? index : null;
-                                                          selectedNumber = 1;
-                                                        });
-                                                      },
+                                                      selected: formSelectionIndex == chipIndex,
+                                                      onSelected: !chipVisibility[chipIndex]
+                                                          ? null
+                                                          : (bool selected) {
+                                                              setState(() {
+                                                                formSelectionIndex = chipIndex;
+                                                                selectedNumber = 1;
+                                                              });
+                                                            },
                                                     );
                                                   }),
                                                 ),

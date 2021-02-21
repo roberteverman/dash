@@ -32,6 +32,12 @@ class _GroundMap2State extends State<GroundMap2> {
   }
 
   @override
+  void dispose() {
+    mapShapeLayerController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // List<GroundUnitStatus> groundChildrenStatusList = Provider.of<GroundChartCN>(context, listen: true).childrenStatus;
     // GroundUnitStatus groundParentStatus = Provider.of<GroundChartCN>(context, listen: true).parentStatus;

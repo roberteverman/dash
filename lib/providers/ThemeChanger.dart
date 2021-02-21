@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dash/helpers/CookieManager.dart';
 import 'package:dash/helpers/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -65,6 +68,17 @@ class ThemeChanger extends ChangeNotifier {
         groundAdmin = body['ground'];
         navyAdmin = body['sea'];
         spaceAdmin = body['space'];
+
+        try {
+          CookieManager.addToCookie("username", username);
+          CookieManager.addToCookie("api_key", apiKey);
+          CookieManager.addToCookie("air_admin", airAdmin.toString());
+          CookieManager.addToCookie("ground_admin", airAdmin.toString());
+          CookieManager.addToCookie("sea_admin", airAdmin.toString());
+          CookieManager.addToCookie("space_admin", airAdmin.toString());
+        } catch (e) {
+          print(e);
+        }
       }
       notifyListeners();
     } catch (e) {
