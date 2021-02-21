@@ -105,7 +105,7 @@ class SAMStatusCard extends StatelessWidget {
                                           ? null
                                           : () async {
                                               await Provider.of<SAMStatusCN>(context, listen: false).pushSAMStatus(
-                                                samStatus.name,
+                                                samStatus.be,
                                                 "status",
                                                 "OP",
                                                 Provider.of<ThemeChanger>(context, listen: false).apiKey,
@@ -130,7 +130,7 @@ class SAMStatusCard extends StatelessWidget {
                                           ? null
                                           : () async {
                                               await Provider.of<SAMStatusCN>(context, listen: false).pushSAMStatus(
-                                                samStatus.name,
+                                                samStatus.be,
                                                 "status",
                                                 "LIMOP",
                                                 Provider.of<ThemeChanger>(context, listen: false).apiKey,
@@ -150,7 +150,7 @@ class SAMStatusCard extends StatelessWidget {
                                           ? null
                                           : () async {
                                               await Provider.of<SAMStatusCN>(context, listen: false).pushSAMStatus(
-                                                samStatus.name,
+                                                samStatus.be,
                                                 "status",
                                                 "NONOP",
                                                 Provider.of<ThemeChanger>(context, listen: false).apiKey,
@@ -187,6 +187,14 @@ class SAMStatusCard extends StatelessWidget {
                 child: Wrap(
                   runAlignment: WrapAlignment.spaceBetween,
                   children: [
+                    SAMStatusChip(
+                      text: "RDR",
+                      tooltip: "Radar\nStatus: " + samStatus.rdr,
+                      status: samStatus.rdr,
+                      parentAirfield: samStatus.name,
+                      field: "rcb",
+                      be: samStatus.be,
+                    ),
                     SAMStatusChip(
                       text: "RCB",
                       tooltip: "Radar Control Bunker\nStatus: " + samStatus.rcb,

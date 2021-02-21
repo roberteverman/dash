@@ -22,7 +22,7 @@ class AirfieldStatusDoughnutChart extends StatelessWidget {
       ),
       ChartData(
         'LIMOP',
-        10,
+        Provider.of<AirChartCN>(context, listen: true).numLimopAfld.toDouble(),
         (Provider.of<AirChartCN>(context, listen: true).numLimopAfld / Provider.of<AirChartCN>(context, listen: true).airfieldList.length * 100)
                 .toStringAsFixed(1) +
             "%",
@@ -30,7 +30,7 @@ class AirfieldStatusDoughnutChart extends StatelessWidget {
       ),
       ChartData(
         'NONOP',
-        10,
+        Provider.of<AirChartCN>(context, listen: true).numNonopAfld.toDouble(),
         (Provider.of<AirChartCN>(context, listen: true).numNonopAfld / Provider.of<AirChartCN>(context, listen: true).airfieldList.length * 100)
                 .toStringAsFixed(1) +
             "%",

@@ -26,12 +26,18 @@ class AirChartCN extends ChangeNotifier {
   int numOpAircraft = 0;
   int totalAircraft = 0;
   String lang = "en";
+  String wmsLayer = "";
+  String mapShapeSource = "";
+  String shapeDataField = "";
 
   Future<void> updateCharts(bool lightMode) async {
     String configString = await rootBundle.loadString('config/config.json');
     Map configJSON = json.decode(configString);
     refreshRate = configJSON['refresh_rate'];
     mapServerURL = lightMode ? configJSON['map_light'] : configJSON['map_dark'];
+    wmsLayer = configJSON['wms_layer'];
+    mapShapeSource = configJSON['map_shape_source'];
+    shapeDataField = configJSON['shape_data_field'];
 
     airfieldStatus = [];
     airfieldInventory = [];

@@ -47,7 +47,7 @@ class _AirMapState extends State<AirMap> {
             ),
             layers: [
               TileLayerOptions(
-                urlTemplate: Provider.of<AirChartCN>(context, listen: true).mapServerURL,
+                // urlTemplate: Provider.of<AirChartCN>(context, listen: true).mapServerURL,
                 // tms: false,
                 // wmsOptions: WMSTileLayerOptions(
                 //   // baseUrl: 'https://maps.gvs.nga.mil:443/arcgis/services/CanvasMaps/Midnight/MapServer/WmsServer?',
@@ -55,6 +55,14 @@ class _AirMapState extends State<AirMap> {
                 //   baseUrl: Provider.of<AirChartCN>(context, listen: true).wmsServerURL,
                 //   layers: [Provider.of<AirChartCN>(context, listen: true).wmsLayer],
                 // ),
+                tileSize: 512,
+                wmsOptions: WMSTileLayerOptions(
+                  baseUrl: Provider.of<AirChartCN>(context, listen: true).mapServerURL,
+                  layers: [Provider.of<AirChartCN>(context, listen: true).wmsLayer],
+                  // baseUrl: Provider.of<AirChartCN>(context, listen: true).mapServerURL,
+                  // layers: [Provider.of<AirChartCN>(context, listen: true).wmsLayer],
+                  // crs: Epsg4326(),
+                ),
               ),
               MarkerLayerOptions(
                 markers: Provider.of<AirChartCN>(context, listen: true).markers,

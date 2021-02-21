@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dash/charts/air/AirDualChart.dart';
-import 'package:dash/charts/air/AirMap.dart';
+import 'package:dash/charts/air/AirMap2.dart';
 import 'package:dash/charts/air/AircraftAirDivisionRadialChart.dart';
 import 'package:dash/charts/air/AircraftAirfieldBarChart.dart';
 import 'package:dash/charts/air/AircraftTypeBarChart.dart';
@@ -123,7 +123,7 @@ class _AirChartSubtabState extends State<AirChartSubtab> with WidgetsBindingObse
                                     child: Container(
                                       decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(30)),
                                       padding: EdgeInsets.all(20),
-                                      child: AirMap(),
+                                      child: AirMap2(),
                                     ),
                                   ),
                                   Container(

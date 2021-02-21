@@ -7,10 +7,11 @@ import 'package:dash/providers/air/AirfieldStatusCN.dart';
 import 'package:dash/providers/air/SAMStatusCN.dart';
 import 'package:dash/providers/ground/GroundChartCN.dart';
 import 'package:dash/providers/navy/NavyVesselCN.dart';
+import 'package:dash/providers/tbm/TBMStatusCN.dart';
 import 'package:dash/tabs/AirTab.dart';
 import 'package:dash/tabs/GroundTab.dart';
 import 'package:dash/tabs/NavyTab.dart';
-import 'package:dash/tabs/SpaceTab.dart';
+import 'package:dash/tabs/TBMTab.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -208,6 +209,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         //vessels
                         await Provider.of<NavyVesselCN>(context, listen: false).updateNavyInventory();
                         themeChanger.centralDateTime = Provider.of<NavyVesselCN>(context, listen: false).datetime;
+                      }
+                    }
+                    if (currentTab == 3) {
+                      //tbm
+                      if (currentSubtab == 0) {
+                        //tbm
+                        await Provider.of<TBMStatusCN>(context, listen: false).updateTBMInventory();
+                        themeChanger.centralDateTime = Provider.of<TBMStatusCN>(context, listen: false).datetime;
                       }
                     }
                     themeChanger.setLoading(false);
@@ -658,6 +667,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                                     //vessels
                                                     await Provider.of<NavyVesselCN>(context, listen: false).updateNavyInventory();
                                                     themeChanger.centralDateTime = Provider.of<NavyVesselCN>(context, listen: false).datetime;
+                                                  }
+                                                }
+                                                if (currentTab == 3) {
+                                                  //tbm
+                                                  if (currentSubtab == 0) {
+                                                    //tbm
+                                                    await Provider.of<TBMStatusCN>(context, listen: false).updateTBMInventory();
+                                                    themeChanger.centralDateTime = Provider.of<TBMStatusCN>(context, listen: false).datetime;
                                                   }
                                                 }
                                                 themeChanger.setLoading(false);

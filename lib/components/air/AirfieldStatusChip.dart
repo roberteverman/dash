@@ -85,7 +85,7 @@ class AirfieldStatusChip extends StatelessWidget {
                                   ? null
                                   : () async {
                                       await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                        parentAirfield,
+                                        be,
                                         field,
                                         "OP",
                                         Provider.of<ThemeChanger>(context, listen: false).apiKey,
@@ -110,7 +110,7 @@ class AirfieldStatusChip extends StatelessWidget {
                                   ? null
                                   : () async {
                                       await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                        parentAirfield,
+                                        be,
                                         field,
                                         "LIMOP",
                                         Provider.of<ThemeChanger>(context, listen: false).apiKey,
@@ -130,7 +130,7 @@ class AirfieldStatusChip extends StatelessWidget {
                                   ? null
                                   : () async {
                                       await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                        parentAirfield,
+                                        be,
                                         field,
                                         "NONOP",
                                         Provider.of<ThemeChanger>(context, listen: false).apiKey,

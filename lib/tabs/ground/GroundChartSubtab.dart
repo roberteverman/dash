@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dash/charts/air/AirDualChart.dart';
+import 'package:dash/charts/air/AirMap2.dart';
 import 'package:dash/charts/ground/GroundMap.dart';
 import 'package:dash/charts/air/AircraftAirDivisionRadialChart.dart';
 import 'package:dash/charts/air/AircraftAirfieldBarChart.dart';
@@ -8,6 +9,7 @@ import 'package:dash/charts/air/AircraftTypeBarChart.dart';
 import 'package:dash/charts/air/AircraftTypeRadarChart.dart';
 import 'package:dash/charts/air/AirfieldStatusDoughnutChart.dart';
 import 'package:dash/charts/air/AircraftStrengthGauge.dart';
+import 'package:dash/charts/ground/GroundMap2.dart';
 import 'package:dash/charts/ground/GroundSubCommandHealthChart.dart';
 import 'package:dash/components/ChartCard.dart';
 import 'package:dash/providers/ThemeChanger.dart';
@@ -124,7 +126,8 @@ class _GroundChartSubtabState extends State<GroundChartSubtab> {
                                     child: Container(
                                       decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(30)),
                                       padding: EdgeInsets.all(20),
-                                      child: GroundMap(),
+                                      child: GroundMap2(),
+                                      // child: AirMap2(),
                                     ),
                                   ),
                                   Container(

@@ -1,4 +1,5 @@
 import 'package:dash/components/DashTab.dart';
+import 'package:dash/tabs/tbm/TBMSubtab.dart';
 import 'package:flutter/material.dart';
 
 class SpaceTab extends StatelessWidget {
@@ -9,7 +10,7 @@ class SpaceTab extends StatelessWidget {
         Tab(child: Text("TBMs")),
       ],
       contentTabs: [
-        Center(child: Text("TBM View")),
+        TBMSubtab(),
       ],
     );
   }

@@ -4,6 +4,7 @@ import 'package:dash/providers/ground/GroundChartCN.dart';
 import 'package:dash/tabs/ground/GroundChartSubtab.dart';
 import 'package:easy_web_view/easy_web_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class GroundTab extends StatelessWidget {
   @override
@@ -12,22 +13,22 @@ class GroundTab extends StatelessWidget {
       contentTabLabels: [
         // Tab(child: Icon(Icons.bar_chart)),
         Tab(child: Text("Ground")),
-        // Tab(child: Text("Armor")),
+        // Tab(child: Text("Bonus Test")),
         // Tab(child: Text("Infantry")),
       ],
       contentTabs: [
         GroundChartSubtab(),
         // Center(
-        //   // child: Expanded(
-        //   //   child: EasyWebView(
-        //   //     src: "https://flutter.dev",
-        //   //     onLoaded: () {
-        //   //       print("loaded");
-        //   //     },
-        //   //     key: ValueKey("1"),
-        //   //   ),
-        //   // ),
-        //   child: Text("Ground Chart View"),
+        //   child: Expanded(
+        //     child: EasyWebView(
+        //       src: Provider.of<GroundChartCN>(context, listen: true).mowURL,
+        //       onLoaded: () {
+        //         print("loaded");
+        //       },
+        //       key: ValueKey("1"),
+        //     ),
+        //   ),
+        //   // child: Text("Ground Chart View"),
         // ),
         // Center(child: Text("LRA View")),
         // Center(child: Text("Armor View")),

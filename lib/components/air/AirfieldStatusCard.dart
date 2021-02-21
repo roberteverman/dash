@@ -105,7 +105,7 @@ class AirfieldStatusCard extends StatelessWidget {
                                           ? null
                                           : () async {
                                               await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                                airfieldStatus.name,
+                                                airfieldStatus.be,
                                                 "status",
                                                 "OP",
                                                 Provider.of<ThemeChanger>(context, listen: false).apiKey,
@@ -130,7 +130,7 @@ class AirfieldStatusCard extends StatelessWidget {
                                           ? null
                                           : () async {
                                               await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                                airfieldStatus.name,
+                                                airfieldStatus.be,
                                                 "status",
                                                 "LIMOP",
                                                 Provider.of<ThemeChanger>(context, listen: false).apiKey,
@@ -150,7 +150,7 @@ class AirfieldStatusCard extends StatelessWidget {
                                           ? null
                                           : () async {
                                               await Provider.of<AirFieldStatusCN>(context, listen: false).pushAirfieldStatus(
-                                                airfieldStatus.name,
+                                                airfieldStatus.be,
                                                 "status",
                                                 "NONOP",
                                                 Provider.of<ThemeChanger>(context, listen: false).apiKey,

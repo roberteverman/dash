@@ -54,7 +54,7 @@ class AirfieldInventory {
 }
 
 class SAMStatus {
-  SAMStatus({this.type, this.name, this.lat, this.lon, this.status, this.be, this.rcb, this.lcb, this.c2b});
+  SAMStatus({this.type, this.name, this.lat, this.lon, this.status, this.be, this.rcb, this.lcb, this.c2b, this.rdr});
   String type;
   String name;
   double lat;
@@ -64,6 +64,7 @@ class SAMStatus {
   String rcb;
   String lcb;
   String c2b;
+  String rdr;
 
   factory SAMStatus.fromJson(Map<String, dynamic> json) {
     return SAMStatus(
@@ -75,7 +76,8 @@ class SAMStatus {
         be: json['be'],
         rcb: json['rcb'],
         lcb: json['lcb'],
-        c2b: json['c2b']);
+        c2b: json['c2b'],
+        rdr: json['rdr']);
   }
 }
 
@@ -123,4 +125,18 @@ class NavyVesselClassStatus {
       operational: json['operational'],
     );
   }
+}
+
+class TBMInventory {
+  String tbmType;
+  List<TBMClassStatus> tbmClassStatusList;
+}
+
+class TBMClassStatus {
+  TBMClassStatus({this.tbmClass, this.mslInit, this.mslTotal, this.telInit, this.telTotal});
+  String tbmClass;
+  int mslInit;
+  int mslTotal;
+  int telInit;
+  int telTotal;
 }
