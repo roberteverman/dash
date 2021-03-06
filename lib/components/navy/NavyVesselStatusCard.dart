@@ -8,14 +8,26 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
 class NavyVesselStatusCard extends StatelessWidget {
-  const NavyVesselStatusCard({this.navyVesselCategory, this.fleet});
+  const NavyVesselStatusCard({this.navyVesselCategory, this.fleet, this.description});
   final NavyVesselCategory navyVesselCategory;
   final String fleet;
+  final String description;
 
   @override
   Widget build(BuildContext context) {
     bool formProcessing = false;
     int formSelectionIndex = 0;
+    String columnTitle;
+
+    if (description == "Vessel") {
+      columnTitle = "Type";
+    } else if (description == "Submarine") {
+      columnTitle = "Location";
+    } else if (description == "CDCM") {
+      columnTitle = "Site";
+    } else {
+      columnTitle = "Error";
+    }
 
     return Card(
       elevation: 10,
@@ -59,7 +71,7 @@ class NavyVesselStatusCard extends StatelessWidget {
                     label: Expanded(
                       child: Center(
                         child: Text(
-                          'Class',
+                          columnTitle,
                         ),
                       ),
                     ),
@@ -105,6 +117,7 @@ class NavyVesselStatusCard extends StatelessWidget {
                           animateFromLastPercent: true,
                           backgroundColor: Colors.white24,
                           progressColor: Colors.white,
+                          addAutomaticKeepAlive: false,
                         ),
                       ),
                       DataCell(
@@ -267,6 +280,7 @@ class NavyVesselStatusCard extends StatelessWidget {
                                           formProcessing = true;
                                         });
                                         await Provider.of<NavyVesselCN>(context, listen: false).pushNavyInventory(
+                                          description,
                                           formSelectionIndex,
                                           selectedNumber,
                                           navyVesselCategory.vesselClassStatusList[index].vesselClass,

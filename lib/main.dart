@@ -15,14 +15,6 @@ import 'package:url_strategy/url_strategy.dart';
 import 'dart:ui' as ui;
 
 void main() {
-  // ignore: undefined_prefixed_name
-  // ui.platformViewRegistry.registerViewFactory(
-  //     'hello-world-html',
-  //     (int viewId) => IFrameElement()
-  //       ..width = '640'
-  //       ..height = '360'
-  //       ..src = 'http://www.google.com/'
-  //       ..style.border = 'none');
   setPathUrlStrategy();
   runApp(MyApp());
 }

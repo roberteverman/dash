@@ -26,7 +26,6 @@ class GroundChartCN extends ChangeNotifier {
   String mowURL = "";
   String mapShapeSource = "";
   String shapeDataField = "";
-  MapShapeLayer mapShapeLayer;
   MapShapeLayerController mapShapeLayerController = MapShapeLayerController();
 
   Future<void> updateCharts(bool lightMode) async {
@@ -87,6 +86,7 @@ class GroundChartCN extends ChangeNotifier {
               displayParent = "ARMY COMMAND";
               visitedUnits = [];
               updateCharts(lightMode);
+              updateMap();
             },
             splashColor: Colors.transparent,
             hoverColor: Colors.transparent,
@@ -118,8 +118,8 @@ class GroundChartCN extends ChangeNotifier {
                     visitedUnits.removeAt(j);
                   }
                 }
-                mapShapeLayerController.notifyListeners();
                 updateCharts(lightMode);
+                updateMap();
               },
             ),
           );
@@ -135,59 +135,21 @@ class GroundChartCN extends ChangeNotifier {
         );
       }
     }
-    mapShapeLayer = MapShapeLayer(
-      controller: mapShapeLayerController,
-      zoomPanBehavior: MapZoomPanBehavior(
-        toolbarSettings: MapToolbarSettings(
-          position: MapToolbarPosition.bottomRight,
-          direction: Axis.vertical,
-        ),
-      ),
-      // showDataLabels: true,
-      source: MapShapeSource.network(
-        mapShapeSource,
-        shapeDataField: shapeDataField,
-        // shapeDataField: "ADM1_EN",
-      ),
-      initialMarkersCount: childrenStatus.length + 1,
-      markerTooltipBuilder: (BuildContext context, int i) {
-        if (i == childrenStatus.length) {
-          return Text(
-            parentStatus.name + "\nStrength: " + parentStatus.strength.toString() + "%",
-            style: TextStyle(
-              color: Colors.black,
-            ),
-          );
-        } else {
-          return Text(
-            childrenStatus[i].name + "\nStrength: " + childrenStatus[i].strength.toString() + "%",
-            style: TextStyle(
-              color: Colors.black,
-            ),
-          );
-        }
-      },
-      markerBuilder: (BuildContext context, int i) {
-        if (i == childrenStatus.length) {
-          return MapMarker(
-            latitude: parentStatus.lat,
-            longitude: parentStatus.lon,
-            child: Image.asset("images/SymbolServer.png"), //todo set up so that image from network works
-          );
-        } else {
-          return MapMarker(
-            latitude: childrenStatus[i].lat,
-            longitude: childrenStatus[i].lon,
-            child: Image.asset("images/SymbolServer.png"), //todo set up so that image from network works
-          );
-        }
-      },
-    );
+    updateMap();
+    notifyListeners();
+  }
 
+  void updateMap() {
+    //mapShapeLayerController.updateMarkers(List.generate(childrenStatus.length, (i) => i));
+    // mapShapeLayerController.notifyListeners();
+    notifyListeners(); //must do notify listeners twice because markers depends on new airfieldInventory list
     mapShapeLayerController.clearMarkers();
-    for (int i = 0; i < childrenStatus.length + 1; i++) {
+    for (int i = 0; i < childrenStatus.length; i++) {
       mapShapeLayerController.insertMarker(i);
     }
+    mapShapeLayerController.updateMarkers(List.generate(childrenStatus.length, (i) => i));
+    print("updated");
+    mapShapeLayerController.notifyListeners();
     notifyListeners();
   }
 

@@ -65,6 +65,7 @@ class _AircraftSubtabState extends State<AircraftSubtab> {
   @override
   void dispose() {
     super.dispose();
+    print("timer properly disposed");
     timer.cancel();
   }
 
@@ -104,6 +105,7 @@ class _AircraftSubtabState extends State<AircraftSubtab> {
                     staggeredTileBuilder: (int index) => new StaggeredTile.fit(1),
                     mainAxisSpacing: 25,
                     crossAxisSpacing: 25,
+                    addAutomaticKeepAlives: false, //this is a MUST or else timers will stack on top of timers
                   ),
                 );
         }

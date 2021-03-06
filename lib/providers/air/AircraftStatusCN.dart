@@ -29,19 +29,26 @@ class AircraftStatusCN extends ChangeNotifier {
     airDivisionList = [];
     aircraftList = [];
 
-    if (configJSON['use_test_data'] == true) {
-      // USING TEST DATA
-      datetime = testAirfieldInventory['datetime'];
-      for (int i = 0; i < testAirfieldInventory['data'].length; i++) {
-        //populate airfieldInventory list with test data
-        AirfieldInventory newEntry = AirfieldInventory.fromJson(testAirfieldInventory['data'][i]);
+    //USING SERVER DATA
+    String url = configJSON['aircraft_get'] + "?lang=" + lang;
+    var response = await http.get(url); //grab data from server
+    if (response.statusCode == 200) {
+      var retrievedData = json.decode(response.body)['data'].toList();
+      datetime = json.decode(response.body)['datetime'];
+      for (int i = 0; i < retrievedData.length; i++) {
+        //populate airfieldInventory list with response data
+        AirfieldInventory newEntry = AirfieldInventory.fromJson(retrievedData[i]);
         airfieldInventory.add(newEntry);
+        for (int j = 0; j < newEntry.aircraft.length; j++) {
+          if (!aircraftList.contains(newEntry.aircraft[j]['type'])) {
+            //Create unique list of aircraft types
+            aircraftList.add(newEntry.aircraft[j]['type']);
+          }
+        }
+        aircraftList.sort((a, b) => a.compareTo(b));
       }
       for (AirfieldInventory airfield in airfieldInventory) {
-        if (!airfieldList.contains(airfield.name)) {
-          //create unique list of airfields
-          airfieldList.add(airfield.name);
-        }
+        //todo add more than initial of zero aircraft
         if (!airDivisionList.contains(airfield.airdiv)) {
           //create unique list of Air Divisions
           airDivisionList.add(airfield.airdiv);
@@ -49,42 +56,21 @@ class AircraftStatusCN extends ChangeNotifier {
         airDivisionList.sort(); //alphabetize everything
         airfieldInventory.sort((a, b) => a.name.compareTo(b.name));
       }
-    } else {
-      //USING SERVER DATA
-      String url = configJSON['aircraft_get'] + "?lang=" + lang;
-      var response = await http.get(url); //grab data from server
+    }
+    if (airfieldList.isEmpty) {
+      url = configJSON['airfield_list_fetch'];
+      response = await http.get(url);
       if (response.statusCode == 200) {
         var retrievedData = json.decode(response.body)['data'].toList();
-        datetime = json.decode(response.body)['datetime'];
         for (int i = 0; i < retrievedData.length; i++) {
-          //populate airfieldInventory list with response data
-          AirfieldInventory newEntry = AirfieldInventory.fromJson(retrievedData[i]);
-          airfieldInventory.add(newEntry);
-          for (int j = 0; j < newEntry.aircraft.length; j++) {
-            if (!aircraftList.contains(newEntry.aircraft[j]['type'])) {
-              //Create unique list of aircraft types
-              aircraftList.add(newEntry.aircraft[j]['type']);
-            }
-          }
-          aircraftList.sort((a, b) => a.compareTo(b));
+          airfieldList.add(retrievedData[i]['airfield']);
+          airfieldBEList.add(retrievedData[i]['be']);
+          airfieldBEMap[retrievedData[i]['airfield']] = retrievedData[i]['be'];
         }
-        for (AirfieldInventory airfield in airfieldInventory) {
-          //todo add more than initial of zero aircraft
-          if (!airfieldList.contains(airfield.name)) {
-            //create unique list of airfields
-            airfieldList.add(airfield.name);
-            airfieldBEList.add(airfield.be);
-            airfieldBEMap[airfield.name] = airfield.be;
-          }
-          if (!airDivisionList.contains(airfield.airdiv)) {
-            //create unique list of Air Divisions
-            airDivisionList.add(airfield.airdiv);
-          }
-          airDivisionList.sort(); //alphabetize everything
-          airfieldInventory.sort((a, b) => a.name.compareTo(b.name));
-        }
+        airfieldList.sort();
       }
     }
+
     notifyListeners();
   }
 

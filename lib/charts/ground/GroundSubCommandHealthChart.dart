@@ -56,6 +56,7 @@ class GroundSubCommandHealthChart extends StatelessWidget {
                 onTap: () {
                   Provider.of<GroundChartCN>(context, listen: false).visitedUnits.add(unit);
                   Provider.of<GroundChartCN>(context, listen: false).displayParent = unit;
+                  Provider.of<GroundChartCN>(context, listen: false).updateMap();
                   Provider.of<GroundChartCN>(context, listen: false).updateCharts(Provider.of<ThemeChanger>(context, listen: false).lightMode);
                 },
               ),

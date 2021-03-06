@@ -14,10 +14,21 @@
   "sam_post": "https://bobbysworld.io/cgi-bin/sam_post.py",
   "tbm_get": "https://bobbysworld.io/cgi-bin/tbm_fetch.py",
   "tbm_post": "https://bobbysworld.io/cgi-bin/tbm_post.py",
+  "navy_vessel_get": "https://bobbysworld.io/cgi-bin/navy_vessel_fetch.py",
+  "navy_vessel_post": "https://bobbysworld.io/cgi-bin/navy_vessel_post.py",
+  "navy_sub_get": "https://bobbysworld.io/cgi-bin/navy_sub_fetch.py",
+  "navy_sub_post": "https://bobbysworld.io/cgi-bin/navy_sub_post.py",
+  "navy_cdcm_get": "https://bobbysworld.io/cgi-bin/navy_cdcm_fetch.py",
+  "navy_cdcm_post": "https://bobbysworld.io/cgi-bin/navy_cdcm_post.py",
+  "navy_chart_get": "https://bobbysworld.io/cgi-bin/navy_chart_fetch.py",
+  "navy_navcom_get": "https://bobbysworld.io/cgi-bin/navy_navcom_fetch.py",
+  "navy_navcom_post": "https://bobbysworld.io/cgi-bin/navy_navcom_post.py",
   "map_dark": "https://ows.terrestris.de/osm/service?",
   "map_light": "https://maps.seeker.info/styles/positron/{z}/{x}/{y}.png",
   "wms_layer": "OSM-WMS",
   "map_shape_source": "https://bobbysworld.io/cgi-bin/nk_geojson.py",
+  "bmoa_shape_source": "https://bobbysworld.io/cgi-bin/bmoa_geojson.py",
   "shape_data_field": "ADM1_EN",
-  "mow_url": "https://bobbysworld.io/dash"
+  "mow_url": "https://bobbysworld.io/dash",
+  "airfield_list_fetch": "https://bobbysworld.io/cgi-bin/airfield_list_fetch.py"
 }

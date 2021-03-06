@@ -1,17 +1,8 @@
 import 'dart:async';
 
-import 'package:dash/charts/air/AirDualChart.dart';
-import 'package:dash/charts/air/AirMap2.dart';
 import 'package:dash/charts/ground/GroundMap.dart';
-import 'package:dash/charts/air/AircraftAirDivisionRadialChart.dart';
-import 'package:dash/charts/air/AircraftAirfieldBarChart.dart';
-import 'package:dash/charts/air/AircraftTypeBarChart.dart';
-import 'package:dash/charts/air/AircraftTypeRadarChart.dart';
-import 'package:dash/charts/air/AirfieldStatusDoughnutChart.dart';
-import 'package:dash/charts/air/AircraftStrengthGauge.dart';
 import 'package:dash/charts/ground/GroundMap2.dart';
 import 'package:dash/charts/ground/GroundSubCommandHealthChart.dart';
-import 'package:dash/components/ChartCard.dart';
 import 'package:dash/providers/ThemeChanger.dart';
 import 'package:dash/providers/ground/GroundChartCN.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
@@ -21,6 +12,7 @@ import 'package:flutter/rendering.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_maps/maps.dart';
 
 class GroundChartSubtab extends StatefulWidget {
   @override
@@ -33,7 +25,7 @@ class _GroundChartSubtabState extends State<GroundChartSubtab> {
   double leftSideTabWidth;
   double parentWidth;
   int numCardsPerRow = 2; //number of charts in one row
-  double mapFactor = .65; //percentage of the window the map should take up
+  double mapFactor = .5; //percentage of the window the map should take up
   double padding = 10; //if update, also update in AirChartCN
   bool vertical = false;
   double mapHeight;
@@ -42,6 +34,7 @@ class _GroundChartSubtabState extends State<GroundChartSubtab> {
 
   Future<bool> tabDataLoaded;
   Timer timer;
+  MapShapeLayer mapShapeLayer;
 
   ScrollController scrollController = new ScrollController();
 
@@ -52,6 +45,60 @@ class _GroundChartSubtabState extends State<GroundChartSubtab> {
     Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<GroundChartCN>(context, listen: false).datetime;
     Provider.of<ThemeChanger>(context, listen: false).setLoading(false);
     Provider.of<ThemeChanger>(context, listen: false).notifyListeners(); //don't forget to notify listeners
+    mapShapeLayer = MapShapeLayer(
+      controller: Provider.of<GroundChartCN>(context, listen: false).mapShapeLayerController,
+      zoomPanBehavior: MapZoomPanBehavior(
+        toolbarSettings: MapToolbarSettings(
+          position: MapToolbarPosition.bottomRight,
+          direction: Axis.vertical,
+        ),
+      ),
+      // showDataLabels: true,
+      source: MapShapeSource.network(
+        Provider.of<GroundChartCN>(context, listen: false).mapShapeSource,
+        shapeDataField: Provider.of<GroundChartCN>(context, listen: false).shapeDataField,
+        // shapeDataField: "ADM1_EN",
+      ),
+      initialMarkersCount: Provider.of<GroundChartCN>(context, listen: false).childrenStatus.length + 1,
+      markerTooltipBuilder: (BuildContext context, int i) {
+        if (i == Provider.of<GroundChartCN>(context, listen: false).childrenStatus.length) {
+          return Text(
+            Provider.of<GroundChartCN>(context, listen: false).parentStatus.name +
+                "\nStrength: " +
+                Provider.of<GroundChartCN>(context, listen: false).parentStatus.strength.toString() +
+                "%",
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          );
+        } else {
+          return Text(
+            Provider.of<GroundChartCN>(context, listen: false).childrenStatus[i].name +
+                "\nStrength: " +
+                Provider.of<GroundChartCN>(context, listen: false).childrenStatus[i].strength.toString() +
+                "%",
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          );
+        }
+      },
+      markerBuilder: (BuildContext context, int i) {
+        if (i == Provider.of<GroundChartCN>(context, listen: false).childrenStatus.length) {
+          return MapMarker(
+            latitude: Provider.of<GroundChartCN>(context, listen: false).parentStatus.lat,
+            longitude: Provider.of<GroundChartCN>(context, listen: false).parentStatus.lon,
+            child: Image.asset("images/SymbolServer.png"), //todo set up so that image from network works
+          );
+        } else {
+          return MapMarker(
+            latitude: Provider.of<GroundChartCN>(context, listen: false).childrenStatus[i].lat,
+            longitude: Provider.of<GroundChartCN>(context, listen: false).childrenStatus[i].lon,
+            child: Image.asset("images/SymbolServer.png"), //todo set up so that image from network works
+          );
+        }
+      },
+    );
     return true;
   }
 
@@ -59,6 +106,7 @@ class _GroundChartSubtabState extends State<GroundChartSubtab> {
     await Provider.of<GroundChartCN>(context, listen: false).updateCharts(Provider.of<ThemeChanger>(context, listen: false).lightMode);
     Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<GroundChartCN>(context, listen: false).datetime;
     Provider.of<ThemeChanger>(context, listen: false).notifyListeners(); //don't forget to notify listeners
+    Provider.of<GroundChartCN>(context, listen: false).updateMap();
     return true;
   }
 
@@ -78,6 +126,7 @@ class _GroundChartSubtabState extends State<GroundChartSubtab> {
   @override
   void dispose() {
     super.dispose();
+    print("timer properly disposed");
     timer.cancel();
   }
 
@@ -126,8 +175,11 @@ class _GroundChartSubtabState extends State<GroundChartSubtab> {
                                     child: Container(
                                       decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(30)),
                                       padding: EdgeInsets.all(20),
-                                      child: GroundMap2(),
-                                      // child: AirMap2(),
+                                      child: SfMaps(
+                                        layers: [
+                                          mapShapeLayer,
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   Container(

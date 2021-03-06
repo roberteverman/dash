@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'package:dash/components/air/AirfieldDivisionCard.dart';
 import 'package:dash/providers/ThemeChanger.dart';
-import 'package:dash/providers/air/AirfieldStatusCN.dart';
+import 'package:dash/components/navy/NavyFleetCommandCard.dart';
+import 'package:dash/providers/navy/NavyVesselCN.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,27 +10,27 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:provider/provider.dart';
 
-class AirfieldSubtab extends StatefulWidget {
+class VesselSubtab extends StatefulWidget {
   @override
-  _AirfieldSubtabState createState() => _AirfieldSubtabState();
+  _VesselSubtabState createState() => _VesselSubtabState();
 }
 
-class _AirfieldSubtabState extends State<AirfieldSubtab> {
-  List<int> airDivisionList = [];
-  List<Widget> airDivisionCards = [];
+class _VesselSubtabState extends State<VesselSubtab> {
+  List<String> navyFleetList = [];
+  List<Widget> navyFleetCards = [];
   Future<bool> tabDataLoaded;
   Timer timer;
   ScrollController scrollController = new ScrollController();
 
   Future<bool> loadTabData() async {
     Provider.of<ThemeChanger>(context, listen: false).setLoading(true);
-    await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
+    await Provider.of<NavyVesselCN>(context, listen: false).updateNavyInventory();
     Provider.of<ThemeChanger>(context, listen: false).notifyListeners(); //must add this and the above to update the time
-    Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
-    airDivisionList = Provider.of<AirFieldStatusCN>(context, listen: false).airDivisionList;
-    airDivisionCards = List.generate(
-      airDivisionList.length,
-      (index) => AirfieldDivisionCard(airDivision: airDivisionList[index]),
+    Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<NavyVesselCN>(context, listen: false).datetime;
+    navyFleetList = Provider.of<NavyVesselCN>(context, listen: false).navyFleetList;
+    navyFleetCards = List.generate(
+      navyFleetList.length,
+      (index) => NavyFleetCommandCard(navyFleet: navyFleetList[index]),
     );
     Provider.of<ThemeChanger>(context, listen: false).setLoading(false);
     Provider.of<ThemeChanger>(context, listen: false).notifyListeners(); //don't forget to notify listeners
@@ -38,19 +38,20 @@ class _AirfieldSubtabState extends State<AirfieldSubtab> {
   }
 
   Future<bool> refreshTabData() async {
-    await Provider.of<AirFieldStatusCN>(context, listen: false).updateAirfieldStatus();
-    Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
-    airDivisionList = Provider.of<AirFieldStatusCN>(context, listen: false).airDivisionList;
-    airDivisionCards = List.generate(
-      airDivisionList.length,
-      (index) => AirfieldDivisionCard(airDivision: airDivisionList[index]),
+    await Provider.of<NavyVesselCN>(context, listen: false).updateNavyInventory();
+    Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<NavyVesselCN>(context, listen: false).datetime;
+    navyFleetList = Provider.of<NavyVesselCN>(context, listen: false).navyFleetList;
+    navyFleetCards = List.generate(
+      navyFleetList.length,
+      (index) => NavyFleetCommandCard(navyFleet: navyFleetList[index]),
     );
+
     Provider.of<ThemeChanger>(context, listen: false).notifyListeners(); //don't forget to notify listeners
     return true;
   }
 
   void startTimer() {
-    timer = new Timer.periodic(Duration(seconds: Provider.of<AirFieldStatusCN>(context, listen: false).refreshRate), (timer) {
+    timer = new Timer.periodic(Duration(seconds: Provider.of<NavyVesselCN>(context, listen: false).refreshRate), (timer) {
       refreshTabData();
     });
   }
@@ -71,6 +72,18 @@ class _AirfieldSubtabState extends State<AirfieldSubtab> {
 
   @override
   Widget build(BuildContext context) {
+    int crossAxisCount;
+
+    if (MediaQuery.of(context).size.width < 825) {
+      crossAxisCount = 1;
+    } else if (MediaQuery.of(context).size.width < 1050) {
+      crossAxisCount = 1;
+    } else if (MediaQuery.of(context).size.width < 1400) {
+      crossAxisCount = 2;
+    } else {
+      crossAxisCount = 2;
+    }
+
     return FutureBuilder<bool>(
       future: tabDataLoaded,
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -86,14 +99,15 @@ class _AirfieldSubtabState extends State<AirfieldSubtab> {
                   alwaysVisibleScrollThumb: true,
                   child: StaggeredGridView.countBuilder(
                     padding: EdgeInsets.only(left: 25, right: 25, top: 25),
-                    crossAxisCount: MediaQuery.of(context).size.width < 800 ? 1 : 2,
-                    itemCount: airDivisionCards.length,
+                    crossAxisCount: crossAxisCount,
+                    itemCount: navyFleetCards.length,
                     controller: scrollController,
-                    itemBuilder: (BuildContext context, int index) => airDivisionCards[index],
+                    itemBuilder: (BuildContext context, int index) => navyFleetCards[index],
                     staggeredTileBuilder: (int index) => new StaggeredTile.fit(1),
                     mainAxisSpacing: 25,
                     crossAxisSpacing: 25,
                     addAutomaticKeepAlives: false, //this is a MUST or else timers will stack on top of timers
+                    addRepaintBoundaries: false,
                   ),
                 );
         }

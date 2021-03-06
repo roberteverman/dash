@@ -68,8 +68,15 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         if (currentSubtab == 0) {
           //air charts
           await Provider.of<AirChartCN>(context, listen: false).updateCharts(themeChanger.lightMode);
-          themeChanger.centralDateTime = Provider.of<AirFieldStatusCN>(context, listen: false).datetime;
+          Provider.of<AirChartCN>(context, listen: false).updateMap();
+          themeChanger.centralDateTime = Provider.of<AirChartCN>(context, listen: false).datetime;
         }
+        // if (currentSubtab == 1) {
+        //   //air map
+        //   await Provider.of<AirChartCN>(context, listen: false).updateCharts(themeChanger.lightMode);
+        //   Provider.of<AirChartCN>(context, listen: false).updateMap();
+        //   themeChanger.centralDateTime = Provider.of<AirChartCN>(context, listen: false).datetime;
+        // }
         if (currentSubtab == 1) {
           //aircraft
           await Provider.of<AircraftStatusCN>(context, listen: false).updateAirfieldInventory();
@@ -97,8 +104,23 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       if (currentTab == 2) {
         //navy
         if (currentSubtab == 0) {
-          //vessels
-          await Provider.of<NavyVesselCN>(context, listen: false).updateNavyInventory();
+          //navychart
+          await Provider.of<NavyVesselCN>(context, listen: false).updateCharts();
+          themeChanger.centralDateTime = Provider.of<NavyVesselCN>(context, listen: false).datetime;
+        }
+        if (currentSubtab == 1) {
+          //submarine
+          await Provider.of<NavyVesselCN>(context, listen: false).updateSubInventory();
+          themeChanger.centralDateTime = Provider.of<NavyVesselCN>(context, listen: false).datetime;
+        }
+        if (currentSubtab == 2) {
+          //vessel
+          await Provider.of<NavyVesselCN>(context, listen: false).updateVesselInventory();
+          themeChanger.centralDateTime = Provider.of<NavyVesselCN>(context, listen: false).datetime;
+        }
+        if (currentSubtab == 3) {
+          //cdcm
+          await Provider.of<NavyVesselCN>(context, listen: false).updateCDCMInventory();
           themeChanger.centralDateTime = Provider.of<NavyVesselCN>(context, listen: false).datetime;
         }
       }

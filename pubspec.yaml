@@ -37,11 +37,6 @@ dependencies:
   percent_indicator: ^2.1.8
   draggable_scrollbar: ^0.0.4
   reorderables: ^0.3.2
-#  fl_chart: ^0.12.2
-  fl_chart:
-    git:
-      url: git://github.com/imaNNeoFighT/fl_chart.git
-      ref: dev
   flutter_map: ^0.10.1+1
   circular_menu: ^1.1.2
   syncfusion_flutter_gauges: ^18.4.35

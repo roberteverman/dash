@@ -9,12 +9,12 @@ import 'package:loading_animations/loading_animations.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 
-class GroundMap extends StatefulWidget {
+class TBMMapSubtab extends StatefulWidget {
   @override
-  _GroundMapState createState() => _GroundMapState();
+  _TBMMapSubtabState createState() => _TBMMapSubtabState();
 }
 
-class _GroundMapState extends State<GroundMap> {
+class _TBMMapSubtabState extends State<TBMMapSubtab> with WidgetsBindingObserver {
   Future<bool> tabDataLoaded;
   Timer timer;
   MapShapeLayer mapShapeLayer;
@@ -27,6 +27,52 @@ class _GroundMapState extends State<GroundMap> {
     Provider.of<ThemeChanger>(context, listen: false).centralDateTime = Provider.of<AirChartCN>(context, listen: false).datetime;
     Provider.of<ThemeChanger>(context, listen: false).setLoading(false);
     Provider.of<ThemeChanger>(context, listen: false).notifyListeners(); //don't forget to notify listeners
+    mapShapeLayer = MapShapeLayer(
+      controller: Provider.of<AirChartCN>(context, listen: false).mapShapeLayerController,
+      zoomPanBehavior: MapZoomPanBehavior(
+        toolbarSettings: MapToolbarSettings(
+          position: MapToolbarPosition.bottomRight,
+          direction: Axis.vertical,
+        ),
+      ),
+      source: MapShapeSource.network(
+        Provider.of<AirChartCN>(context, listen: false).mapShapeSource,
+        shapeDataField: Provider.of<AirChartCN>(context, listen: false).shapeDataField,
+      ),
+      sublayers: [
+        MapShapeSublayer(
+          source: MapShapeSource.network(
+            Provider.of<AirChartCN>(context, listen: false).bmoaShapeSource,
+            shapeDataField: "bmoa",
+          ),
+        )
+      ],
+      initialMarkersCount: airfieldInventory.length,
+      markerTooltipBuilder: (BuildContext context, int i) {
+        return Text(
+          airfieldInventory[i].name + "\nStatus: " + airfieldInventory[i].status,
+          style: TextStyle(
+            color: Colors.black,
+          ),
+        );
+      },
+      markerBuilder: (BuildContext context, int i) {
+        Color markerColor;
+        if (airfieldInventory[i].status == "OP") {
+          markerColor = Colors.green;
+        } else if (airfieldInventory[i].status == "NONOP") {
+          markerColor = Colors.red;
+        } else if (airfieldInventory[i].status == "LIMOP") {
+          markerColor = Colors.amber;
+        }
+
+        return MapMarker(
+          latitude: airfieldInventory[i].lat,
+          longitude: airfieldInventory[i].lon,
+          iconColor: markerColor,
+        );
+      },
+    );
     return true;
   }
 
@@ -49,6 +95,7 @@ class _GroundMapState extends State<GroundMap> {
   void initState() {
     tabDataLoaded = loadTabData();
     startTimer();
+
     super.initState();
   }
 
@@ -69,13 +116,16 @@ class _GroundMapState extends State<GroundMap> {
           if (snapshot.data != true) {
             return LoadingBouncingLine.circle(backgroundColor: Theme.of(context).indicatorColor);
           } else {
-            return Container(
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: Theme.of(context).primaryColorDark),
-              clipBehavior: Clip.hardEdge,
-              child: SfMaps(
-                layers: [
-                  mapShapeLayer,
-                ],
+            return Padding(
+              padding: const EdgeInsets.all(25),
+              child: Container(
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: Theme.of(context).primaryColorDark),
+                clipBehavior: Clip.hardEdge,
+                child: SfMaps(
+                  layers: [
+                    mapShapeLayer,
+                  ],
+                ),
               ),
             );
           }

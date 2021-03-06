@@ -47,7 +47,7 @@ class _GroundMap2State extends State<GroundMap2> {
       clipBehavior: Clip.hardEdge,
       child: SfMaps(
         layers: [
-          Provider.of<GroundChartCN>(context, listen: true).mapShapeLayer,
+          // Provider.of<GroundChartCN>(context, listen: true).mapShapeLayer,
           // MapTileLayer(
           //   urlTemplate: Provider.of<AirChartCN>(context, listen: true).mapServerURL,
           // )
