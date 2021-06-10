@@ -48,19 +48,19 @@ class _AircraftStrengthGaugeState extends State<AircraftStrengthGauge> {
                       interval: 10,
                       minorTicksPerInterval: 3,
                       majorTickStyle: MajorTickStyle(
-                        color: Colors.white70,
+                        color: Theme.of(context).accentColor,
                         thickness: 2,
                       ),
                       canRotateLabels: false,
                       axisLabelStyle: GaugeTextStyle(
                         fontSize: 10,
-                        color: Colors.white70,
+                        color: Theme.of(context).accentColor,
                       ),
                       axisLineStyle: AxisLineStyle(
                         cornerStyle: CornerStyle.bothCurve,
                         thickness: widget.chartCardDims / 6500,
                         thicknessUnit: GaugeSizeUnit.factor,
-                        color: Colors.white70,
+                        color: Theme.of(context).accentColor,
                       ),
                       pointers: <GaugePointer>[
                         NeedlePointer(
@@ -110,7 +110,7 @@ class _AircraftStrengthGaugeState extends State<AircraftStrengthGauge> {
                                           '/' +
                                           Provider.of<AirChartCN>(context, listen: true).totalAircraft.toString(),
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: Theme.of(context).accentColor,
                                         fontFamily: 'Courier',
                                         fontSize: widget.chartCardDims / 25,
                                         fontWeight: FontWeight.w100,

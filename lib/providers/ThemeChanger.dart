@@ -45,7 +45,7 @@ class ThemeChanger extends ChangeNotifier {
       Map configJSON = json.decode(configString);
       String url = configJSON['validate_user'];
       url = url + "?username=" + username + "&pwd=" + pwd;
-      var response = await http.get(url);
+      var response = await http.get(Uri.parse(url));
       if (response.statusCode != 200) {
         //todo check if there is an API key, if empty do not log in
         Fluttertoast.showToast(

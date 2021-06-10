@@ -70,7 +70,7 @@ class SAMStatusChip extends StatelessWidget {
                           builder: (_) => AlertDialog(
                             title: Center(
                               child: Text(
-                                "Change status of\n" + parentAirfield + " " + tooltip.split('\n')[0],
+                                "Change status of\n" + tooltip.split('\n')[0],
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 15,

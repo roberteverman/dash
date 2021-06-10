@@ -88,13 +88,17 @@ class _GroundChartSubtabState extends State<GroundChartSubtab> {
           return MapMarker(
             latitude: Provider.of<GroundChartCN>(context, listen: false).parentStatus.lat,
             longitude: Provider.of<GroundChartCN>(context, listen: false).parentStatus.lon,
-            child: Image.asset("images/SymbolServer.png"), //todo set up so that image from network works
+            child: Provider.of<GroundChartCN>(context, listen: false).useSymbolURL
+                ? Image.network(Provider.of<GroundChartCN>(context, listen: false).childrenStatus[i].symbol)
+                : Image.asset("images/SymbolServer.png"),
           );
         } else {
           return MapMarker(
             latitude: Provider.of<GroundChartCN>(context, listen: false).childrenStatus[i].lat,
             longitude: Provider.of<GroundChartCN>(context, listen: false).childrenStatus[i].lon,
-            child: Image.asset("images/SymbolServer.png"), //todo set up so that image from network works
+            child: Provider.of<GroundChartCN>(context, listen: false).useSymbolURL
+                ? Image.network(Provider.of<GroundChartCN>(context, listen: false).childrenStatus[i].symbol)
+                : Image.asset("images/SymbolServer.png"),
           );
         }
       },

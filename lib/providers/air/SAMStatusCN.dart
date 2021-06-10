@@ -39,7 +39,7 @@ class SAMStatusCN extends ChangeNotifier {
     } else {
       //USING SERVER DATA
       String url2 = configJSON['sam_get'] + "?lang=" + lang;
-      var response2 = await http.get(url2);
+      var response2 = await http.get(Uri.parse(url2));
       if (response2.statusCode == 200) {
         var retrievedData = json.decode(response2.body)['data'].toList();
         datetime = json.decode(response2.body)['datetime'];
@@ -68,7 +68,7 @@ class SAMStatusCN extends ChangeNotifier {
     Map configJSON = json.decode(configString);
     if (configJSON['use_test_data'] == false) {
       String url = configJSON['sam_post'] + "?lang=" + lang;
-      var response = await http.post(url,
+      var response = await http.post(Uri(path: url),
           body: jsonEncode(<String, dynamic>{
             'item': item, //todo make be number instead of afld name
             'field': field,

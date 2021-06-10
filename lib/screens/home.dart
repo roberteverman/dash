@@ -186,8 +186,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             }
           },
           child: Provider.of<ThemeChanger>(context, listen: true).lang == "kor"
-              ? Image.asset("images/american_flag.png", height: 25)
-              : Image.asset("images/korean_flag.png", height: 25),
+              ? Image.asset("images/korean_flag.png", height: 25)
+              : Image.asset("images/american_flag.png", height: 25),
           // child: CircleAvatar(
           //   backgroundColor: Colors.white,
           //   child: Provider.of<ThemeChanger>(context, listen: true).lang == "kor"
@@ -378,6 +378,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   children: [
                     DrawerHeader(
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Center(
                             child: Text(
@@ -462,6 +463,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             Container(
               width: MediaQuery.of(context).size.width < 700 ? 0 : 130, //the width of the left side tab
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Container(
@@ -469,12 +471,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     height: 175,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(top: 13, left: 5),
                           child: Text(
                             "Dash.",
-                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.w100, letterSpacing: 4),
+                            style: TextStyle(fontSize: 35, fontWeight: FontWeight.w100, letterSpacing: 4),
                           ),
                         ),
                         Container(
@@ -537,19 +540,21 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       children: [
                         Row(
                           children: [
-                            Text("Dark"),
+                            Text("Dark", style: TextStyle(fontSize: 13)),
                             Switch(
                               value: themeChanger.lightMode,
                               onChanged: (val) {
                                 themeChanger.lightMode = val;
                                 if (val) {
                                   themeChanger.setTheme(dashLightTheme);
+                                  refreshData();
                                 } else {
                                   themeChanger.setTheme(dashDarkTheme);
+                                  refreshData();
                                 }
                               },
                             ),
-                            Text("Light"),
+                            Text("Light", style: TextStyle(fontSize: 13)),
                           ],
                         ),
                       ],

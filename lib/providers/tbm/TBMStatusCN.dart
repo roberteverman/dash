@@ -43,7 +43,7 @@ class TBMStatusCN extends ChangeNotifier {
       //USING SERVER DATA
 
       String url = configJSON['tbm_get'] + "?lang=" + lang;
-      var response = await http.get(url);
+      var response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         var retrievedData = json.decode(response.body)['data'].toList();
         datetime = json.decode(response.body)['datetime'];
@@ -84,7 +84,7 @@ class TBMStatusCN extends ChangeNotifier {
     Map configJSON = json.decode(configString);
     if (configJSON['use_test_data'] == false) {
       String url = configJSON['tbm_post'] + "?lang=" + lang;
-      var response = await http.post(url,
+      var response = await http.post(Uri(path: url),
           body: jsonEncode(<String, dynamic>{
             'action': action,
             'number': number,

@@ -11,7 +11,7 @@ class SeaTab extends StatelessWidget {
     return DashTab(
       contentTabLabels: [
         Tab(child: Icon(Icons.bar_chart)),
-        Tab(child: Text("Submarine")),
+        Tab(child: Text("Subs")),
         Tab(child: Text("Vessel")),
         Tab(child: Text("CDCM")),
       ],

@@ -5,9 +5,7 @@ import 'package:dash/helpers/models.dart';
 import 'package:dash/helpers/test_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:http/http.dart' as http;
-import 'package:latlong/latlong.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 
 class AirChartCN extends ChangeNotifier {
@@ -16,7 +14,7 @@ class AirChartCN extends ChangeNotifier {
   List<String> airfieldList = [];
   List<int> airDivisionList = [];
   List<String> aircraftList = [];
-  List<Marker> markers = [];
+  // List<Marker> markers = [];
   bool loading = true;
   int refreshRate = 20; //default timer
   String datetime = "Loading...";
@@ -50,7 +48,7 @@ class AirChartCN extends ChangeNotifier {
     aircraftList = [];
 
     String url = configJSON['air_chart_get'] + "?lang=" + lang;
-    var response = await http.get(url); //grab data from server
+    var response = await http.get(Uri.parse(url)); //grab data from server
     if (response.statusCode == 200) {
       var retrievedData = json.decode(response.body)['airfield_data'].toList();
       datetime = json.decode(response.body)['datetime'];
@@ -127,46 +125,46 @@ class AirChartCN extends ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void getAirfieldMarkers() {
-    markers = List<Marker>.generate(
-      airfieldStatus.length,
-      (index) => airfieldStatusMarker(
-        lat: airfieldStatus[index].lat,
-        lon: airfieldStatus[index].lon,
-        tooltip: airfieldStatus[index].name,
-        afldStatus: airfieldStatus[index].status,
-      ),
-    );
-  }
+  // void getAirfieldMarkers() {
+  //   markers = List<Marker>.generate(
+  //     airfieldStatus.length,
+  //     (index) => airfieldStatusMarker(
+  //       lat: airfieldStatus[index].lat,
+  //       lon: airfieldStatus[index].lon,
+  //       tooltip: airfieldStatus[index].name,
+  //       afldStatus: airfieldStatus[index].status,
+  //     ),
+  //   );
+  // }
 
-  void getAircraftStrengthMarkers() {
-    markers = [];
-    double factor = 800;
-    for (int i = 0; i < airfieldInventory.length; i++) {
-      int total = 0;
-      String toolTip = airfieldInventory[i].name + " (" + airfieldInventory[i].status + "):\n";
-      for (int j = 0; j < airfieldInventory[i].aircraft.length; j++) {
-        total += airfieldInventory[i].aircraft[j]['operational'];
-        toolTip += airfieldInventory[i].aircraft[j]['type'] +
-            " : " +
-            airfieldInventory[i].aircraft[j]['operational'].toString() +
-            " / " +
-            airfieldInventory[i].aircraft[j]['total'].toString() +
-            "\n";
-      }
-      toolTip += "\n Total Aircraft: " + total.toString();
-      markers.add(
-        aircraftStatusMarker(
-          lat: airfieldInventory[i].lat,
-          lon: airfieldInventory[i].lon,
-          tooltip: toolTip,
-          afldStatus: airfieldInventory[i].status,
-          size: (total / numOpAircraft) * factor,
-          // size: factor,
-        ),
-      );
-    }
-  }
+  // void getAircraftStrengthMarkers() {
+  //   markers = [];
+  //   double factor = 800;
+  //   for (int i = 0; i < airfieldInventory.length; i++) {
+  //     int total = 0;
+  //     String toolTip = airfieldInventory[i].name + " (" + airfieldInventory[i].status + "):\n";
+  //     for (int j = 0; j < airfieldInventory[i].aircraft.length; j++) {
+  //       total += airfieldInventory[i].aircraft[j]['operational'];
+  //       toolTip += airfieldInventory[i].aircraft[j]['type'] +
+  //           " : " +
+  //           airfieldInventory[i].aircraft[j]['operational'].toString() +
+  //           " / " +
+  //           airfieldInventory[i].aircraft[j]['total'].toString() +
+  //           "\n";
+  //     }
+  //     toolTip += "\n Total Aircraft: " + total.toString();
+  //     markers.add(
+  //       aircraftStatusMarker(
+  //         lat: airfieldInventory[i].lat,
+  //         lon: airfieldInventory[i].lon,
+  //         tooltip: toolTip,
+  //         afldStatus: airfieldInventory[i].status,
+  //         size: (total / numOpAircraft) * factor,
+  //         // size: factor,
+  //       ),
+  //     );
+  //   }
+  // }
 
   @override
   void notifyListeners() {
@@ -175,293 +173,293 @@ class AirChartCN extends ChangeNotifier {
   }
 
   void clearMarkers() {
-    markers = [];
+    // markers = [];
     notifyListeners();
   }
 }
 
-Marker aircraftStatusMarker({
-  double lat,
-  double lon,
-  String tooltip,
-  String afldStatus,
-  double size,
-}) {
-  Color getBGColor(String status) {
-    switch (status) {
-      case "OP":
-        {
-          return Colors.green;
-        }
-        break;
+// Marker aircraftStatusMarker({
+//   double lat,
+//   double lon,
+//   String tooltip,
+//   String afldStatus,
+//   double size,
+// }) {
+//   Color getBGColor(String status) {
+//     switch (status) {
+//       case "OP":
+//         {
+//           return Colors.green;
+//         }
+//         break;
+//
+//       case "NONOP":
+//         {
+//           return Colors.red;
+//         }
+//         break;
+//
+//       case "LIMOP":
+//         {
+//           return Colors.yellow;
+//         }
+//         break;
+//
+//       default:
+//         {
+//           return Colors.black;
+//         }
+//         break;
+//     }
+//   }
+//
+//   return Marker(
+//     width: size,
+//     height: size,
+//     point: LatLng(lat, lon),
+//     builder: (ctx) => Tooltip(
+//       textStyle: TextStyle(
+//         fontSize: 13,
+//         color: Colors.black,
+//       ),
+//       message: tooltip,
+//       waitDuration: Duration(milliseconds: 600),
+//       verticalOffset: 25,
+//       child: Container(
+//         decoration: BoxDecoration(
+//           color: getBGColor(afldStatus),
+//           shape: BoxShape.circle,
+//         ),
+//       ),
+//     ),
+//   );
+// }
 
-      case "NONOP":
-        {
-          return Colors.red;
-        }
-        break;
-
-      case "LIMOP":
-        {
-          return Colors.yellow;
-        }
-        break;
-
-      default:
-        {
-          return Colors.black;
-        }
-        break;
-    }
-  }
-
-  return Marker(
-    width: size,
-    height: size,
-    point: LatLng(lat, lon),
-    builder: (ctx) => Tooltip(
-      textStyle: TextStyle(
-        fontSize: 13,
-        color: Colors.black,
-      ),
-      message: tooltip,
-      waitDuration: Duration(milliseconds: 600),
-      verticalOffset: 25,
-      child: Container(
-        decoration: BoxDecoration(
-          color: getBGColor(afldStatus),
-          shape: BoxShape.circle,
-        ),
-      ),
-    ),
-  );
-}
-
-Marker airfieldStatusMarker({
-  double lat,
-  double lon,
-  String tooltip,
-  String afldStatus,
-}) {
-  Color getBGColor(String status) {
-    switch (status) {
-      case "OP":
-        {
-          return Colors.green;
-        }
-        break;
-
-      case "NONOP":
-        {
-          return Colors.red;
-        }
-        break;
-
-      case "LIMOP":
-        {
-          return Colors.yellow;
-        }
-        break;
-
-      default:
-        {
-          return Colors.black;
-        }
-        break;
-    }
-  }
-
-  return Marker(
-    width: 25.0,
-    height: 25.0,
-    point: LatLng(lat, lon),
-    builder: (ctx) => Tooltip(
-      message: tooltip,
-      waitDuration: Duration(milliseconds: 600),
-      verticalOffset: 25,
-      child: Container(
-        decoration: BoxDecoration(
-          color: getBGColor(afldStatus),
-          shape: BoxShape.circle,
-        ),
-      ),
-    ),
-  );
-}
-
-Marker extendedAirfieldStatusMarker({
-  double lat,
-  double lon,
-  String tooltip,
-  String afldStatus,
-  String components,
-}) {
-  Color getBGColor(String status) {
-    switch (status) {
-      case "OP":
-        {
-          return Colors.green;
-        }
-        break;
-
-      case "NONOP":
-        {
-          return Colors.red;
-        }
-        break;
-
-      case "LIMOP":
-        {
-          return Colors.yellow;
-        }
-        break;
-
-      default:
-        {
-          return Colors.black;
-        }
-        break;
-    }
-  }
-
-  // Color getTxtColor(String status) {
-  //   switch (status) {
-  //     case "OP":
-  //       {
-  //         return Colors.white;
-  //       }
-  //       break;
-  //
-  //     case "NONOP":
-  //       {
-  //         return Colors.white;
-  //       }
-  //       break;
-  //
-  //     case "LIMOP":
-  //       {
-  //         return Colors.black;
-  //       }
-  //       break;
-  //
-  //     default:
-  //       {
-  //         return Colors.white;
-  //       }
-  //       break;
-  //   }
-  // }
-
-  // return Marker(
-  //   width: 80.0,
-  //   height: 80.0,
-  //   point: LatLng(lat, lon),
-  //   builder: (ctx) => Tooltip(
-  //     message: tooltip,
-  //     waitDuration: Duration(milliseconds: 600),
-  //     verticalOffset: 35,
-  //     child: CircularMenu(
-  //       toggleButtonAnimatedIconData: AnimatedIcons.menu_close,
-  //       toggleButtonSize: 15,
-  //       toggleButtonPadding: 5,
-  //       toggleButtonColor: getBGColor(afldStatus),
-  //       toggleButtonIconColor: getTxtColor(afldStatus),
-  //       radius: 35,
-  //       startingAngleInRadian: 0,
-  //       endingAngleInRadian: 5.2,
-  //       items: [
-  //         CircularMenuItem(
-  //             icon: Icons.circle,
-  //             iconSize: 8,
-  //             badgeLabel: "R/W",
-  //             badgeColor: getBGColor(rw),
-  //             badgeTextStyle: TextStyle(fontSize: 5, color: getTxtColor(rw)),
-  //             badgeBottomOffet: 10,
-  //             badgeLeftOffet: 10,
-  //             badgeRightOffet: 10,
-  //             badgeTopOffet: 10,
-  //             color: Colors.transparent,
-  //             iconColor: Colors.transparent,
-  //             badgeRadius: 8,
-  //             enableBadge: true,
-  //             onTap: () {}),
-  //         CircularMenuItem(
-  //             icon: Icons.circle,
-  //             iconSize: 8,
-  //             badgeLabel: "T/W",
-  //             badgeColor: getBGColor(tw),
-  //             badgeTextStyle: TextStyle(fontSize: 5, color: getTxtColor(tw)),
-  //             badgeBottomOffet: 10,
-  //             badgeLeftOffet: 10,
-  //             badgeRightOffet: 10,
-  //             badgeTopOffet: 10,
-  //             color: Colors.transparent,
-  //             iconColor: Colors.transparent,
-  //             badgeRadius: 8,
-  //             enableBadge: true,
-  //             onTap: () {}),
-  //         CircularMenuItem(
-  //             icon: Icons.circle,
-  //             iconSize: 8,
-  //             badgeLabel: "UGF",
-  //             badgeColor: getBGColor(ugf),
-  //             badgeTextStyle: TextStyle(fontSize: 5, color: getTxtColor(ugf)),
-  //             badgeBottomOffet: 10,
-  //             badgeLeftOffet: 10,
-  //             badgeRightOffet: 10,
-  //             badgeTopOffet: 10,
-  //             color: Colors.transparent,
-  //             iconColor: Colors.transparent,
-  //             badgeRadius: 8,
-  //             enableBadge: true,
-  //             onTap: () {}),
-  //         CircularMenuItem(
-  //             icon: Icons.circle,
-  //             iconSize: 8,
-  //             badgeLabel: "POL",
-  //             badgeColor: getBGColor(pol),
-  //             badgeTextStyle: TextStyle(fontSize: 5, color: getTxtColor(pol)),
-  //             badgeBottomOffet: 10,
-  //             badgeLeftOffet: 10,
-  //             badgeRightOffet: 10,
-  //             badgeTopOffet: 10,
-  //             color: Colors.transparent,
-  //             iconColor: Colors.transparent,
-  //             badgeRadius: 8,
-  //             enableBadge: true,
-  //             onTap: () {}),
-  //         CircularMenuItem(
-  //             icon: Icons.circle,
-  //             iconSize: 8,
-  //             badgeLabel: "MS",
-  //             badgeColor: getBGColor(ms),
-  //             badgeTextStyle: TextStyle(fontSize: 5, color: getTxtColor(ms)),
-  //             badgeBottomOffet: 10,
-  //             badgeLeftOffet: 10,
-  //             badgeRightOffet: 10,
-  //             badgeTopOffet: 10,
-  //             color: Colors.transparent,
-  //             iconColor: Colors.transparent,
-  //             badgeRadius: 8,
-  //             enableBadge: true,
-  //             onTap: () {}),
-  //         CircularMenuItem(
-  //             icon: Icons.circle,
-  //             iconSize: 8,
-  //             badgeLabel: "RF",
-  //             badgeColor: getBGColor(rf),
-  //             badgeTextStyle: TextStyle(fontSize: 5, color: getTxtColor(rf)),
-  //             badgeBottomOffet: 10,
-  //             badgeLeftOffet: 10,
-  //             badgeRightOffet: 10,
-  //             badgeTopOffet: 10,
-  //             color: Colors.transparent,
-  //             iconColor: Colors.transparent,
-  //             badgeRadius: 8,
-  //             enableBadge: true,
-  //             onTap: () {}),
-  //       ],
-  //     ),
-  //   ),
-  // );
-}
+// Marker airfieldStatusMarker({
+//   double lat,
+//   double lon,
+//   String tooltip,
+//   String afldStatus,
+// }) {
+//   Color getBGColor(String status) {
+//     switch (status) {
+//       case "OP":
+//         {
+//           return Colors.green;
+//         }
+//         break;
+//
+//       case "NONOP":
+//         {
+//           return Colors.red;
+//         }
+//         break;
+//
+//       case "LIMOP":
+//         {
+//           return Colors.yellow;
+//         }
+//         break;
+//
+//       default:
+//         {
+//           return Colors.black;
+//         }
+//         break;
+//     }
+//   }
+//
+//   return Marker(
+//     width: 25.0,
+//     height: 25.0,
+//     point: LatLng(lat, lon),
+//     builder: (ctx) => Tooltip(
+//       message: tooltip,
+//       waitDuration: Duration(milliseconds: 600),
+//       verticalOffset: 25,
+//       child: Container(
+//         decoration: BoxDecoration(
+//           color: getBGColor(afldStatus),
+//           shape: BoxShape.circle,
+//         ),
+//       ),
+//     ),
+//   );
+// }
+//
+// Marker extendedAirfieldStatusMarker({
+//   double lat,
+//   double lon,
+//   String tooltip,
+//   String afldStatus,
+//   String components,
+// }) {
+//   Color getBGColor(String status) {
+//     switch (status) {
+//       case "OP":
+//         {
+//           return Colors.green;
+//         }
+//         break;
+//
+//       case "NONOP":
+//         {
+//           return Colors.red;
+//         }
+//         break;
+//
+//       case "LIMOP":
+//         {
+//           return Colors.yellow;
+//         }
+//         break;
+//
+//       default:
+//         {
+//           return Colors.black;
+//         }
+//         break;
+//     }
+//   }
+//
+//   // Color getTxtColor(String status) {
+//   //   switch (status) {
+//   //     case "OP":
+//   //       {
+//   //         return Colors.white;
+//   //       }
+//   //       break;
+//   //
+//   //     case "NONOP":
+//   //       {
+//   //         return Colors.white;
+//   //       }
+//   //       break;
+//   //
+//   //     case "LIMOP":
+//   //       {
+//   //         return Colors.black;
+//   //       }
+//   //       break;
+//   //
+//   //     default:
+//   //       {
+//   //         return Colors.white;
+//   //       }
+//   //       break;
+//   //   }
+//   // }
+//
+//   // return Marker(
+//   //   width: 80.0,
+//   //   height: 80.0,
+//   //   point: LatLng(lat, lon),
+//   //   builder: (ctx) => Tooltip(
+//   //     message: tooltip,
+//   //     waitDuration: Duration(milliseconds: 600),
+//   //     verticalOffset: 35,
+//   //     child: CircularMenu(
+//   //       toggleButtonAnimatedIconData: AnimatedIcons.menu_close,
+//   //       toggleButtonSize: 15,
+//   //       toggleButtonPadding: 5,
+//   //       toggleButtonColor: getBGColor(afldStatus),
+//   //       toggleButtonIconColor: getTxtColor(afldStatus),
+//   //       radius: 35,
+//   //       startingAngleInRadian: 0,
+//   //       endingAngleInRadian: 5.2,
+//   //       items: [
+//   //         CircularMenuItem(
+//   //             icon: Icons.circle,
+//   //             iconSize: 8,
+//   //             badgeLabel: "R/W",
+//   //             badgeColor: getBGColor(rw),
+//   //             badgeTextStyle: TextStyle(fontSize: 5, color: getTxtColor(rw)),
+//   //             badgeBottomOffet: 10,
+//   //             badgeLeftOffet: 10,
+//   //             badgeRightOffet: 10,
+//   //             badgeTopOffet: 10,
+//   //             color: Colors.transparent,
+//   //             iconColor: Colors.transparent,
+//   //             badgeRadius: 8,
+//   //             enableBadge: true,
+//   //             onTap: () {}),
+//   //         CircularMenuItem(
+//   //             icon: Icons.circle,
+//   //             iconSize: 8,
+//   //             badgeLabel: "T/W",
+//   //             badgeColor: getBGColor(tw),
+//   //             badgeTextStyle: TextStyle(fontSize: 5, color: getTxtColor(tw)),
+//   //             badgeBottomOffet: 10,
+//   //             badgeLeftOffet: 10,
+//   //             badgeRightOffet: 10,
+//   //             badgeTopOffet: 10,
+//   //             color: Colors.transparent,
+//   //             iconColor: Colors.transparent,
+//   //             badgeRadius: 8,
+//   //             enableBadge: true,
+//   //             onTap: () {}),
+//   //         CircularMenuItem(
+//   //             icon: Icons.circle,
+//   //             iconSize: 8,
+//   //             badgeLabel: "UGF",
+//   //             badgeColor: getBGColor(ugf),
+//   //             badgeTextStyle: TextStyle(fontSize: 5, color: getTxtColor(ugf)),
+//   //             badgeBottomOffet: 10,
+//   //             badgeLeftOffet: 10,
+//   //             badgeRightOffet: 10,
+//   //             badgeTopOffet: 10,
+//   //             color: Colors.transparent,
+//   //             iconColor: Colors.transparent,
+//   //             badgeRadius: 8,
+//   //             enableBadge: true,
+//   //             onTap: () {}),
+//   //         CircularMenuItem(
+//   //             icon: Icons.circle,
+//   //             iconSize: 8,
+//   //             badgeLabel: "POL",
+//   //             badgeColor: getBGColor(pol),
+//   //             badgeTextStyle: TextStyle(fontSize: 5, color: getTxtColor(pol)),
+//   //             badgeBottomOffet: 10,
+//   //             badgeLeftOffet: 10,
+//   //             badgeRightOffet: 10,
+//   //             badgeTopOffet: 10,
+//   //             color: Colors.transparent,
+//   //             iconColor: Colors.transparent,
+//   //             badgeRadius: 8,
+//   //             enableBadge: true,
+//   //             onTap: () {}),
+//   //         CircularMenuItem(
+//   //             icon: Icons.circle,
+//   //             iconSize: 8,
+//   //             badgeLabel: "MS",
+//   //             badgeColor: getBGColor(ms),
+//   //             badgeTextStyle: TextStyle(fontSize: 5, color: getTxtColor(ms)),
+//   //             badgeBottomOffet: 10,
+//   //             badgeLeftOffet: 10,
+//   //             badgeRightOffet: 10,
+//   //             badgeTopOffet: 10,
+//   //             color: Colors.transparent,
+//   //             iconColor: Colors.transparent,
+//   //             badgeRadius: 8,
+//   //             enableBadge: true,
+//   //             onTap: () {}),
+//   //         CircularMenuItem(
+//   //             icon: Icons.circle,
+//   //             iconSize: 8,
+//   //             badgeLabel: "RF",
+//   //             badgeColor: getBGColor(rf),
+//   //             badgeTextStyle: TextStyle(fontSize: 5, color: getTxtColor(rf)),
+//   //             badgeBottomOffet: 10,
+//   //             badgeLeftOffet: 10,
+//   //             badgeRightOffet: 10,
+//   //             badgeTopOffet: 10,
+//   //             color: Colors.transparent,
+//   //             iconColor: Colors.transparent,
+//   //             badgeRadius: 8,
+//   //             enableBadge: true,
+//   //             onTap: () {}),
+//   //       ],
+//   //     ),
+//   //   ),
+//   // );
+// }

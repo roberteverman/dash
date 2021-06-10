@@ -31,7 +31,7 @@ class AircraftStatusCN extends ChangeNotifier {
 
     //USING SERVER DATA
     String url = configJSON['aircraft_get'] + "?lang=" + lang;
-    var response = await http.get(url); //grab data from server
+    var response = await http.get(Uri.parse(url)); //grab data from server
     if (response.statusCode == 200) {
       var retrievedData = json.decode(response.body)['data'].toList();
       datetime = json.decode(response.body)['datetime'];
@@ -59,7 +59,7 @@ class AircraftStatusCN extends ChangeNotifier {
     }
     if (airfieldList.isEmpty) {
       url = configJSON['airfield_list_fetch'];
-      response = await http.get(url);
+      response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         var retrievedData = json.decode(response.body)['data'].toList();
         for (int i = 0; i < retrievedData.length; i++) {
@@ -79,7 +79,7 @@ class AircraftStatusCN extends ChangeNotifier {
     Map configJSON = json.decode(configString);
     if (configJSON['use_test_data'] == false) {
       String url = configJSON['aircraft_post'] + "?lang=" + lang;
-      var response = await http.post(url,
+      var response = await http.post(Uri(path: url),
           body: jsonEncode(<String, dynamic>{
             'action': action,
             'number': number,

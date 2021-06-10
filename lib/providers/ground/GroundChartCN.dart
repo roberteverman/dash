@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:dash/helpers/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_map/flutter_map.dart';
+// import 'package:flutter_map/flutter_map.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:latlong/latlong.dart';
+// import 'package:latlong/latlong.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 
 class GroundChartCN extends ChangeNotifier {
@@ -14,7 +14,7 @@ class GroundChartCN extends ChangeNotifier {
   GroundUnitStatus parentStatus;
   List<GroundUnitStatus> childrenStatus = [];
 
-  List<Marker> markers = [];
+  // List<Marker> markers = [];
   bool loading = true;
   int refreshRate = 20; //default timer
   String datetime = "Loading...";
@@ -27,6 +27,7 @@ class GroundChartCN extends ChangeNotifier {
   String mapShapeSource = "";
   String shapeDataField = "";
   MapShapeLayerController mapShapeLayerController = MapShapeLayerController();
+  bool useSymbolURL = false;
 
   Future<void> updateCharts(bool lightMode) async {
     String configString = await rootBundle.loadString('config/config.json');
@@ -38,6 +39,8 @@ class GroundChartCN extends ChangeNotifier {
     shapeDataField = configJSON['shape_data_field'];
     mowURL = configJSON['mow_url'];
 
+    useSymbolURL = configJSON['ground_network_assets'] == "true" ? true : false;
+
     if (configJSON['use_test_data'] == true) {
       // USING TEST DATA
       print("No Test Data to Load");
@@ -45,7 +48,7 @@ class GroundChartCN extends ChangeNotifier {
       //USING SERVER DATA
 
       String url = configJSON['ground_chart_get'] + "?lang=" + lang + "&unit=" + displayParent;
-      var response = await http.get(url);
+      var response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         childrenStatus = [];
         breadCrumbs = [];
@@ -55,27 +58,27 @@ class GroundChartCN extends ChangeNotifier {
         for (var item in retrievedData['subordinate'].toList()) {
           childrenStatus.add(GroundUnitStatus.fromJson(item));
         }
-        markers = List<Marker>.generate(
-          childrenStatus.length,
-          (index) => Marker(
-            point: LatLng(childrenStatus[index].lat, childrenStatus[index].lon),
-            // builder: (ctx) => Image.network(childrenStatus[index].symbol),
-            builder: (ctx) => Tooltip(
-              message: childrenStatus[index].name,
-              child: Image.asset("images/SymbolServer.png"), //todo set up so that image from network works
-            ),
-          ),
-        )..add(
-            Marker(
-              point: LatLng(parentStatus.lat, parentStatus.lon),
-              builder: (ctx) => Container(
-                child: Tooltip(
-                  message: parentStatus.name,
-                  child: Image.asset("images/SymbolServer.png"),
-                ),
-              ),
-            ),
-          );
+        // markers = List<Marker>.generate(
+        //   childrenStatus.length,
+        //   (index) => Marker(
+        //     point: LatLng(childrenStatus[index].lat, childrenStatus[index].lon),
+        //     // builder: (ctx) => Image.network(childrenStatus[index].symbol),
+        //     builder: (ctx) => Tooltip(
+        //       message: childrenStatus[index].name,
+        //       child: Image.asset("images/SymbolServer.png"), //todo set up so that image from network works
+        //     ),
+        //   ),
+        // )..add(
+        //     Marker(
+        //       point: LatLng(parentStatus.lat, parentStatus.lon),
+        //       builder: (ctx) => Container(
+        //         child: Tooltip(
+        //           message: parentStatus.name,
+        //           child: Image.asset("images/SymbolServer.png"),
+        //         ),
+        //       ),
+        //     ),
+        //   );
         breadCrumbs.add(
           IconButton(
             icon: Icon(
@@ -159,7 +162,7 @@ class GroundChartCN extends ChangeNotifier {
   }
 
   void clearMarkers() {
-    markers = [];
+    // markers = [];
     notifyListeners();
   }
 }

@@ -30,5 +30,6 @@
   "bmoa_shape_source": "https://bobbysworld.io/cgi-bin/bmoa_geojson.py",
   "shape_data_field": "ADM1_EN",
   "mow_url": "https://bobbysworld.io/dash",
-  "airfield_list_fetch": "https://bobbysworld.io/cgi-bin/airfield_list_fetch.py"
+  "airfield_list_fetch": "https://bobbysworld.io/cgi-bin/airfield_list_fetch.py",
+  "ground_network_assets": "false"
 }

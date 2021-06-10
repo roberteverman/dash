@@ -36,15 +36,13 @@ class _NavyChartSubtabState extends State<NavyChartSubtab> {
     mapShapeLayer = MapShapeLayer(
       controller: Provider.of<NavyVesselCN>(context, listen: false).mapShapeLayerController,
       zoomPanBehavior: MapZoomPanBehavior(
+        enablePinching: false,
         toolbarSettings: MapToolbarSettings(
           position: MapToolbarPosition.bottomRight,
           direction: Axis.vertical,
         ),
       ),
-      source: MapShapeSource.network(
-        Provider.of<NavyVesselCN>(context, listen: false).mapShapeSource,
-        shapeDataField: Provider.of<NavyVesselCN>(context, listen: false).shapeDataField,
-      ),
+      source: MapShapeSource.asset('korea_penninsula.json', shapeDataField: "ADMIN"),
       initialMarkersCount: Provider.of<NavyVesselCN>(context, listen: false).navcomStatusList.length,
       markerTooltipBuilder: (BuildContext context, int i) {
         return Text(

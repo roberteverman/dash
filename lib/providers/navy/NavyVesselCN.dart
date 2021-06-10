@@ -42,7 +42,7 @@ class NavyVesselCN extends ChangeNotifier {
     shapeDataField = configJSON['shape_data_field'];
 
     String url = configJSON['navy_chart_get'] + "?lang=" + lang;
-    var response = await http.get(url);
+    var response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       var retrievedData = json.decode(response.body)['data'];
       datetime = json.decode(response.body)['datetime'];
@@ -59,7 +59,7 @@ class NavyVesselCN extends ChangeNotifier {
     navcomStatusList = [];
 
     url = configJSON['navy_navcom_get'] + "?lang=" + lang;
-    response = await http.get(url);
+    response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       var retrievedData = json.decode(response.body)['data'].toList();
       datetime = json.decode(response.body)['datetime'];
@@ -78,7 +78,7 @@ class NavyVesselCN extends ChangeNotifier {
     Map configJSON = json.decode(configString);
     if (configJSON['use_test_data'] == false) {
       String url = configJSON['navy_navcom_post'] + "?lang=" + lang;
-      var response = await http.post(url,
+      var response = await http.post(Uri(path: url),
           body: jsonEncode(<String, dynamic>{
             'item': item,
             'field': field,
@@ -126,7 +126,7 @@ class NavyVesselCN extends ChangeNotifier {
     navyFleetInventoryList = [];
 
     String url = configJSON['navy_vessel_get'] + "?lang=" + lang;
-    var response = await http.get(url);
+    var response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       var retrievedData = json.decode(response.body)['data'].toList();
       datetime = json.decode(response.body)['datetime'];
@@ -178,7 +178,7 @@ class NavyVesselCN extends ChangeNotifier {
     navyFleetInventoryList = [];
 
     String url = configJSON['navy_cdcm_get'] + "?lang=" + lang;
-    var response = await http.get(url);
+    var response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       var retrievedData = json.decode(response.body)['data'].toList();
       datetime = json.decode(response.body)['datetime'];
@@ -230,7 +230,7 @@ class NavyVesselCN extends ChangeNotifier {
     navyFleetInventoryList = [];
 
     String url = configJSON['navy_sub_get'] + "?lang=" + lang;
-    var response = await http.get(url);
+    var response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       var retrievedData = json.decode(response.body)['data'].toList();
       datetime = json.decode(response.body)['datetime'];
@@ -287,7 +287,7 @@ class NavyVesselCN extends ChangeNotifier {
     } else {
       //USING SERVER DATA
       String url2 = configJSON['navy_get'] + "?lang=" + lang;
-      var response2 = await http.get(url2);
+      var response2 = await http.get(Uri.parse(url2));
       if (response2.statusCode == 200) {
         var retrievedData = json.decode(response2.body)['data'].toList();
         datetime = json.decode(response2.body)['datetime'];
@@ -343,7 +343,7 @@ class NavyVesselCN extends ChangeNotifier {
     } else {
       url = "";
     }
-    var response = await http.post(url,
+    var response = await http.post(Uri(path: url),
         body: jsonEncode(<String, dynamic>{
           'action': action,
           'number': number,

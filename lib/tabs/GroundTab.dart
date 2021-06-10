@@ -2,7 +2,8 @@ import 'dart:html';
 import 'package:dash/components/DashTab.dart';
 import 'package:dash/providers/ground/GroundChartCN.dart';
 import 'package:dash/tabs/ground/GroundChartSubtab.dart';
-import 'package:easy_web_view/easy_web_view.dart';
+import 'package:dash/tabs/ground/GroundChartSubtab2.dart';
+// import 'package:easy_web_view/easy_web_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +18,7 @@ class GroundTab extends StatelessWidget {
         // Tab(child: Text("Infantry")),
       ],
       contentTabs: [
-        GroundChartSubtab(),
+        GroundChartSubtab2(),
         // Center(
         //   child: Expanded(
         //     child: EasyWebView(

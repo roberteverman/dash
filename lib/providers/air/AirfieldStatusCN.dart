@@ -26,7 +26,7 @@ class AirFieldStatusCN extends ChangeNotifier {
     airDivisionList = [];
 
     String url = configJSON['airfield_get'] + "?lang=" + lang;
-    var response = await http.get(url); //grab data from server
+    var response = await http.get(Uri.parse(url)); //grab data from server
     if (response.statusCode == 200) {
       var retrievedData = json.decode(response.body)['data'].toList();
       datetime = json.decode(response.body)['datetime'];
@@ -56,7 +56,7 @@ class AirFieldStatusCN extends ChangeNotifier {
     Map configJSON = json.decode(configString);
     if (configJSON['use_test_data'] == false) {
       String url = configJSON['airfield_post'] + "?lang=" + lang;
-      var response = await http.post(url,
+      var response = await http.post(Uri(path: url),
           body: jsonEncode(<String, dynamic>{
             'item': item,
             'field': field,

@@ -2,12 +2,12 @@ import 'package:circular_menu/circular_menu.dart';
 import 'package:dash/helpers/models.dart';
 import 'package:dash/providers/air/AirChartCN.dart';
 import 'package:dash/providers/ground/GroundChartCN.dart';
-import 'package:easy_web_view/easy_web_view.dart';
+// import 'package:easy_web_view/easy_web_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_map/flutter_map.dart';
+// import 'package:flutter_map/flutter_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:latlong/latlong.dart';
+// import 'package:latlong/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 
@@ -18,7 +18,7 @@ class GroundMap2 extends StatefulWidget {
 
 class _GroundMap2State extends State<GroundMap2> {
   MapShapeLayerController mapShapeLayerController;
-  List<Marker> markers;
+  // List<Marker> markers;
   int selectedIndex;
   bool keySelected = false;
   double keyX = 15;

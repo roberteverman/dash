@@ -12,6 +12,7 @@ import 'package:dash/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui' as ui;
 
 void main() {
@@ -46,7 +47,7 @@ class MaterialAppWithTheme extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Dash.",
       home: Home(),
-      theme: Provider.of<ThemeChanger>(context, listen: true).themeData,
+      theme: Provider.of<ThemeChanger>(context, listen: true).themeData..textTheme.apply(fontFamily: 'NotoSansKR'),
     );
   }
 }

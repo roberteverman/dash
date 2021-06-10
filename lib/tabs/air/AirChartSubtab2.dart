@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:dash/charts/air/AircraftStrengthGauge.dart';
 import 'package:dash/charts/air/AircraftTypeBarChart.dart';
+import 'package:dash/charts/air/AircraftTypeBarChart2.dart';
 import 'package:dash/charts/air/AirfieldBarChart.dart';
+import 'package:dash/charts/air/AirfieldBarChart2.dart';
 import 'package:dash/charts/air/AirfieldStatusDoughnutChart.dart';
 import 'package:dash/providers/ThemeChanger.dart';
 import 'package:dash/providers/air/AirChartCN.dart';
@@ -43,15 +45,13 @@ class _AirChartSubtab2State extends State<AirChartSubtab2> {
     mapShapeLayer = MapShapeLayer(
       controller: Provider.of<AirChartCN>(context, listen: false).mapShapeLayerController,
       zoomPanBehavior: MapZoomPanBehavior(
+        enablePinching: false,
         toolbarSettings: MapToolbarSettings(
           position: MapToolbarPosition.bottomRight,
           direction: Axis.vertical,
         ),
       ),
-      source: MapShapeSource.network(
-        Provider.of<AirChartCN>(context, listen: false).mapShapeSource,
-        shapeDataField: Provider.of<AirChartCN>(context, listen: false).shapeDataField,
-      ),
+      source: MapShapeSource.asset('korea_penninsula.json', shapeDataField: "ADMIN"),
       initialMarkersCount: Provider.of<AirChartCN>(context, listen: false).airfieldInventory.length,
       markerTooltipBuilder: (BuildContext context, int i) {
         return Text(
@@ -306,11 +306,11 @@ class _AirChartSubtab2State extends State<AirChartSubtab2> {
                                                     ),
                                                   ),
                                                 ),
-                                                AirfieldBarChart(
+                                                AirfieldBarChart2(
                                                   chartCardDims: chartCardDims,
                                                   padding: 0,
                                                 ),
-                                                AircraftTypeBarChart(
+                                                AircraftTypeBarChart2(
                                                   chartCardDims: chartCardDims,
                                                   padding: 0,
                                                 ),
